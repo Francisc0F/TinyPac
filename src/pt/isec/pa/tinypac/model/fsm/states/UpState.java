@@ -7,7 +7,7 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 class UpState extends TinyPacStateAdapter {
     protected UpState(TinyPacContext context, TinyPac tinyPac) {
         super(context, tinyPac);
-        tinyPac.setCurrentFloor(1);
+        tinyPac.setCurrentlevel(1);
     }
 
     @Override

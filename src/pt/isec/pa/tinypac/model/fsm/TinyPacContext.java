@@ -33,6 +33,6 @@ public class TinyPacContext {
     // get data
 
     public int getCurrentFloor() {
-        return tinyPac.getCurrentFloor();
+        return tinyPac.getCurrentlevel();
     }
 }

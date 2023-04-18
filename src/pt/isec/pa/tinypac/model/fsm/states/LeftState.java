@@ -7,7 +7,7 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 public class LeftState extends TinyPacStateAdapter {
     public LeftState(TinyPacContext context, TinyPac tinyPac) {
         super(context, tinyPac);
-        tinyPac.setCurrentFloor(-1);
+        tinyPac.setCurrentlevel(-1);
     }
 
     @Override

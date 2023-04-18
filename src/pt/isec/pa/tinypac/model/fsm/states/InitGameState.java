@@ -7,7 +7,7 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 class InitGameState extends TinyPacStateAdapter {
     InitGameState(TinyPacContext context, TinyPac tinyPac) {
         super(context, tinyPac);
-        tinyPac.setCurrentFloor(2);
+        tinyPac.setCurrentlevel(2);
     }
 
 

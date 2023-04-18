@@ -7,7 +7,7 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 public class ShowTopPlayersState extends TinyPacStateAdapter {
     public ShowTopPlayersState(TinyPacContext context, TinyPac tinyPac) {
         super(context, tinyPac);
-        tinyPac.setCurrentFloor(0);
+        tinyPac.setCurrentlevel(0);
     }
 
     @Override

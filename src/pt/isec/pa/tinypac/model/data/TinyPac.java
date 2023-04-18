@@ -1,22 +1,22 @@
 package pt.isec.pa.tinypac.model.data;
 
 public class TinyPac {
-    private int currentFloor;
+    private int currentlevel;
 
     public TinyPac(int currentFloor) {
-        this.currentFloor = currentFloor;
+        this.currentlevel = currentFloor;
     }
 
-    public int getCurrentFloor() {
-        return currentFloor;
+    public int getCurrentlevel() {
+        return currentlevel;
     }
 
-    public void setCurrentFloor(int currentFloor) {
-        this.currentFloor = currentFloor;
+    public void setCurrentlevel(int currentlevel) {
+        this.currentlevel = currentlevel;
     }
 
     @Override
     public String toString() {
-        return "Elevator:currentFloor=" + currentFloor;
+        return "Elevator:currentFloor=" + currentlevel;
     }
 }
