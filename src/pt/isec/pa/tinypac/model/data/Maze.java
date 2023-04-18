@@ -5,17 +5,20 @@ public final class Maze {
     public Maze(int height, int width) {
         board = new IMazeElement[height][width];
     }
-    public boolean set(int y, int x,IMazeElement element) {
+
+    public boolean set(int y, int x, IMazeElement element) {
         if (y < 0 || y >= board.length || x < 0 || x >= board[0].length)
             return false;
         board[y][x] = element; // can be null
         return true;
     }
+
     public IMazeElement get(int y, int x) {
         if (y < 0 || y >= board.length || x < 0 || x >= board[0].length)
             return null;
         return board[y][x]; // can be null
     }
+
     public char[][] getMaze() {
         char[][] char_board = new char[board.length][board[0].length];
         for(int y=0;y<board.length;y++)

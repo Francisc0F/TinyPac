@@ -9,6 +9,6 @@ public class Inky extends Ghost{
     }
     @Override
     protected void regularMove() {
-        // logic for Inky
+        // equal to Pinky but diferent order
     }
 }

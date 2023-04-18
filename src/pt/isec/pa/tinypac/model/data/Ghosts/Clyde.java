@@ -11,4 +11,6 @@ public class Clyde extends Ghost{
     protected void regularMove() {
         // logic for clyde
     }
+
+
 }

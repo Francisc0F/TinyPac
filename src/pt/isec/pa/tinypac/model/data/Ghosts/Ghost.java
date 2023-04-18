@@ -1,10 +1,11 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
+import pt.isec.pa.tinypac.model.data.IMazeElement;
 import pt.isec.pa.utils.Position;
 
 import java.util.Stack;
 
-public abstract class Ghost implements IGhost {
+public abstract class Ghost implements IGhost, IMazeElement {
     Position position;
     boolean isVulnerable = false;
     Stack<Position> previousMoves = new Stack<Position>();
@@ -39,6 +40,11 @@ public abstract class Ghost implements IGhost {
         } else {
             setPreviousMove();
         }
+    }
+
+    @Override
+    public char getSymbol() {
+        return 'y';
     }
 
     @Override

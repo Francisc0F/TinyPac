@@ -10,7 +10,7 @@ public class TinyPacContext {
     TinyPac tinyPac;
 
     public TinyPacContext() {
-        tinyPac = new TinyPac(0);
+        tinyPac = new TinyPac();
         state = new MenuState(this, tinyPac);
     }
 
@@ -32,7 +32,7 @@ public class TinyPacContext {
 
     // get data
 
-    public int getCurrentFloor() {
+    public int getCurrentlevel() {
         return tinyPac.getCurrentlevel();
     }
 }

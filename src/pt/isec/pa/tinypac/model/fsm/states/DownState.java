@@ -7,7 +7,6 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 class DownState extends TinyPacStateAdapter {
     DownState(TinyPacContext context, TinyPac tinyPac) {
         super(context, tinyPac);
-        tinyPac.setCurrentlevel(3);
     }
 
     @Override
