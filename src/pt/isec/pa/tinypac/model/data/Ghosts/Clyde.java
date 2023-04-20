@@ -12,5 +12,4 @@ public class Clyde extends Ghost{
         // logic for clyde
     }
 
-
 }

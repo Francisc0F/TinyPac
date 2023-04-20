@@ -24,7 +24,7 @@ public final class Maze {
         for(int y=0;y<board.length;y++)
             for(int x=0;x<board[y].length;x++)
                 if (board[y][x]==null)
-                    char_board[y][x] = ' ';
+                    char_board[y][x] = 'N';
                 else
                     char_board[y][x] = board[y][x].getSymbol();
         return char_board;

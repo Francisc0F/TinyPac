@@ -1,17 +1,20 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
 import pt.isec.pa.tinypac.model.data.IMazeElement;
+import pt.isec.pa.tinypac.model.data.MazeElement;
 import pt.isec.pa.utils.Position;
 
 import java.util.Stack;
 
-public abstract class Ghost implements IGhost, IMazeElement {
-    Position position;
+public abstract class Ghost extends MazeElement implements IGhost {
+
     boolean isVulnerable = false;
     Stack<Position> previousMoves = new Stack<Position>();
 
     Ghost(Position p) {
-        position = p;
+        super('y');
+        this.position = p;
+
         savePosition();
     }
 

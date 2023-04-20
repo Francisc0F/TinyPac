@@ -5,7 +5,6 @@ import pt.isec.pa.utils.Position;
 import java.util.Stack;
 
 public interface IGhost {
-    Position position = null;
     boolean savePosition();
     boolean move();
     boolean getIsVulnerable();
