@@ -1,15 +1,15 @@
 package pt.isec.pa.tinypac.model.fsm;
 
-import pt.isec.pa.tinypac.model.data.TinyPac;
+import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
 
 public abstract class TinyPacStateAdapter implements ITinyPacState {
-    protected TinyPac tinyPac;
-    protected TinyPacContext context;
+    protected MapController mapController;
+    protected TinyPacStateMachine context;
 
-    protected TinyPacStateAdapter(TinyPacContext context, TinyPac tinyPac) {
+    protected TinyPacStateAdapter(TinyPacStateMachine context, MapController mapController) {
         this.context = context;
-        this.tinyPac = tinyPac;
+        this.mapController = mapController;
     }
 
      protected void changeState(ITinyPacState newState) {
@@ -30,5 +30,9 @@ public abstract class TinyPacStateAdapter implements ITinyPacState {
     public boolean viewTopPlayers() {
         return false;
     }
-    
+
+    @Override
+    public boolean evolve() {
+        return false;
+    }
 }

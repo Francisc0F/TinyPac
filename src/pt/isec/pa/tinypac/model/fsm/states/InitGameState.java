@@ -1,31 +1,22 @@
 package pt.isec.pa.tinypac.model.fsm.states;
 
-import pt.isec.pa.tinypac.model.data.TinyPac;
-import pt.isec.pa.tinypac.model.fsm.TinyPacContext;
+import pt.isec.pa.tinypac.model.data.MapController;
+import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 
-class InitGameState extends TinyPacStateAdapter {
-    InitGameState(TinyPacContext context, TinyPac tinyPac) {
-        super(context, tinyPac);
-    }
+public class InitGameState extends TinyPacStateAdapter {
+    public InitGameState(TinyPacStateMachine context, MapController mapController) {
+        super(context, mapController);
 
-
-    @Override
-    public boolean up() {
-        changeState(new DownState(context, tinyPac));
-        return true;
-    }
-
-
-    @Override
-    public boolean down() {
-        changeState(new UpState(context, tinyPac));
-        return true;
+        try {
+            mapController.loadFileMap("level01.txt");
+        } catch (Exception ignored) {
+            System.out.println("Not found file");
+        }
     }
 
     @Override
     public TinyPacState getState() {
-        return TinyPacState.MENU;
+        return TinyPacState.INITGAMESTATE;
     }
-
 }

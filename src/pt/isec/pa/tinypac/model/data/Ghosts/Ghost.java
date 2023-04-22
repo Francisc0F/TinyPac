@@ -1,61 +1,60 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
-import pt.isec.pa.tinypac.model.data.IMazeElement;
-import pt.isec.pa.tinypac.model.data.MazeElement;
+import pt.isec.pa.tinypac.model.data.Map;
+import pt.isec.pa.tinypac.model.data.Organism;
 import pt.isec.pa.utils.Position;
 
 import java.util.Stack;
 
-public abstract class Ghost extends MazeElement implements IGhost {
-
+public abstract class Ghost extends Organism implements IGhost {
+    public static final char SYMBOL = 'y';
     boolean isVulnerable = false;
     Stack<Position> previousMoves = new Stack<Position>();
 
-    Ghost(Position p) {
-        super('y');
-        this.position = p;
-
+    public Ghost(Map map) {
+        super(map);
         savePosition();
     }
 
-    @Override
+    /*@Override
     public boolean savePosition() {
         previousMoves.push(position);
         return true;
-    }
+    }*/
 
     @Override
     public boolean move() {
         if (!isVulnerable) {
-            regularMove();
+    /*        regularMove();*/
             savePosition();
         } else {
-            backwardsMove();
+          /*  backwardsMove();*/
         }
         return true;
     }
 
-    protected abstract void regularMove();
+    @Override
+    public char getSymbol() {
+        return SYMBOL;
+    }
 
-    private void backwardsMove() {
+
+    /*protected abstract void regularMove();*/
+
+   /* private void backwardsMove() {
         if (previousMoves.size() == 1) {
             isVulnerable = false;
         } else {
             setPreviousMove();
         }
-    }
-
-    @Override
-    public char getSymbol() {
-        return 'y';
-    }
+    }*/
 
     @Override
     public boolean getIsVulnerable() {
         return this.isVulnerable;
     }
 
-    private void setPreviousMove() {
+   /* private void setPreviousMove() {
         position = previousMoves.pop();
     }
 
@@ -73,5 +72,5 @@ public abstract class Ghost extends MazeElement implements IGhost {
 
     protected void right() {
         position = position.right();
-    }
+    }*/
 }

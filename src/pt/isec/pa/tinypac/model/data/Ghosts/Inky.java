@@ -1,14 +1,21 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
+import pt.isec.pa.tinypac.model.data.Map;
 import pt.isec.pa.utils.Position;
 
 public class Inky extends Ghost{
 
-    Inky(Position p){
+    Inky(Map p){
         super(p);
     }
+
     @Override
-    protected void regularMove() {
-        // equal to Pinky but diferent order
+    public void evolve() {
+
+    }
+
+    @Override
+    public boolean savePosition() {
+        return false;
     }
 }

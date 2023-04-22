@@ -1,12 +1,12 @@
 package pt.isec.pa.tinypac;
 
-import pt.isec.pa.tinypac.model.fsm.TinyPacContext;
-import pt.isec.pa.tinypac.ui.text.TinyPacUI;
+import pt.isec.pa.tinypac.gameengine.GameEngine;
+import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
+import pt.isec.pa.tinypac.ui.text.TinyPacCmdUI;
 
 public class Main {
     public static void main(String[] args) {
-        TinyPacContext fsm = new TinyPacContext();
-        TinyPacUI ui = new TinyPacUI(fsm);
-        ui.start();
+        TinyPacStateMachine fsm = new TinyPacStateMachine();
+        TinyPacCmdUI ui = new TinyPacCmdUI(fsm);
     }
 }

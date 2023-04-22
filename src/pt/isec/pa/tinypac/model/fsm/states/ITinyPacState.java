@@ -4,6 +4,7 @@ public interface ITinyPacState {
     boolean up();
     boolean down();
     boolean viewTopPlayers();
+    boolean evolve();
 
 
     TinyPacState getState();

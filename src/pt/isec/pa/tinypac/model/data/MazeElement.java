@@ -1,52 +1,24 @@
 package pt.isec.pa.tinypac.model.data;
 
-import pt.isec.pa.utils.Position;
-
-public class MazeElement implements IMazeElement{
+public class MazeElement extends Organism implements IMazeElement {
     private final char symbol;
-    protected Position position;
-    public MazeElement(char symbol){
+
+    public MazeElement(char symbol, Map environment) {
+        super(environment);
         this.symbol = symbol;
     }
 
     @Override
-    public char getSymbol() {
-        return symbol;
-    }
+    public void evolve() {
 
-    public boolean isFood(){
-        return getSymbol() == 'o';
     }
-
-    public boolean isPowerFullFood(){
-        return getSymbol() == 'O';
-    }
-
-    public boolean isGhost(){
-        return getSymbol() == 'y';
-    }
-
-    public boolean isGhostPortal(){
-        return getSymbol() == 'Y';
-    }
-
-    public boolean isWall(){
-        return getSymbol() == 'x';
-    }
-
-    public boolean isWrap(){
-        return getSymbol() == 'W';
-    }
-
-    public boolean isFruitPlace(){
-        return getSymbol() == 'F';
-    }
-
 
     @Override
-    public String toString() {
-        return "MazeElement{" +
-                "symbol=" + symbol +
-                '}';
+    public char getSymbol() {
+        return this.symbol;
+    }
+
+    public boolean isWall() {
+        return symbol == 'x';
     }
 }

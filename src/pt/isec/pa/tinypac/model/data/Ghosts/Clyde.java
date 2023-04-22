@@ -1,15 +1,20 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
-import pt.isec.pa.utils.Position;
+import pt.isec.pa.tinypac.model.data.Map;
 
-public class Clyde extends Ghost{
+public class Clyde extends Ghost {
 
-    Clyde(Position p){
+    Clyde(Map p) {
         super(p);
     }
+
     @Override
-    protected void regularMove() {
-        // logic for clyde
+    public void evolve() {
+
     }
 
+    @Override
+    public boolean savePosition() {
+        return false;
+    }
 }
