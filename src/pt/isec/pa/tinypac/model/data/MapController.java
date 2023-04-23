@@ -28,30 +28,32 @@ public class MapController {
     public void loadFileMap(String filename) throws IOException {
         File file = new File(filename);
 
-        // Creating an object of BufferedReader class
         BufferedReader br = new BufferedReader(new FileReader(file));
 
-        // Declaring a string variable
         String st;
-        // Condition holds true till
-        // there is character in a string
         int y = 0;
         while ((st = br.readLine()) != null) {
             for (int x = 0; x < st.length(); x++) {
-                map.addElement(this.addOrganismByFileSymbol(st.charAt(x)), y, x);
+                Organism created = this.buildByChar(st.charAt(x), y, x);
+                map.addElement(created, y, x);
             }
             y++;
         }
     }
 
     public char[][] getMap() {
-        return map.getMap();
+        return map.buildMap();
     }
 
-    private Organism addOrganismByFileSymbol(char symbol) {
+    private Organism buildByChar(char symbol, int y, int x) {
+
         return switch (symbol) {
-            case 'M' -> new Pacman(map);
+            case 'M' -> {
+                this.map.setPacman(new Pacman(map, new Map.Position(y,x)));
+                yield new Pacman(map, new Map.Position(y,x));
+            }
             case 'x' -> new Wall(map);
+            case 'W' -> new Wrap(map);
             case 'o' -> new Food(map);
             default -> new MazeElement(symbol, map);
         };

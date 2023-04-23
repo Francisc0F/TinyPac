@@ -1,6 +1,7 @@
 package pt.isec.pa.tinypac.model.data;
 
 
+import pt.isec.pa.tinypac.model.data.Ghosts.Ghost;
 import pt.isec.pa.utils.Direction;
 
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class Map {
     int height, width;
     Maze maze;
     private Direction currentPacmanDirection;
+
+    ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
+    private Pacman pacman;
+    ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
 
     public Map(int height, int width) {
         this.height = height;
@@ -46,6 +51,24 @@ public class Map {
         return null;
     }
 
+    public <T extends Organism> List<T> findElementsOf(Class<T> type) {
+        List<T> result = new ArrayList<>();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Organism o = (Organism) maze.get(y, x);
+                if (type.isInstance(o)) {
+                    result.add(type.cast(o));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public void setPacman(Pacman pacman) {
+        this.pacman = pacman;
+    }
 
     public Position getPositionOf(Organism organism) {
         for (int y = 0; y < height; y++)
@@ -83,27 +106,11 @@ public class Map {
         this.currentPacmanDirection = direction;
     }
 
-
     public boolean evolve() {
-        /*int nr_evolvers = 0,nr_virus = 0;*/
-
         List<Organism> lst = new ArrayList<>();
-        for (int y = 0; y < height; y++)
-            for (int x = 0; x < width; x++)
-                if (maze.get(y, x) instanceof Pacman pac) {
-                    pac.setDirection(currentPacmanDirection);
-                    lst.add(pac);
-                } else if (maze.get(y, x) instanceof Organism organism) {
-                    lst.add(organism);
-                   /* if (organism instanceof Evolver)
-                        nr_evolvers++;
-                    else if (organism instanceof Virus)
-                        nr_virus++;*/
-                }
-        /*if (nr_evolvers==0 || nr_virus == 0)
-            return false;*/
+        this.pacman.setDirection(currentPacmanDirection);
+        lst.add(this.pacman);
 
-        //Collections.shuffle(lst);
         for (var organism : lst)
             organism.evolve();
         return true;
@@ -123,8 +130,26 @@ public class Map {
         return (nr_evolvers==0 || nr_virus == 0);
     }*/
 
-    public char[][] getMap() {
-        return maze.getMaze();
+    public char[][] buildMap() {
+        char[][] staticMaze = maze.getMaze();
+        char[][] char_board = new char[staticMaze.length][staticMaze[0].length];
+
+        for (int y = 0; y < staticMaze.length; y++) {
+            for (int x = 0; x < staticMaze[y].length; x++) {
+                if (staticMaze[y][x] == 'M') {
+                    char_board[y][x] = ' ';
+                } else {
+                    char_board[y][x] = staticMaze[y][x];
+                }
+                //System.out.print(char_board[y][x]);
+            }
+            // System.out.println();
+        }
+
+        Map.Position p = pacman.getP();
+        char_board[p.y()][p.x()] = 'M';
+
+        return char_board;
     }
 
 }

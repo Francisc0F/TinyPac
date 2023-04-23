@@ -8,8 +8,7 @@ import pt.isec.pa.utils.Direction;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MapControllerTest {
     MapController mp;
@@ -23,7 +22,7 @@ class MapControllerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        initialPosi = getInitialPosi();
+        initialPosi = getCharPosi('M');
     }
 
     @Test
@@ -33,9 +32,12 @@ class MapControllerTest {
 
         mp.evolve();
         mp.evolve();
+        printMap();
 
-        ArrayList<Integer> finalPosi = (ArrayList<Integer>) getInitialPosi();
-
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        if(finalPosi.isEmpty()){
+            fail();
+        }
         assertEquals((int) finalPosi.get(1), initialPosi.get(1) + 2);
     }
 
@@ -48,7 +50,7 @@ class MapControllerTest {
         mp.evolve();
         mp.evolve();
 
-        ArrayList<Integer> finalPosi = (ArrayList<Integer>) getInitialPosi();
+        ArrayList<Integer> finalPosi = getCharPosi('M');
 
         assertEquals((int) finalPosi.get(1), initialPosi.get(1) - 4);
         printMap();
@@ -56,31 +58,103 @@ class MapControllerTest {
 
 
     @Test
-    public void TestMoveUPPacman() {
+    public void TestMoveLeftHitWall() {
+        mp.setCurrentPacmanDirection(Direction.LEFT);
+        for (int i = 0; i < 1000; i++) {
+            mp.evolve();
+        }
+
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
+        assertEquals((int) finalPosi.get(1), initialPosi.get(1) - 8);
+        printMap();
+    }
+
+
+    @Test
+    public void TestMoveRightHitWall() {
+        mp.setCurrentPacmanDirection(Direction.RIGHT);
+        for (int i = 0; i < 1000; i++) {
+            mp.evolve();
+        }
+
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
+        assertEquals((int) finalPosi.get(1), initialPosi.get(1) + 8);
+        printMap();
+    }
+
+    @Test
+    public void TestMoveUPHitWall() {
         mp.setCurrentPacmanDirection(Direction.UP);
-        mp.evolve();
+        for (int i = 0; i < 1000; i++) {
+            mp.evolve();
+        }
 
-        ArrayList<Integer> finalPosi = (ArrayList<Integer>) getInitialPosi();
-
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
         assertEquals((int) finalPosi.get(1), initialPosi.get(1));
         printMap();
     }
 
+
+    @Test
+    public void ChangeDirection() {
+        go(Direction.RIGHT, 3);
+        go(Direction.LEFT, 3);
+
+        go(Direction.UP, 3);
+        go(Direction.DOWN, 3);
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
+        assertEquals((int) finalPosi.get(1), initialPosi.get(1));
+        printMap();
+    }
+
+
+    @Test
+    public void Teleport() {
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 4);
+        go(Direction.LEFT, 7);
+        go(Direction.UP, 6);
+        go(Direction.LEFT, 6);
+
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
+        assertEquals((int) finalPosi.get(1), initialPosi.get(1));
+        printMap();
+    }
+
+    private void go(Direction left, int i) {
+        mp.setCurrentPacmanDirection(left);
+        evolveFor(i);
+    }
+
+
+    private void evolveFor(int n) {
+        for (int i = 0; i < 3; i++) {
+            mp.evolve();
+        }
+    }
+
     public void printMap() {
         System.out.println();
-        for (int y = 0; y < mp.getMap().length; y++) {
-            for (int x = 0; x < mp.getMap()[0].length; x++)
-                System.out.print(mp.getMap()[y][x]);
+        char [][] map = mp.getMap();
+        for (char[] chars : map) {
+            for (char aChar : chars)
+                System.out.print(aChar);
             System.out.println();
         }
     }
 
 
-    public ArrayList<Integer> getInitialPosi() {
+    public ArrayList<Integer> getCharPosi(char m) {
         ArrayList<Integer> posi = new ArrayList<>(2);
-        for (int y = 0; y < mp.getMap().length; y++) {
-            for (int x = 0; x < mp.getMap()[0].length; x++)
-                if (mp.getMap()[y][x] == 'M') {
+        char [][] map = mp.getMap();
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++)
+                if (map[y][x] == m) {
                     posi.add(y);
                     posi.add(x);
                 }

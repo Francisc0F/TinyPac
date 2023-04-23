@@ -4,11 +4,19 @@ package pt.isec.pa.tinypac.model.data;
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.utils.Direction;
 
+import java.util.Optional;
+
 public class Pacman extends Organism {
     private Direction direction;
+    Map.Position p;
 
-    Pacman(Map map) {
+    public Pacman(Map map, Map.Position p) {
         super(map);
+        this.p = p;
+    }
+
+    public Map.Position getP() {
+        return p;
     }
 
     @Override
@@ -33,42 +41,45 @@ public class Pacman extends Organism {
         return 'M';
     }
 
-    protected void left() {
-        Map.Position p = this.map.getPositionOf(this);
+    private void move(int dx, int dy) {
         Organism elemAtThisPlace = this.map.getOrganism(p.y(), p.x());
-        Organism elemAtLeftPlace = this.map.getOrganism(p.y(), p.x() - 1);
-        this.map.set(elemAtThisPlace, p.y(), p.x() - 1);
+        Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
 
-        if (elemAtLeftPlace instanceof Food) {
-            this.map.set(null, p.y(), p.x());
-        } else {
-            this.map.set(elemAtLeftPlace, p.y(), p.x());
+        if (elemAtNewPlace instanceof Wall) {
+            return;
         }
+
+       /* if (elemAtNewPlace instanceof Wrap) {
+            Optional<Wrap> other = this.map.findElementsOf(Wrap.class)
+                    .stream()
+                    .filter(item -> item != elemAtNewPlace).findFirst();
+            if(other.isPresent()){
+                Map.Position otherWrapPosi = this.map.getPositionOf(other.get());
+                this.map.set(elemAtThisPlace, otherWrapPosi.y(), p.x() + dx);
+            }
+            return;
+        }*/
+        p = new Map.Position(p.y() + dy, p.x() + dx);
+
+        if (elemAtNewPlace instanceof Food) {
+            this.map.set(new Empty(this.map), p.y(), p.x());
+        }
+    }
+
+    protected void left() {
+        move(-1, 0);
     }
 
     protected void right() {
-        Map.Position p = this.map.getPositionOf(this);
-        Organism elemAtThisPlace = this.map.getOrganism(p.y(), p.x());
-        Organism elemAtRightPlace = this.map.getOrganism(p.y(), p.x() + 1);
-
-        if (!(elemAtRightPlace instanceof Wall)) {
-            this.map.set(elemAtThisPlace, p.y(), p.x() + 1);
-        }
-        if (elemAtRightPlace instanceof Food) {
-            this.map.set(null, p.y(), p.x());
-        } else {
-            this.map.set(elemAtRightPlace, p.y(), p.x());
-        }
+        move(1, 0);
     }
 
     protected void up() {
-        Map.Position p = this.map.getPositionOf(this);
-        map.addElement(new Pacman(map), p.y() + 1, p.x());
+        move(0, -1);
     }
 
     protected void down() {
-        Map.Position p = this.map.getPositionOf(this);
-        map.addElement(new Pacman(map), p.y() - 1, p.x());
+        move(0, 1);
     }
 
 }
