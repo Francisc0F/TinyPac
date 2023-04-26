@@ -49,16 +49,17 @@ public class Pacman extends Organism {
             return;
         }
 
-       /* if (elemAtNewPlace instanceof Wrap) {
+        if (elemAtNewPlace instanceof Wrap) {
             Optional<Wrap> other = this.map.findElementsOf(Wrap.class)
                     .stream()
                     .filter(item -> item != elemAtNewPlace).findFirst();
             if(other.isPresent()){
                 Map.Position otherWrapPosi = this.map.getPositionOf(other.get());
-                this.map.set(elemAtThisPlace, otherWrapPosi.y(), p.x() + dx);
+                p = new Map.Position(otherWrapPosi.y(), otherWrapPosi.x());
             }
             return;
-        }*/
+        }
+
         p = new Map.Position(p.y() + dy, p.x() + dx);
 
         if (elemAtNewPlace instanceof Food) {

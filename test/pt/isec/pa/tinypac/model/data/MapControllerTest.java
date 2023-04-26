@@ -35,7 +35,7 @@ class MapControllerTest {
         printMap();
 
         ArrayList<Integer> finalPosi = getCharPosi('M');
-        if(finalPosi.isEmpty()){
+        if (finalPosi.isEmpty()) {
             fail();
         }
         assertEquals((int) finalPosi.get(1), initialPosi.get(1) + 2);
@@ -114,16 +114,37 @@ class MapControllerTest {
 
     @Test
     public void Teleport() {
+        go(Direction.LEFT, 2);
+        go(Direction.UP, 3);
         go(Direction.LEFT, 3);
-        go(Direction.UP, 4);
-        go(Direction.LEFT, 7);
         go(Direction.UP, 6);
-        go(Direction.LEFT, 6);
+        go(Direction.LEFT, 8);
 
         ArrayList<Integer> finalPosi = getCharPosi('M');
         System.out.println(finalPosi);
-        assertEquals((int) finalPosi.get(1), initialPosi.get(1));
+
         printMap();
+        assertEquals(27, finalPosi.get(1));
+        assertEquals(14, finalPosi.get(0));
+    }
+
+    @Test
+    public void TeleportTwice() {
+        go(Direction.LEFT, 2);
+        go(Direction.UP, 3);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 6);
+        go(Direction.LEFT, 8);
+
+        go(Direction.LEFT, 6);
+        go(Direction.RIGHT, 10);
+
+        ArrayList<Integer> finalPosi = getCharPosi('M');
+        System.out.println(finalPosi);
+
+        printMap();
+        assertEquals(5, finalPosi.get(1));
+        assertEquals(14, finalPosi.get(0));
     }
 
     private void go(Direction left, int i) {
@@ -133,14 +154,14 @@ class MapControllerTest {
 
 
     private void evolveFor(int n) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < n; i++) {
             mp.evolve();
         }
     }
 
     public void printMap() {
         System.out.println();
-        char [][] map = mp.getMap();
+        char[][] map = mp.getMap();
         for (char[] chars : map) {
             for (char aChar : chars)
                 System.out.print(aChar);
@@ -151,7 +172,7 @@ class MapControllerTest {
 
     public ArrayList<Integer> getCharPosi(char m) {
         ArrayList<Integer> posi = new ArrayList<>(2);
-        char [][] map = mp.getMap();
+        char[][] map = mp.getMap();
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++)
                 if (map[y][x] == m) {
