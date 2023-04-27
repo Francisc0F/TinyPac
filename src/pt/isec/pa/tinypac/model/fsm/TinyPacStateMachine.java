@@ -1,6 +1,5 @@
 package pt.isec.pa.tinypac.model.fsm;
 
-import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.InitGameState;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
@@ -11,10 +10,9 @@ import pt.isec.pa.utils.Direction;
 public class TinyPacStateMachine {
     ITinyPacState state;
     MapController mapController;
-    GameEngine gameEngine;
 
     public TinyPacStateMachine() {
-        this.gameEngine = new GameEngine();
+
         mapController = new MapController();
         state = new InitGameState(this, mapController);
     }
@@ -34,10 +32,6 @@ public class TinyPacStateMachine {
 
     public char[][] getMap() {
         return mapController.getMap();
-    }
-
-    public GameEngine getGameEngine() {
-        return gameEngine;
     }
 
     public boolean evolve() {

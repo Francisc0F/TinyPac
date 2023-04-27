@@ -24,6 +24,7 @@ public class Map {
     private ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
     private Pacman pacman;
     private Fruit fruit;
+    private Map.Position defaultFruitPosition;
     private ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
 
     public int getPacmanFoodCount() {
@@ -76,6 +77,11 @@ public class Map {
         this.pacman = pacman;
     }
 
+    public void setFruit(Fruit fruit) {
+        Map.Position p = fruit.getP();
+        defaultFruitPosition = new Map.Position(p.y(), p.x());
+    }
+
     public Position getPositionOf(Organism organism) {
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
@@ -122,18 +128,15 @@ public class Map {
         return true;
     }
 
-    private char setFruit() {
-        Optional<Fruit> other = findElementsOf(Fruit.class)
-                .stream()
-                .findFirst();
+    private void setFruit() {
+        if(this.fruit == null && pacman.getFoodCount() > 20){
+            this.fruit = new Fruit(this, defaultFruitPosition);
+            return;
+        }
 
-        if (other.isPresent() && pacman.getFoodCount() > 20) {
-            return 'F';
-        } else if (other.isEmpty() && pacman.getFoodCount() > 0 &&
+        if (this.fruit == null && pacman.getFoodCount() > 0 &&
                 pacman.getFoodCount() % 20 == 0) {
-            return 'F';
-        } else {
-            return ' ';
+            this.fruit = new Fruit(this, defaultFruitPosition);
         }
     }
 
@@ -143,20 +146,21 @@ public class Map {
 
         for (int y = 0; y < staticMaze.length; y++) {
             for (int x = 0; x < staticMaze[y].length; x++) {
-                if (staticMaze[y][x] == 'M') {
-                    char_board[y][x] = ' ';
-                } else if (staticMaze[y][x] == 'F') {
-                    char_board[y][x] = setFruit();
-                } else {
-                    char_board[y][x] = staticMaze[y][x];
-                }
+                char_board[y][x] = staticMaze[y][x];
                 //System.out.print(char_board[y][x]);
             }
             // System.out.println();
         }
 
-        Map.Position p = pacman.getP();
-        char_board[p.y()][p.x()] = 'M';
+        setFruit();
+        if (fruit != null) {
+            Map.Position p = fruit.getP();
+            char_board[p.y()][p.x()] = 'F';
+        }
+
+
+        Map.Position pacP = pacman.getP();
+        char_board[pacP.y()][pacP.x()] = 'M';
 
         return char_board;
     }

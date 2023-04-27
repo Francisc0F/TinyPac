@@ -22,7 +22,6 @@ public class MapController {
     private Map map;
     private GameEngine gameEngine;
 
-
     public MapController() {
         map = new Map(31, 29);
     }
@@ -51,18 +50,20 @@ public class MapController {
 
         return switch (symbol) {
             case 'M' -> {
-                this.map.setPacman(new Pacman(map, new Map.Position(y,x)));
-                yield new Pacman(map, new Map.Position(y,x));
+                this.map.setPacman(new Pacman(map, new Map.Position(y, x)));
+                yield null;
             }
             case 'x' -> new Wall(map);
             case 'W' -> new Wrap(map);
             case 'o' -> new Food(map);
-            case 'F' -> new Fruit(map);
+            case 'F' -> {
+                this.map.setFruit(new Fruit(map, new Map.Position(y, x)));
+                yield null;
+            }
             case 'O' -> new PowerfullFood(map);
             default -> new MazeElement(symbol, map);
         };
     }
-
 
     public void setCurrentPacmanDirection(Direction direction) {
         this.map.setCurrentPacmanDirection(direction);

@@ -147,16 +147,40 @@ class MapControllerTest {
         assertEquals(14, finalPosi.get(0));
     }
 
-
     @Test
     public void EatFood() {
         go(Direction.LEFT, 2);
-        assertEquals(2,mp.getPoints());
+        assertEquals(2, mp.getPoints());
     }
-
 
     @Test
     public void FruitAppearsAfter20BallsEaten() {
+        ArrayList<Integer> posi = getCharPosi('F');
+        assertTrue(posi.isEmpty());
+
+        go(Direction.LEFT, 2);
+        go(Direction.UP, 3);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 6);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 9);
+        go(Direction.RIGHT, 16);
+        go(Direction.DOWN, 9);
+        go(Direction.LEFT, 3);
+        go(Direction.DOWN, 3);
+        go(Direction.LEFT, 4);
+        //System.out.println( mp.getPoints());
+
+        printMap();
+        printMap();
+
+        ArrayList<Integer> newposi = getCharPosi('F');
+        System.out.println( newposi);
+        assertEquals(2, newposi.size());
+    }
+
+    @Test
+    public void FruitReapersAfterBeingEaten() {
         ArrayList<Integer> posi = getCharPosi('F');
         assertTrue(posi.isEmpty());
 
@@ -188,22 +212,15 @@ class MapControllerTest {
 
         System.out.println(mp.getPoints());
         printMap();
-   /*     posi = getCharPosi('F');
-        assertFalse(posi.isEmpty());*/
-
-
-
-
+        posi = getCharPosi('F');
+        assertFalse(posi.isEmpty());
 
     }
-
-
 
     private void go(Direction left, int i) {
         mp.setCurrentPacmanDirection(left);
         evolveFor(i);
     }
-
 
     private void evolveFor(int n) {
         for (int i = 0; i < n; i++) {
@@ -221,18 +238,19 @@ class MapControllerTest {
         }
     }
 
-
     public ArrayList<Integer> getCharPosi(char m) {
         ArrayList<Integer> posi = new ArrayList<>(2);
         char[][] map = mp.getMap();
         for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++)
+            for (int x = 0; x < map[y].length; x++){
+                //System.out.print(map[y][x]);
                 if (map[y][x] == m) {
                     posi.add(y);
                     posi.add(x);
                 }
+            }
+            //System.out.println();
         }
         return posi;
     }
-
 }

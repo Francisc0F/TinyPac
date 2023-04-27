@@ -11,4 +11,5 @@ public abstract class Organism implements IMazeElement {
     abstract public void evolve();
 
     abstract public char getSymbol();
+
 }

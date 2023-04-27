@@ -3,9 +3,9 @@ package pt.isec.pa.tinypac.ui.text;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
-import java.io.BufferedReader;
+/*import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStreamReader;*/
 
 
 public class TinyPacCmdUI {
@@ -13,7 +13,7 @@ public class TinyPacCmdUI {
 
     public TinyPacCmdUI(TinyPacStateMachine fsm) {
         this.fsm = fsm;
-        this.setupGameEngine();
+/*        this.setupGameEngine();*/
 
     }
 
@@ -44,7 +44,7 @@ public class TinyPacCmdUI {
         }
     }
 
-
+/*
     public void setupGameEngine() {
         this.fsm.getGameEngine().registerClient((g,t) -> {
             if (!fsm.evolve())
@@ -67,7 +67,7 @@ public class TinyPacCmdUI {
         } catch (IOException ex) {
             System.out.println("Something went wrong");
         }
-    }
+    }*/
 
     public void mapKeyToAction(char s) {
         switch (s) {
