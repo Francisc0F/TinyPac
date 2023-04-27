@@ -2,11 +2,12 @@ package pt.isec.pa.tinypac.model.data;
 
 
 import pt.isec.pa.tinypac.model.data.Ghosts.Ghost;
+import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.utils.Direction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Map class is responsible for
@@ -17,13 +18,18 @@ public class Map {
     public record Position(int y, int x) {
     }
 
-    int height, width;
-    Maze maze;
+    private int height, width;
+    private Maze maze;
     private Direction currentPacmanDirection;
-
-    ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
+    private ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
     private Pacman pacman;
-    ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
+    private Fruit fruit;
+    private ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
+
+    public int getPacmanFoodCount() {
+        return pacman.getFoodCount();
+    }
+
 
     public Map(int height, int width) {
         this.height = height;
@@ -116,19 +122,20 @@ public class Map {
         return true;
     }
 
-   /* public boolean onlyOneSpecies() {
-        int nr_evolvers = 0,nr_virus = 0;
+    private char setFruit() {
+        Optional<Fruit> other = findElementsOf(Fruit.class)
+                .stream()
+                .findFirst();
 
-        for(int y = 0; y < height;y++)
-            for(int x = 0;x < width; x++)
-                if (maze.get(y,x) instanceof Organism organism) {
-                    if (organism instanceof Evolver)
-                        nr_evolvers++;
-                    else if (organism instanceof Virus)
-                        nr_virus++;
-                }
-        return (nr_evolvers==0 || nr_virus == 0);
-    }*/
+        if (other.isPresent() && pacman.getFoodCount() > 20) {
+            return 'F';
+        } else if (other.isEmpty() && pacman.getFoodCount() > 0 &&
+                pacman.getFoodCount() % 20 == 0) {
+            return 'F';
+        } else {
+            return ' ';
+        }
+    }
 
     public char[][] buildMap() {
         char[][] staticMaze = maze.getMaze();
@@ -138,6 +145,8 @@ public class Map {
             for (int x = 0; x < staticMaze[y].length; x++) {
                 if (staticMaze[y][x] == 'M') {
                     char_board[y][x] = ' ';
+                } else if (staticMaze[y][x] == 'F') {
+                    char_board[y][x] = setFruit();
                 } else {
                     char_board[y][x] = staticMaze[y][x];
                 }

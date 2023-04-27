@@ -2,6 +2,8 @@ package pt.isec.pa.tinypac.model.data;
 
 import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.model.data.food.Food;
+import pt.isec.pa.tinypac.model.data.food.Fruit;
+import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
 import java.io.*;
@@ -55,6 +57,8 @@ public class MapController {
             case 'x' -> new Wall(map);
             case 'W' -> new Wrap(map);
             case 'o' -> new Food(map);
+            case 'F' -> new Fruit(map);
+            case 'O' -> new PowerfullFood(map);
             default -> new MazeElement(symbol, map);
         };
     }
@@ -66,5 +70,9 @@ public class MapController {
 
     public boolean evolve() {
         return this.map.evolve();
+    }
+
+    public int getPoints() {
+        return this.map.getPacmanFoodCount();
     }
 }

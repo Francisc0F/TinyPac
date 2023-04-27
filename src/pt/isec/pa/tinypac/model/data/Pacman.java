@@ -2,17 +2,38 @@ package pt.isec.pa.tinypac.model.data;
 
 
 import pt.isec.pa.tinypac.model.data.food.Food;
+import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.utils.Direction;
 
 import java.util.Optional;
 
 public class Pacman extends Organism {
     private Direction direction;
-    Map.Position p;
+    private Map.Position p;
+    private int countFood = 0;
+    private int countPowerFullFood = 0;
+    private int countFruitEaten = 0;
+    private boolean isCurrentFruitEated = false;
 
     public Pacman(Map map, Map.Position p) {
         super(map);
         this.p = p;
+    }
+
+    public boolean getIsCurrentFruitEaten() {
+        return isCurrentFruitEated;
+    }
+
+    public int getFoodCount() {
+        return countFood;
+    }
+
+    public int getCountPowerFullFood() {
+        return countPowerFullFood;
+    }
+
+    public int getCountFruitEaten() {
+        return countFruitEaten;
     }
 
     public Map.Position getP() {
@@ -42,7 +63,6 @@ public class Pacman extends Organism {
     }
 
     private void move(int dx, int dy) {
-        Organism elemAtThisPlace = this.map.getOrganism(p.y(), p.x());
         Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
 
         if (elemAtNewPlace instanceof Wall) {
@@ -53,7 +73,7 @@ public class Pacman extends Organism {
             Optional<Wrap> other = this.map.findElementsOf(Wrap.class)
                     .stream()
                     .filter(item -> item != elemAtNewPlace).findFirst();
-            if(other.isPresent()){
+            if (other.isPresent()) {
                 Map.Position otherWrapPosi = this.map.getPositionOf(other.get());
                 p = new Map.Position(otherWrapPosi.y(), otherWrapPosi.x());
             }
@@ -63,23 +83,30 @@ public class Pacman extends Organism {
         p = new Map.Position(p.y() + dy, p.x() + dx);
 
         if (elemAtNewPlace instanceof Food) {
+            countFood++;
+            this.map.set(new Empty(this.map), p.y(), p.x());
+        }
+
+        if (elemAtNewPlace instanceof Fruit) {
+            countFruitEaten++;
+            isCurrentFruitEated = true;
             this.map.set(new Empty(this.map), p.y(), p.x());
         }
     }
 
-    protected void left() {
+    private void left() {
         move(-1, 0);
     }
 
-    protected void right() {
+    private void right() {
         move(1, 0);
     }
 
-    protected void up() {
+    private void up() {
         move(0, -1);
     }
 
-    protected void down() {
+    private void down() {
         move(0, 1);
     }
 

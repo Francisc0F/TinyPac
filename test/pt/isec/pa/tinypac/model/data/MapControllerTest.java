@@ -147,6 +147,58 @@ class MapControllerTest {
         assertEquals(14, finalPosi.get(0));
     }
 
+
+    @Test
+    public void EatFood() {
+        go(Direction.LEFT, 2);
+        assertEquals(2,mp.getPoints());
+    }
+
+
+    @Test
+    public void FruitAppearsAfter20BallsEaten() {
+        ArrayList<Integer> posi = getCharPosi('F');
+        assertTrue(posi.isEmpty());
+
+        go(Direction.LEFT, 2);
+        go(Direction.UP, 3);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 6);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 9);
+        go(Direction.RIGHT, 16);
+        go(Direction.DOWN, 9);
+        go(Direction.LEFT, 3);
+        go(Direction.DOWN, 3);
+        go(Direction.LEFT, 4);
+        posi = getCharPosi('F');
+        assertFalse(posi.isEmpty());
+
+        go(Direction.LEFT, 3);
+        posi = getCharPosi('F');
+        assertTrue(posi.isEmpty());
+
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 6);
+        go(Direction.RIGHT, 3);
+        go(Direction.UP, 3);
+        go(Direction.LEFT, 3);
+        go(Direction.UP, 3);
+        go(Direction.LEFT, 6);
+
+        System.out.println(mp.getPoints());
+        printMap();
+   /*     posi = getCharPosi('F');
+        assertFalse(posi.isEmpty());*/
+
+
+
+
+
+    }
+
+
+
     private void go(Direction left, int i) {
         mp.setCurrentPacmanDirection(left);
         evolveFor(i);
