@@ -87,10 +87,18 @@ public class Pacman extends Organism {
             this.map.set(new Empty(this.map), p.y(), p.x());
         }
 
-        if (elemAtNewPlace instanceof Fruit) {
-            countFruitEaten++;
-            isCurrentFruitEated = true;
-            this.map.set(new Empty(this.map), p.y(), p.x());
+        Fruit currentFruit = this.map.getFruit();
+        if(currentFruit != null){
+            Map.Position f = currentFruit.getP();
+            if (f.y() == p.y()  &&
+                    f.x() == p.x()) {
+
+                countFruitEaten++;
+                isCurrentFruitEated = true;
+                this.map.setNoFruit();
+                this.map.set(new Empty(this.map), p.y(), p.x());
+
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package pt.isec.pa.tinypac.model.data.Ghosts;
 
 import pt.isec.pa.tinypac.model.data.Map;
 import pt.isec.pa.tinypac.model.data.Organism;
+import pt.isec.pa.utils.Direction;
 import pt.isec.pa.utils.Position;
 
 import java.util.Stack;
@@ -9,7 +10,9 @@ import java.util.Stack;
 public abstract class Ghost extends Organism implements IGhost {
     public static final char SYMBOL = 'y';
     boolean isVulnerable = false;
+    protected Direction direction = Direction.UP;
     Stack<Position> previousMoves = new Stack<Position>();
+    protected Map.Position p;
 
     public Ghost(Map map) {
         super(map);

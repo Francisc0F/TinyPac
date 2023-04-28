@@ -56,7 +56,6 @@ class MapControllerTest {
         printMap();
     }
 
-
     @Test
     public void TestMoveLeftHitWall() {
         mp.setCurrentPacmanDirection(Direction.LEFT);
@@ -69,7 +68,6 @@ class MapControllerTest {
         assertEquals((int) finalPosi.get(1), initialPosi.get(1) - 8);
         printMap();
     }
-
 
     @Test
     public void TestMoveRightHitWall() {
@@ -97,7 +95,6 @@ class MapControllerTest {
         printMap();
     }
 
-
     @Test
     public void ChangeDirection() {
         go(Direction.RIGHT, 3);
@@ -110,7 +107,6 @@ class MapControllerTest {
         assertEquals((int) finalPosi.get(1), initialPosi.get(1));
         printMap();
     }
-
 
     @Test
     public void Teleport() {
@@ -162,25 +158,22 @@ class MapControllerTest {
         go(Direction.UP, 3);
         go(Direction.LEFT, 3);
         go(Direction.UP, 6);
+
+        posi = getCharPosi('F');
+        assertTrue(posi.isEmpty());
+
         go(Direction.LEFT, 3);
         go(Direction.UP, 9);
-        go(Direction.RIGHT, 16);
-        go(Direction.DOWN, 9);
-        go(Direction.LEFT, 3);
-        go(Direction.DOWN, 3);
-        go(Direction.LEFT, 4);
-        //System.out.println( mp.getPoints());
 
-        printMap();
-        printMap();
+        posi = getCharPosi('F');
+        System.out.println( mp.getPoints());
 
-        ArrayList<Integer> newposi = getCharPosi('F');
-        System.out.println( newposi);
-        assertEquals(2, newposi.size());
+        //printMap();
+        assertFalse(posi.isEmpty());
     }
 
     @Test
-    public void FruitReapersAfterBeingEaten() {
+    public void FruitDisappearsAndReapersAfterBeingEaten() {
         ArrayList<Integer> posi = getCharPosi('F');
         assertTrue(posi.isEmpty());
 
@@ -196,26 +189,32 @@ class MapControllerTest {
         go(Direction.DOWN, 3);
         go(Direction.LEFT, 4);
         posi = getCharPosi('F');
+        //printMap();
         assertFalse(posi.isEmpty());
 
-        go(Direction.LEFT, 3);
+        go(Direction.LEFT, 2);
         posi = getCharPosi('F');
-        assertTrue(posi.isEmpty());
+        //System.out.println( mp.getPoints());
 
-        go(Direction.LEFT, 3);
+        assertTrue(posi.isEmpty());
+        // working
+
+
+        go(Direction.LEFT, 4);
         go(Direction.UP, 6);
         go(Direction.RIGHT, 3);
         go(Direction.UP, 3);
         go(Direction.LEFT, 3);
         go(Direction.UP, 3);
         go(Direction.LEFT, 6);
-
-        System.out.println(mp.getPoints());
         printMap();
+        System.out.println(mp.getPoints());
+
         posi = getCharPosi('F');
         assertFalse(posi.isEmpty());
-
     }
+
+    // region utils
 
     private void go(Direction left, int i) {
         mp.setCurrentPacmanDirection(left);
@@ -253,4 +252,5 @@ class MapControllerTest {
         }
         return posi;
     }
+    // endregion
 }

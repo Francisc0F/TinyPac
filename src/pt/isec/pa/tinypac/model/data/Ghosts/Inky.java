@@ -5,7 +5,7 @@ import pt.isec.pa.utils.Position;
 
 public class Inky extends Ghost{
 
-    Inky(Map p){
+    public Inky(Map p){
         super(p);
     }
 

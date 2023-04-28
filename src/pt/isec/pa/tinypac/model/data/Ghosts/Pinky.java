@@ -14,7 +14,7 @@ public class Pinky extends Ghost {
 
     private final int distanceToChangeDirection = 10;
 
-    Pinky(Map map) {
+    public Pinky(Map map) {
         super(map);
     }
 

@@ -1,7 +1,7 @@
 package pt.isec.pa.tinypac.model.data;
 
 
-import pt.isec.pa.tinypac.model.data.Ghosts.Ghost;
+import pt.isec.pa.tinypac.model.data.Ghosts.*;
 import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.utils.Direction;
 
@@ -32,10 +32,23 @@ public class Map {
     }
 
 
+    public Fruit getFruit() {
+        return fruit;
+    }
+
+    public void setNoFruit() {
+        fruit = null;
+    }
+
     public Map(int height, int width) {
         this.height = height;
         this.width = width;
         this.maze = new Maze(height, width);
+
+        this.ghosts.add(new Inky(this));
+        this.ghosts.add(new Clyde(this));
+        this.ghosts.add(new Blinky(this));
+        this.ghosts.add(new Pinky(this));
     }
 
     public void addElement(Organism organism, int y, int x) {
@@ -44,11 +57,6 @@ public class Map {
 
     public void set(Organism organism, int y, int x) {
         maze.set(y, x, organism);
-    }
-
-    public MazeElement getLeftCell(Organism org) {
-        Position p = getPositionOf(org);
-        return (MazeElement) maze.get(p.y, p.x - 1);
     }
 
     public Organism getOrganism(int y, int x) {
@@ -125,18 +133,15 @@ public class Map {
 
         for (var organism : lst)
             organism.evolve();
+
+        setFruit();
         return true;
     }
 
     private void setFruit() {
-        if(this.fruit == null && pacman.getFoodCount() > 20){
-            this.fruit = new Fruit(this, defaultFruitPosition);
-            return;
-        }
-
         if (this.fruit == null && pacman.getFoodCount() > 0 &&
-                pacman.getFoodCount() % 20 == 0) {
-            this.fruit = new Fruit(this, defaultFruitPosition);
+                    pacman.getFoodCount() % 20 == 0) {
+                this.fruit = new Fruit(this, defaultFruitPosition);
         }
     }
 
@@ -152,10 +157,12 @@ public class Map {
             // System.out.println();
         }
 
-        setFruit();
+
         if (fruit != null) {
             Map.Position p = fruit.getP();
             char_board[p.y()][p.x()] = 'F';
+        } else {
+            char_board[defaultFruitPosition.y()][defaultFruitPosition.x()] = ' ';
         }
 
 

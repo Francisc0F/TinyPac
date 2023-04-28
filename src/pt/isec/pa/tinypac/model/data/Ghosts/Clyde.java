@@ -4,7 +4,7 @@ import pt.isec.pa.tinypac.model.data.Map;
 
 public class Clyde extends Ghost {
 
-    Clyde(Map p) {
+    public Clyde(Map p) {
         super(p);
     }
 
