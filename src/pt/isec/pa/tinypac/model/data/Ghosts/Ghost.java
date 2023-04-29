@@ -19,6 +19,10 @@ public abstract class Ghost extends Organism implements IGhost {
         savePosition();
     }
 
+    public Map.Position getP() {
+        return p;
+    }
+
     /*@Override
     public boolean savePosition() {
         previousMoves.push(position);

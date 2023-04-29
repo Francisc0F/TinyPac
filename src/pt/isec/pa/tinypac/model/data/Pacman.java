@@ -10,30 +10,10 @@ import java.util.Optional;
 public class Pacman extends Organism {
     private Direction direction;
     private Map.Position p;
-    private int countFood = 0;
-    private int countPowerFullFood = 0;
-    private int countFruitEaten = 0;
-    private boolean isCurrentFruitEated = false;
 
     public Pacman(Map map, Map.Position p) {
         super(map);
         this.p = p;
-    }
-
-    public boolean getIsCurrentFruitEaten() {
-        return isCurrentFruitEated;
-    }
-
-    public int getFoodCount() {
-        return countFood;
-    }
-
-    public int getCountPowerFullFood() {
-        return countPowerFullFood;
-    }
-
-    public int getCountFruitEaten() {
-        return countFruitEaten;
     }
 
     public Map.Position getP() {
@@ -65,7 +45,7 @@ public class Pacman extends Organism {
     private void move(int dx, int dy) {
         Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
 
-        if (elemAtNewPlace instanceof Wall) {
+        if (canNotMove(elemAtNewPlace)) {
             return;
         }
 
@@ -83,23 +63,24 @@ public class Pacman extends Organism {
         p = new Map.Position(p.y() + dy, p.x() + dx);
 
         if (elemAtNewPlace instanceof Food) {
-            countFood++;
+            map.incFoodScore();
             this.map.set(new Empty(this.map), p.y(), p.x());
         }
 
         Fruit currentFruit = this.map.getFruit();
-        if(currentFruit != null){
+        if (currentFruit != null) {
             Map.Position f = currentFruit.getP();
-            if (f.y() == p.y()  &&
-                    f.x() == p.x()) {
-
-                countFruitEaten++;
-                isCurrentFruitEated = true;
+            if (f.equals(p)) {
+                map.incFruitScore();
                 this.map.setNoFruit();
                 this.map.set(new Empty(this.map), p.y(), p.x());
 
             }
         }
+    }
+
+    private boolean canNotMove(Organism item) {
+        return item instanceof Wall || item instanceof GhostCave || item instanceof GhostStart;
     }
 
     private void left() {

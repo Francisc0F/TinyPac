@@ -7,7 +7,6 @@ import pt.isec.pa.utils.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The Map class is responsible for
@@ -15,10 +14,15 @@ import java.util.Optional;
  */
 public class Map {
 
+    public void incFruitScore() {
+        fruitEaten += 25;
+    }
+
     public record Position(int y, int x) {
     }
 
     private int height, width;
+
     private Maze maze;
     private Direction currentPacmanDirection;
     private ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
@@ -26,24 +30,34 @@ public class Map {
     private Fruit fruit;
     private Map.Position defaultFruitPosition;
     private ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
-
+    private Position ghostsInitialPosition;
     private int iteration = 1;
+    private int foodEaten = 0;
+    private int fruitEaten = 0;
     private int ghostsEntrance = 5;
+    private int lifesRemaining = 3;
+
     public Map(int height, int width) {
         this.height = height;
         this.width = width;
         this.maze = new Maze(height, width);
-
-        this.ghosts.add(new Inky(this));
-        this.ghosts.add(new Clyde(this));
-        this.ghosts.add(new Blinky(this));
-        this.ghosts.add(new Pinky(this));
     }
 
-    public int getPacmanFoodCount() {
-        return pacman.getFoodCount();
+    public void killPacman() {
+        this.pacman = null;
     }
 
+    public int getFoodScore() {
+        return foodEaten;
+    }
+
+    public void incFoodScore() {
+        foodEaten++;
+    }
+
+    public Map.Position getPacmanPosition() {
+        return pacman.getP();
+    }
 
     public Fruit getFruit() {
         return fruit;
@@ -88,6 +102,15 @@ public class Map {
         this.pacman = pacman;
     }
 
+    public void setGhostsInitialPosition(Map.Position p) {
+        this.ghostsInitialPosition = p;
+
+         /*      this.ghosts.add(new Inky(this));
+        this.ghosts.add(new Clyde(this));*/
+        this.ghosts.add(new Blinky(this, ghostsInitialPosition));
+        /*        this.ghosts.add(new Pinky(this));*/
+    }
+
     public void setFruit(Fruit fruit) {
         Map.Position p = fruit.getP();
         defaultFruitPosition = new Map.Position(p.y(), p.x());
@@ -129,27 +152,41 @@ public class Map {
         this.currentPacmanDirection = direction;
     }
 
-    public boolean evolve() {
+    private boolean ghostsEnabled(){
+        return iteration > ghostsEntrance;
+    }
+
+    public EvolvedAction evolve() {
+        // tupac died
+        if (this.pacman == null) {
+            lifesRemaining--;
+            if (lifesRemaining == 0) {
+                return EvolvedAction.LOSTLEVEL;
+            }
+            return EvolvedAction.PACKILLED;
+        }
+
         List<Organism> lst = new ArrayList<>();
         this.pacman.setDirection(currentPacmanDirection);
         lst.add(this.pacman);
 
-        if(iteration > ghostsEntrance){
-           // lst.addAll(this.ghosts);
+        if (ghostsEnabled()) {
+            lst.addAll(this.ghosts);
         }
 
+
+        setFruit();
         for (var organism : lst)
             organism.evolve();
 
-        setFruit();
         iteration++;
-        return true;
+        return EvolvedAction.SUCCEED;
     }
 
     private void setFruit() {
-        if (this.fruit == null && pacman.getFoodCount() > 0 &&
-                    pacman.getFoodCount() % 20 == 0) {
-                this.fruit = new Fruit(this, defaultFruitPosition);
+        if (this.fruit == null && getFoodScore() > 0 &&
+                getFoodScore() % 20 == 0) {
+            this.fruit = new Fruit(this, defaultFruitPosition);
         }
     }
 
@@ -173,10 +210,17 @@ public class Map {
             char_board[defaultFruitPosition.y()][defaultFruitPosition.x()] = ' ';
         }
 
+        if(ghostsEnabled()){
+            ghosts.forEach( x -> {
+                Map.Position xp = x.getP();
+                char_board[xp.y()][xp.x()] = x.getSymbol();
+            });
+        }
 
-        Map.Position pacP = pacman.getP();
-        char_board[pacP.y()][pacP.x()] = 'M';
-
+        if (pacman != null) {
+            Map.Position pacP = pacman.getP();
+            char_board[pacP.y()][pacP.x()] = 'M';
+        }
         return char_board;
     }
 

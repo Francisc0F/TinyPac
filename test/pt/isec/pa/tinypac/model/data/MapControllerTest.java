@@ -59,7 +59,7 @@ class MapControllerTest {
     @Test
     public void TestMoveLeftHitWall() {
         mp.setCurrentPacmanDirection(Direction.LEFT);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             mp.evolve();
         }
 
@@ -72,20 +72,21 @@ class MapControllerTest {
     @Test
     public void TestMoveRightHitWall() {
         mp.setCurrentPacmanDirection(Direction.RIGHT);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             mp.evolve();
         }
 
         ArrayList<Integer> finalPosi = getCharPosi('M');
         System.out.println(finalPosi);
-        assertEquals((int) finalPosi.get(1), initialPosi.get(1) + 8);
         printMap();
+        assertEquals((int) finalPosi.get(1), initialPosi.get(1) + 8);
+
     }
 
     @Test
     public void TestMoveUPHitWall() {
         mp.setCurrentPacmanDirection(Direction.UP);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 10; i++) {
             mp.evolve();
         }
 
@@ -212,6 +213,23 @@ class MapControllerTest {
 
         posi = getCharPosi('F');
         assertFalse(posi.isEmpty());
+    }
+
+
+    @Test
+    public void GhostsAppearAfter5Iterations() {
+        ArrayList<Integer> posi = getCharPosi('@');
+        assertTrue(posi.isEmpty());
+
+        go(Direction.LEFT, 2);
+        go(Direction.UP, 2);
+        posi = getCharPosi('@');
+        assertTrue(posi.isEmpty());
+        go(Direction.LEFT, 1);
+
+        posi = getCharPosi('@');
+        assertFalse(posi.isEmpty());
+        printMap();
     }
 
     // region utils

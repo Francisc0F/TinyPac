@@ -9,27 +9,84 @@ import java.util.Random;
 
 public class Blinky extends Ghost {
 
-    public Blinky(Map map) {
+    public Blinky(Map map, Map.Position p) {
         super(map);
+        this.p = p;
     }
 
-    private void move(int dx, int dy) {
-        Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
 
-        if (elemAtNewPlace instanceof Wall) {
-            direction = getRandomDirection(direction);
+    private void move(int dx, int dy){
+        Map.Position newp = new Map.Position(p.y() + dy, p.x() + dx);
+        Map.Position pacP = this.map.getPacmanPosition();
+
+        if (pacP.equals(newp)) {
+            killPacman();
+            p = newp;
             return;
+        }
+
+        Organism elemAtNewPlace = this.map.getOrganism(newp.y(), newp.x());
+
+        if (canotMove(elemAtNewPlace)) {
+            ArrayList<Direction> allowedDirections = new ArrayList<>(10);
+
+            for (Direction dir : Direction.values()) {
+                if (direction.opposite() != dir) {
+                    Map.Position pos = getAdjacentPosition(dir);
+                    if (canMove(this.map.getOrganism(pos.y(), pos.x()))) {
+                        allowedDirections.add(dir);
+                    }
+                }
+            }
+
+            if (allowedDirections.isEmpty()) {
+                allowedDirections.add(direction.opposite());
+            }
+
+            direction = getRandomDirection(allowedDirections);
+            moveByDirection();
         } else {
-            p = new Map.Position(p.y() + dy, p.x() + dx);
+            p = newp;
         }
     }
 
+    private Map.Position getAdjacentPosition(Direction direction) {
+        int dx = 0, dy = 0;
+        switch (direction) {
+            case UP: dy = -1; break;
+            case DOWN: dy = 1; break;
+            case LEFT: dx = -1; break;
+            case RIGHT: dx = 1; break;
+        }
+        return new Map.Position(p.y() + dy, p.x() + dx);
+    }
+
+    private boolean canotMove(Organism elemAtNewPlace) {
+        return elemAtNewPlace instanceof Wall || elemAtNewPlace instanceof GhostCave;
+    }
+
+    private boolean canMove(Organism elemAtNewPlace) {
+        return !(canotMove(elemAtNewPlace));
+    }
+
+    private void killPacman() {
+        map.killPacman();
+    }
+
+    @Override
+    public char getSymbol() {
+        return '@';
+    }
 
     @Override
     public void evolve() {
         if (direction == null) {
             return;
         }
+        moveByDirection();
+    }
+
+    private void moveByDirection() {
         switch (direction) {
             case LEFT -> this.left();
             case RIGHT -> this.right();
@@ -38,21 +95,10 @@ public class Blinky extends Ghost {
         }
     }
 
-    public static Direction getRandomDirection(Direction currentDirection) {
+    public static Direction getRandomDirection(List<Direction> listAvailable) {
         Random random = new Random();
-        Direction[] directions = Direction.values();
-
-        // Remove the current direction from the list of possible directions
-        List<Direction> possibleDirections = new ArrayList<>();
-        for (Direction direction : directions) {
-            if (direction != currentDirection) {
-                possibleDirections.add(direction);
-            }
-        }
-
-        // Select a random direction from the array of possible directions
-        int randomIndex = random.nextInt(possibleDirections.size());
-        return possibleDirections.get(randomIndex);
+        int randomIndex = random.nextInt(listAvailable.size());
+        return listAvailable.get(randomIndex);
     }
 
     private void left() {

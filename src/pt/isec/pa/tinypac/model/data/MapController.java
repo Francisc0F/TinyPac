@@ -1,6 +1,5 @@
 package pt.isec.pa.tinypac.model.data;
 
-import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
@@ -20,7 +19,6 @@ import java.io.*;
 public class MapController {
     private int level;
     private Map map;
-    private GameEngine gameEngine;
 
     public MapController() {
         map = new Map(31, 29);
@@ -56,6 +54,11 @@ public class MapController {
             case 'x' -> new Wall(map);
             case 'W' -> new Wrap(map);
             case 'o' -> new Food(map);
+            case 'y' -> new GhostCave(map);
+            case 'Y' -> {
+                this.map.setGhostsInitialPosition(new Map.Position(y, x));
+                yield new GhostStart(map);
+            }
             case 'F' -> {
                 this.map.setFruit(new Fruit(map, new Map.Position(y, x)));
                 yield null;
@@ -69,11 +72,17 @@ public class MapController {
         this.map.setCurrentPacmanDirection(direction);
     }
 
+    //todo  control current map iteration and verify
+    // if is needed to increase level or reload current level
     public boolean evolve() {
-        return this.map.evolve();
+        EvolvedAction action = this.map.evolve();
+        if (action == EvolvedAction.SUCCEED) {
+            return true;
+        }
+        return true;
     }
 
     public int getPoints() {
-        return this.map.getPacmanFoodCount();
+        return this.map.getFoodScore();
     }
 }
