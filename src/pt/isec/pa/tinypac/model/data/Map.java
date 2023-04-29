@@ -27,6 +27,19 @@ public class Map {
     private Map.Position defaultFruitPosition;
     private ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
 
+    private int iteration = 1;
+    private int ghostsEntrance = 5;
+    public Map(int height, int width) {
+        this.height = height;
+        this.width = width;
+        this.maze = new Maze(height, width);
+
+        this.ghosts.add(new Inky(this));
+        this.ghosts.add(new Clyde(this));
+        this.ghosts.add(new Blinky(this));
+        this.ghosts.add(new Pinky(this));
+    }
+
     public int getPacmanFoodCount() {
         return pacman.getFoodCount();
     }
@@ -40,16 +53,6 @@ public class Map {
         fruit = null;
     }
 
-    public Map(int height, int width) {
-        this.height = height;
-        this.width = width;
-        this.maze = new Maze(height, width);
-
-        this.ghosts.add(new Inky(this));
-        this.ghosts.add(new Clyde(this));
-        this.ghosts.add(new Blinky(this));
-        this.ghosts.add(new Pinky(this));
-    }
 
     public void addElement(Organism organism, int y, int x) {
         maze.set(y, x, organism);
@@ -131,10 +134,15 @@ public class Map {
         this.pacman.setDirection(currentPacmanDirection);
         lst.add(this.pacman);
 
+        if(iteration > ghostsEntrance){
+           // lst.addAll(this.ghosts);
+        }
+
         for (var organism : lst)
             organism.evolve();
 
         setFruit();
+        iteration++;
         return true;
     }
 
