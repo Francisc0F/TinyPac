@@ -14,6 +14,11 @@ public class Clyde extends Ghost {
     }
 
     @Override
+    protected void move(int i, int i1) {
+
+    }
+
+    @Override
     public boolean savePosition() {
         return false;
     }

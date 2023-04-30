@@ -18,18 +18,32 @@ public class Map {
         fruitEaten += 25;
     }
 
-    public record Position(int y, int x) {
+    public int getHeight() {
+        return height;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public record Position(int y, int x) {
+
+        static public int getDistance(Position pos1, Position pos2) {
+            int dy = pos1.y - pos2.y;
+            int dx = pos1.x - pos2.x;
+            return (int) Math.sqrt(dy * dy + dx * dx);
+        }
+    }
+
 
     private int height, width;
 
     private Maze maze;
     private Direction currentPacmanDirection;
-    private ArrayList<Ghost> ghosts = new ArrayList<Ghost>(4);
+    private ArrayList<Ghost> ghosts = new ArrayList<>(4);
     private Pacman pacman;
     private Fruit fruit;
     private Map.Position defaultFruitPosition;
-    private ArrayList<Wrap> wraps = new ArrayList<Wrap>(2);
     private Position ghostsInitialPosition;
     private int iteration = 1;
     private int foodEaten = 0;
@@ -105,10 +119,10 @@ public class Map {
     public void setGhostsInitialPosition(Map.Position p) {
         this.ghostsInitialPosition = p;
 
-         /*      this.ghosts.add(new Inky(this));
-        this.ghosts.add(new Clyde(this));*/
+         /* this.ghosts.add(new Clyde(this));*/
         this.ghosts.add(new Blinky(this, ghostsInitialPosition));
-        /*        this.ghosts.add(new Pinky(this));*/
+        this.ghosts.add(new Pinky(this, ghostsInitialPosition));
+        this.ghosts.add(new Inky(this, ghostsInitialPosition));
     }
 
     public void setFruit(Fruit fruit) {
@@ -152,7 +166,7 @@ public class Map {
         this.currentPacmanDirection = direction;
     }
 
-    private boolean ghostsEnabled(){
+    private boolean ghostsEnabled() {
         return iteration > ghostsEntrance;
     }
 
@@ -206,12 +220,12 @@ public class Map {
         if (fruit != null) {
             Map.Position p = fruit.getP();
             char_board[p.y()][p.x()] = 'F';
-        } else {
+        } else if (defaultFruitPosition != null) {
             char_board[defaultFruitPosition.y()][defaultFruitPosition.x()] = ' ';
         }
 
-        if(ghostsEnabled()){
-            ghosts.forEach( x -> {
+        if (ghostsEnabled()) {
+            ghosts.forEach(x -> {
                 Map.Position xp = x.getP();
                 char_board[xp.y()][xp.x()] = x.getSymbol();
             });

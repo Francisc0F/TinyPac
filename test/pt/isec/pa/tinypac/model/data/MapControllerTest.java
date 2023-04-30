@@ -89,7 +89,7 @@ class MapControllerTest {
         for (int i = 0; i < 10; i++) {
             mp.evolve();
         }
-
+        printMap();
         ArrayList<Integer> finalPosi = getCharPosi('M');
         System.out.println(finalPosi);
         assertEquals((int) finalPosi.get(1), initialPosi.get(1));

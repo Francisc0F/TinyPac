@@ -1,27 +1,38 @@
 package pt.isec.pa.tinypac.model.data.Ghosts;
 
 import pt.isec.pa.tinypac.model.data.Map;
-import pt.isec.pa.utils.Corner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Pinky extends Ghost {
 
-    private List<Corner> cornerOrder = new ArrayList<>(4);
-    private List<Integer> cornerDistances = new ArrayList<>(4);
-    private Corner currentCorner = Corner.TOPLEFT;
-
-    private final int distanceToChangeDirection = 10;
-
-    public Pinky(Map map) {
+    public Pinky(Map map, Map.Position p) {
         super(map);
+        this.p = p;
     }
 
     @Override
-    public void evolve() {
-
+    public char getSymbol() {
+        return '&';
     }
+
+    @Override
+    protected void move(int dx, int dy) {
+        Map.Position newp = checkIsPacman(dx, dy);
+        if (newp == null) return;
+        p = newp;
+    }
+
+
+    @Override
+    public void evolve() {
+        direction = getBestDirection();
+        switch (direction) {
+            case UP -> this.up();
+            case DOWN -> this.down();
+            case RIGHT -> this.right();
+            case LEFT -> this.left();
+        }
+    }
+
 
     @Override
     public boolean savePosition() {
