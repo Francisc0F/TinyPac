@@ -12,11 +12,12 @@ public class Main {
     public static void main(String[] args) {
         TinyPacStateMachine fsm = new TinyPacStateMachine();
         TinyPacCmdUI ui = new TinyPacCmdUI(fsm);
+
         setupGameEngine(fsm, ui);
     }
 
 
-    public static void setupGameEngine(TinyPacStateMachine fsm,TinyPacCmdUI ui ) {
+    public static void setupGameEngine(TinyPacStateMachine fsm, TinyPacCmdUI ui ) {
         GameEngine gameEngine = new GameEngine();
         gameEngine.registerClient((g,t) -> {
             if (!fsm.evolve())
@@ -24,6 +25,7 @@ public class Main {
         });
 
         gameEngine.registerClient((g, t) -> ui.showStateUI());
+
         gameEngine.start(1000);
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -33,7 +35,11 @@ public class Main {
                 if (c == '\n')
                     continue;
                 //System.out.println("read char: " + (char)c);
-                ui.mapKeyToAction((char) c);
+                if(!ui.mapKeyToAction((char) c)){
+                    gameEngine.stop();
+                    System.exit(0);
+                    break;
+                }
                 //showStateUI();
             }
         } catch (IOException ex) {

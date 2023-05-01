@@ -1,10 +1,8 @@
 package pt.isec.pa.tinypac.model.fsm;
 
 import pt.isec.pa.tinypac.model.data.MapController;
-import pt.isec.pa.tinypac.model.fsm.states.InitGameState;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
-import pt.isec.pa.tinypac.model.fsm.states.UpdateCurrentGameState;
 import pt.isec.pa.utils.Direction;
 
 public class TinyPacStateMachine {
@@ -12,9 +10,8 @@ public class TinyPacStateMachine {
     MapController mapController;
 
     public TinyPacStateMachine() {
-
         mapController = new MapController();
-        state = new InitGameState(this, mapController);
+        state = TinyPacState.INITGAMESTATE.createState(this, mapController);
     }
 
     public TinyPacState getState() {
@@ -25,9 +22,16 @@ public class TinyPacStateMachine {
         this.state = newState;
     }
 
-    public void registDirection(Direction direction) {
-        mapController.setCurrentPacmanDirection(direction);
-        changeState(new UpdateCurrentGameState(this, mapController));
+    public void registDirection(Direction direction){
+        this.state.registDirection(direction);
+    }
+
+    public int getTotalPoints() {
+        return mapController.getPoints();
+    }
+
+    public int getLifesRemaining() {
+        return mapController.getLifesRemaining();
     }
 
     public char[][] getMap() {
@@ -35,7 +39,15 @@ public class TinyPacStateMachine {
     }
 
     public boolean evolve() {
-        changeState(new UpdateCurrentGameState(this, mapController));
+        this.state.evolve();
         return true;
+    }
+
+    public void pause() {
+        this.state.pause();
+    }
+
+    public void leave() {
+        this.state.leave();
     }
 }

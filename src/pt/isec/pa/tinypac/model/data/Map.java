@@ -14,8 +14,39 @@ import java.util.List;
  */
 public class Map {
 
+    public record Position(int y, int x) {
+
+        static public int getDistance(Position pos1, Position pos2) {
+            int dy = pos1.y - pos2.y;
+            int dx = pos1.x - pos2.x;
+            return (int) Math.sqrt(dy * dy + dx * dx);
+        }
+    }
+
+    private final int height;
+    private final int width;
+    private Maze maze;
+    private Direction currentPacmanDirection;
+    private ArrayList<Ghost> ghosts = new ArrayList<>(4);
+    private Pacman pacman;
+    private Fruit fruit;
+    private Map.Position defaultFruitPosition;
+    private Position ghostsInitialPosition;
+    private int iteration = 1;
+    private int foodEaten = 0;
+    private int fruitScore = 0;
+    private int powerfullFoodScore = 0;
+    private int ghostsEntrance = 5;
+    private int lifesRemaining = 3;
+
+    public Map(int height, int width) {
+        this.height = height;
+        this.width = width;
+        this.maze = new Maze(height, width);
+    }
+
     public void incFruitScore() {
-        fruitEaten += 25;
+        fruitScore += 25;
     }
 
     public int getHeight() {
@@ -26,35 +57,20 @@ public class Map {
         return width;
     }
 
-    public record Position(int y, int x) {
-
-        static public int getDistance(Position pos1, Position pos2) {
-            int dy = pos1.y - pos2.y;
-            int dx = pos1.x - pos2.x;
-            return (int) Math.sqrt(dy * dy + dx * dx);
-        }
+    public int getLifesRemaining() {
+        return lifesRemaining;
     }
 
+    public int getTotalScore() {
+        return this.getFoodScore() + this.getPowerfullFoodScore() + this.getFruitScore();
+    }
 
-    private int height, width;
+    private int getPowerfullFoodScore() {
+        return powerfullFoodScore;
+    }
 
-    private Maze maze;
-    private Direction currentPacmanDirection;
-    private ArrayList<Ghost> ghosts = new ArrayList<>(4);
-    private Pacman pacman;
-    private Fruit fruit;
-    private Map.Position defaultFruitPosition;
-    private Position ghostsInitialPosition;
-    private int iteration = 1;
-    private int foodEaten = 0;
-    private int fruitEaten = 0;
-    private int ghostsEntrance = 5;
-    private int lifesRemaining = 3;
-
-    public Map(int height, int width) {
-        this.height = height;
-        this.width = width;
-        this.maze = new Maze(height, width);
+    private int getFruitScore() {
+        return fruitScore;
     }
 
     public void killPacman() {
@@ -80,7 +96,6 @@ public class Map {
     public void setNoFruit() {
         fruit = null;
     }
-
 
     public void addElement(Organism organism, int y, int x) {
         maze.set(y, x, organism);
@@ -125,7 +140,7 @@ public class Map {
         this.ghosts.add(new Inky(this, ghostsInitialPosition));
     }
 
-    public void setFruit(Fruit fruit) {
+    public void placeFruit(Fruit fruit) {
         Map.Position p = fruit.getP();
         defaultFruitPosition = new Map.Position(p.y(), p.x());
     }
@@ -136,30 +151,6 @@ public class Map {
                 if (maze.get(y, x) == organism)
                     return new Position(y, x);
         return null;
-    }
-
-    public <T extends Organism> List<Position> getOrganismNeighbors(int y, int x, Class<T> type) {
-        List<Position> lst = new ArrayList<>();
-        for (int yd = -1; yd <= 1; yd++) {
-            for (int xd = -1; xd <= 1; xd++) {
-                if (yd != 0 || xd != 0) {
-                    var organism = maze.get(y + yd, x + xd);
-                    if (type.isInstance(organism)) {
-                        lst.add(new Position(y + yd, x + xd));
-                    }
-                }
-            }
-        }
-        return lst;
-    }
-
-    public List<Position> getAdjacentEmptyCells(int yo, int xo) {
-        List<Position> lst = new ArrayList<>();
-        for (int y = Math.max(0, yo - 1); y <= Math.min(height - 1, yo + 1); y++)
-            for (int x = Math.max(0, xo - 1); x <= Math.min(width - 1, xo + 1); x++)
-                if ((y != yo || x != xo) && maze.get(y, x) == null)
-                    lst.add(new Position(y, x));
-        return lst;
     }
 
     public void setCurrentPacmanDirection(Direction direction) {
@@ -180,6 +171,7 @@ public class Map {
             return EvolvedAction.PACKILLED;
         }
 
+
         List<Organism> lst = new ArrayList<>();
         this.pacman.setDirection(currentPacmanDirection);
         lst.add(this.pacman);
@@ -189,7 +181,7 @@ public class Map {
         }
 
 
-        setFruit();
+        placeFruit();
         for (var organism : lst)
             organism.evolve();
 
@@ -197,7 +189,7 @@ public class Map {
         return EvolvedAction.SUCCEED;
     }
 
-    private void setFruit() {
+    private void placeFruit() {
         if (this.fruit == null && getFoodScore() > 0 &&
                 getFoodScore() % 20 == 0) {
             this.fruit = new Fruit(this, defaultFruitPosition);
@@ -211,9 +203,7 @@ public class Map {
         for (int y = 0; y < staticMaze.length; y++) {
             for (int x = 0; x < staticMaze[y].length; x++) {
                 char_board[y][x] = staticMaze[y][x];
-                //System.out.print(char_board[y][x]);
             }
-            // System.out.println();
         }
 
 
@@ -237,5 +227,4 @@ public class Map {
         }
         return char_board;
     }
-
 }

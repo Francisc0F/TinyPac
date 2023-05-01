@@ -3,40 +3,48 @@ package pt.isec.pa.tinypac.ui.text;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
-/*import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;*/
-
-
 public class TinyPacCmdUI {
     TinyPacStateMachine fsm;
 
     public TinyPacCmdUI(TinyPacStateMachine fsm) {
         this.fsm = fsm;
-/*        this.setupGameEngine();*/
 
     }
 
-    boolean finish = false;
 
     public void showStateUI() {
-        int op;
         switch (fsm.getState()) {
-            case UPDATECURRENTGAMESTATE -> show();
+            case UPDATECURRENTGAMESTATE -> showBoardWithInfo();
             case INITGAMESTATE -> initGame();
+            case LOSTGAMESTATE -> lostGame();
+            case PAUSEGAMESTATE -> pauseGame();
+            case PACMANPOWERFULLSTATE -> pacmanGodMode();
         }
     }
 
-    private void initGame() {
-        show();
+    private void pacmanGodMode() {
+        System.out.println("GOD MODE");
+        showBoard();
     }
 
-    public void show() {
-        /*ModelLog.getInstance().getLog().forEach(System.out::println);
-        ModelLog.getInstance().reset();*/
+    private void pauseGame() {
+        System.out.println("PAUSE");
+        System.out.println("W -> UP, S -> DOWN, A -> LEFT, D -> RIGHT");
+        showBoard();
+    }
 
+    private void lostGame() {
+        showBoardWithInfo();
+    }
+
+    private void initGame() {
+        System.out.println("Press the keys to start");
+        System.out.println("W -> UP, S -> DOWN, A -> LEFT, D -> RIGHT");
+        showBoard();
+    }
+
+    private void showBoard() {
         char[][] env = fsm.getMap();
-        System.out.println();
         for (int y = 0; y < env.length; y++) {
             for (int x = 0; x < env[0].length; x++)
                 System.out.print(env[y][x]);
@@ -44,37 +52,41 @@ public class TinyPacCmdUI {
         }
     }
 
-/*
-    public void setupGameEngine() {
-        this.fsm.getGameEngine().registerClient((g,t) -> {
-            if (!fsm.evolve())
-                g.stop();
-        });
+    public void showBoardWithInfo() {
+        /*ModelLog.getInstance().getLog().forEach(System.out::println);
+        ModelLog.getInstance().reset();*/
 
-        this.fsm.getGameEngine().registerClient((g, t) -> show());
-        this.fsm.getGameEngine().start(1000);
+        System.out.println("Points:" + fsm.getTotalPoints() + " Lifes:" + fsm.getLifesRemaining());
+        showBoard();
+    }
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-
-            int c;
-            while ((c = reader.read()) != -1) {
-                if (c == '\n')
-                    continue;
-                //System.out.println("read char: " + (char)c);
-                mapKeyToAction((char) c);
-                //showStateUI();
+    public boolean mapKeyToAction(char s) {
+        return switch (s) {
+            case 'w' -> {
+                fsm.registDirection(Direction.UP);
+                yield true;
             }
-        } catch (IOException ex) {
-            System.out.println("Something went wrong");
-        }
-    }*/
-
-    public void mapKeyToAction(char s) {
-        switch (s) {
-            case 'w' -> fsm.registDirection(Direction.UP);
-            case 's' -> fsm.registDirection(Direction.DOWN);
-            case 'd' -> fsm.registDirection(Direction.RIGHT);
-            case 'a' -> fsm.registDirection(Direction.LEFT);
-        }
+            case 's' -> {
+                fsm.registDirection(Direction.DOWN);
+                yield true;
+            }
+            case 'd' -> {
+                fsm.registDirection(Direction.RIGHT);
+                yield true;
+            }
+            case 'a' -> {
+                fsm.registDirection(Direction.LEFT);
+                yield true;
+            }
+            case 'p' -> {
+                fsm.pause();
+                yield true;
+            }
+            case 'l' -> {
+                fsm.leave();
+                yield false;
+            }
+            default -> throw new IllegalStateException("mapKeyToAction unexpected value: " + s);
+        };
     }
 }

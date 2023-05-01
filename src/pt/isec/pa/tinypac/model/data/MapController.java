@@ -60,7 +60,7 @@ public class MapController {
                 yield new GhostStart(map);
             }
             case 'F' -> {
-                this.map.setFruit(new Fruit(map, new Map.Position(y, x)));
+                this.map.placeFruit(new Fruit(map, new Map.Position(y, x)));
                 yield null;
             }
             case 'O' -> new PowerfullFood(map);
@@ -74,15 +74,22 @@ public class MapController {
 
     //todo  control current map iteration and verify
     // if is needed to increase level or reload current level
-    public boolean evolve() {
-        EvolvedAction action = this.map.evolve();
-        if (action == EvolvedAction.SUCCEED) {
-            return true;
-        }
-        return true;
+    public EvolvedAction evolve() {
+        return this.map.evolve();
     }
 
     public int getPoints() {
-        return this.map.getFoodScore();
+        return this.map.getTotalScore();
+    }
+
+    /**
+     * Save instance of MapController game
+     * also identify transient info(not relevant)
+     */
+    public void save() {
+    }
+
+    public int getLifesRemaining() {
+        return this.map.getLifesRemaining();
     }
 }

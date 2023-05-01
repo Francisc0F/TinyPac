@@ -115,7 +115,7 @@ public abstract class Ghost extends Organism implements IGhost {
         return SYMBOL;
     }
 
-
+    // todo postion save list and backwards move
     /*protected abstract void regularMove();*/
 
    /* private void backwardsMove() {
@@ -198,6 +198,9 @@ public abstract class Ghost extends Organism implements IGhost {
         return allowedDirections;
     }
 
+
+    //todo compare current position to corner, so it wont get stuck
+    // if the current position is the best execute .nextCorner
     protected Direction getBestDirection() {
         ArrayList<Direction> allowed = getAllowedDirections();
 
