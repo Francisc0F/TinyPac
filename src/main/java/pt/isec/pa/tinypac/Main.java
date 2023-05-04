@@ -1,21 +1,28 @@
 package pt.isec.pa.tinypac;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
+import pt.isec.pa.tinypac.ui.gui.javafx.UI_pacman;
 import pt.isec.pa.tinypac.ui.text.TinyPacCmdUI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class Main {
+public class Main extends Application {
+
+    public static  TinyPacStateMachine fsm;
     public static void main(String[] args) {
-        TinyPacStateMachine fsm = new TinyPacStateMachine();
+        fsm = new TinyPacStateMachine();
         TinyPacCmdUI ui = new TinyPacCmdUI(fsm);
-
+        launch(args);
         setupGameEngine(fsm, ui);
-    }
 
+    }
 
     public static void setupGameEngine(TinyPacStateMachine fsm, TinyPacCmdUI ui ) {
         GameEngine gameEngine = new GameEngine();
@@ -45,5 +52,11 @@ public class Main {
         } catch (IOException ex) {
             System.out.println("Something went wrong");
         }
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        UI_pacman a = new UI_pacman();
+        a.start(stage, fsm.getMap());
     }
 }
