@@ -15,7 +15,6 @@ public class Inky extends Ghost {
     @Override
     public void evolve() {
         direction = getBestDirection();
-        System.out.println(direction);
         switch (direction) {
             case UP -> this.up();
             case DOWN -> this.down();

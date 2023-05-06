@@ -22,7 +22,9 @@ pt\isec\pa\tinypac\model\data\Wrap.class
 pt\isec\pa\tinypac\model\fsm\states\UpdateCurrentGameState$1.class
 pt\isec\pa\tinypac\model\data\GhostCave.class
 pt\isec\pa\tinypac\gameengine\GameEngine$GameEngineThread.class
+pt\isec\pa\tinypac\ui\gui\javafx\UI_pacman$1.class
 pt\isec\pa\tinypac\ui\text\TinyPacCmdUI.class
+pt\isec\pa\tinypac\ui\gui\javafx\UI_pacman$KeyPress.class
 pt\isec\pa\tinypac\model\fsm\states\TinyPacState$1.class
 pt\isec\pa\tinypac\model\data\Ghosts\IGhost.class
 pt\isec\pa\tinypac\model\data\Map$Position.class
@@ -34,6 +36,7 @@ pt\isec\pa\tinypac\ui\text\TinyPacCmdUI$1.class
 pt\isec\pa\tinypac\model\data\Empty.class
 pt\isec\pa\tinypac\gameengine\GameEngineState.class
 pt\isec\pa\tinypac\model\data\Ghosts\Clyde.class
+pt\isec\pa\tinypac\ui\gui\javafx\CustomEvent.class
 pt\isec\pa\tinypac\model\data\food\PowerfullFood.class
 pt\isec\pa\tinypac\model\data\IMazeElement.class
 pt\isec\pa\tinypac\model\data\Pacman.class
@@ -51,5 +54,6 @@ pt\isec\pa\utils\Direction$1.class
 pt\isec\pa\tinypac\model\data\Ghosts\Pinky.class
 pt\isec\pa\tinypac\model\data\Ghosts\Ghost$CornersOrder.class
 pt\isec\pa\tinypac\model\data\EvolvedAction.class
+pt\isec\pa\tinypac\ui\gui\javafx\UI_pacman$UpdateboardEvent.class
 pt\isec\pa\utils\PAInput.class
 pt\isec\pa\utils\Position.class
