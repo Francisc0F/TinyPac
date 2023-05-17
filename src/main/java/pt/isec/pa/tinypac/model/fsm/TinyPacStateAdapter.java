@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.model.fsm;
 
+import pt.isec.pa.tinypac.model.data.Map;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
@@ -8,10 +9,11 @@ import pt.isec.pa.utils.Direction;
 public abstract class TinyPacStateAdapter implements ITinyPacState {
     protected MapController mapController;
     protected TinyPacStateMachine context;
-
+    protected Map map;
     protected TinyPacStateAdapter(TinyPacStateMachine context, MapController mapController) {
         this.context = context;
         this.mapController = mapController;
+        this.map = this.mapController.map;
     }
 
     protected void changeState(TinyPacState newState) {

@@ -49,6 +49,7 @@ pt\isec\pa\tinypac\model\data\Map.class
 pt\isec\pa\tinypac\gameengine\IGameEngineEvolve.class
 pt\isec\pa\tinypac\model\data\Pacman$1.class
 pt\isec\pa\tinypac\gameengine\IGameEngine.class
+pt\isec\pa\tinypac\ui\gui\javafx\MainJFX.class
 pt\isec\pa\tinypac\ui\gui\javafx\UI_pacman.class
 pt\isec\pa\utils\Direction$1.class
 pt\isec\pa\tinypac\model\data\Ghosts\Pinky.class

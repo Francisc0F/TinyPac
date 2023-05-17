@@ -2,7 +2,9 @@ package pt.isec.pa.tinypac.model.data;
 
 
 import pt.isec.pa.tinypac.model.data.Ghosts.*;
+import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.Fruit;
+import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
 import java.util.ArrayList;
@@ -13,6 +15,26 @@ import java.util.List;
  * storing information about the walls, obstacles, and paths of the maze.
  */
 public class Map {
+    private final int godModeIterationTime = 20;
+    private int godModeIteration = 0;
+    private boolean isGodMode = false;
+
+    public void incGoodModeIteration() {
+        godModeIteration++;
+    }
+
+    public boolean godModeEnded() {
+        return godModeIteration >= godModeIterationTime;
+    }
+
+    public void setGodMode() {
+        godModeIteration = 0;
+        isGodMode = true;
+    }
+
+    public void incIteration() {
+        iteration++;
+    }
 
     public record Position(int y, int x) {
 
@@ -44,6 +66,7 @@ public class Map {
         this.width = width;
         this.maze = new Maze(height, width);
     }
+
 
     public void incFruitScore() {
         fruitScore += 25;
@@ -134,7 +157,7 @@ public class Map {
     public void setGhostsInitialPosition(Map.Position p) {
         this.ghostsInitialPosition = p;
 
-         /* this.ghosts.add(new Clyde(this));*/
+        /* this.ghosts.add(new Clyde(this));*/
         this.ghosts.add(new Blinky(this, ghostsInitialPosition));
         this.ghosts.add(new Pinky(this, ghostsInitialPosition));
         this.ghosts.add(new Inky(this, ghostsInitialPosition));
@@ -161,17 +184,27 @@ public class Map {
         return iteration > ghostsEntrance;
     }
 
-    public EvolvedAction evolve() {
-        // tupac died
-        if (this.pacman == null) {
-            lifesRemaining--;
-            if (lifesRemaining == 0) {
-                return EvolvedAction.LOSTLEVEL;
-            }
-            return EvolvedAction.PACKILLED;
-        }
+    public boolean isPacmanAlive() {
+        return this.pacman != null;
+    }
 
 
+    public boolean noLivesRemaining() {
+        return lifesRemaining == 0;
+    }
+
+    public void decLives() {
+        lifesRemaining--;
+    }
+
+    public boolean allFoodEaten() {
+        List<Food> food = findElementsOf(Food.class);
+        List<PowerfullFood> powerfulFoods = findElementsOf(PowerfullFood.class);
+        return food.size() == 0 && powerfulFoods.size() == 0;
+    }
+
+
+    public void updateLiveOrganisms() {
         List<Organism> lst = new ArrayList<>();
         this.pacman.setDirection(currentPacmanDirection);
         lst.add(this.pacman);
@@ -184,10 +217,22 @@ public class Map {
         placeFruit();
         for (var organism : lst)
             organism.evolve();
+    }
+/*
+    public EvolvedAction evolve() {
+        if (this.pacman == null) {
+            lifesRemaining--;
+            if (lifesRemaining == 0) {
+                return EvolvedAction.LOSTLEVEL;
+            }
+            return EvolvedAction.PACKILLED;
+        }
+
+        updateLiveOrganisms();
 
         iteration++;
         return EvolvedAction.SUCCEED;
-    }
+    }*/
 
     private void placeFruit() {
         if (this.fruit == null && getFoodScore() > 0 &&
@@ -197,14 +242,7 @@ public class Map {
     }
 
     public char[][] buildMap() {
-        char[][] staticMaze = maze.getMaze();
-        char[][] char_board = new char[staticMaze.length][staticMaze[0].length];
-
-        for (int y = 0; y < staticMaze.length; y++) {
-            for (int x = 0; x < staticMaze[y].length; x++) {
-                char_board[y][x] = staticMaze[y][x];
-            }
-        }
+        char[][] char_board = maze.getMaze();
 
 
         if (fruit != null) {

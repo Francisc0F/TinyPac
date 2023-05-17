@@ -9,8 +9,6 @@ public class PacmanPowerfullState extends TinyPacStateAdapter {
     public PacmanPowerfullState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
 
-        //todo count iterations so it can go back to normal mode(UpdateCurrentGameState)
-        // in the evolve method
     }
 
     @Override
@@ -18,11 +16,24 @@ public class PacmanPowerfullState extends TinyPacStateAdapter {
         return TinyPacState.PACMANPOWERFULLSTATE;
     }
 
-
     @Override
     public boolean evolve() {
-        this.mapController.evolve();
+
+        if(map.allFoodEaten()){
+            changeState(TinyPacState.NEWLEVELSTATE);
+            return false;
+        }
+
+        if(map.godModeEnded()){
+            changeState(TinyPacState.UPDATECURRENTGAMESTATE);
+            return true;
+        }
+
+        map.incGoodModeIteration();
+        map.updateLiveOrganisms();
+        map.incIteration();
         return true;
+
     }
 
 

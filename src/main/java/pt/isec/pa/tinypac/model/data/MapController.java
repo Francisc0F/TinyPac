@@ -18,7 +18,7 @@ import java.io.*;
  */
 public class MapController {
     private int level;
-    private Map map;
+    public Map map;
 
     public MapController() {
         map = new Map(31, 29);
@@ -72,11 +72,6 @@ public class MapController {
         this.map.setCurrentPacmanDirection(direction);
     }
 
-    //todo  control current map iteration and verify
-    // if is needed to increase level or reload current level
-    public EvolvedAction evolve() {
-        return this.map.evolve();
-    }
 
     public int getPoints() {
         return this.map.getTotalScore();

@@ -6,8 +6,10 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
 public class LostLifeState extends TinyPacStateAdapter {
+
     public LostLifeState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
+        map.decLives();
     }
 
     @Override

@@ -18,5 +18,4 @@ public class Food extends Organism implements IMazeElement {
     public char getSymbol() {
         return 'o';
     }
-
 }

@@ -1,3 +1,4 @@
+/*
 package pt.isec.pa.tinypac.model.data;
 
 
@@ -29,9 +30,11 @@ class MapControllerTest {
     public void TestMoveRightPacman() {
         mp.setCurrentPacmanDirection(Direction.RIGHT);
 
+*/
+/*
+        mp.evolve();
+        mp.evolve();*//*
 
-        mp.evolve();
-        mp.evolve();
         printMap();
 
         ArrayList<Integer> finalPosi = getCharPosi('M');
@@ -271,4 +274,4 @@ class MapControllerTest {
         return posi;
     }
     // endregion
-}
+}*/

@@ -3,6 +3,7 @@ package pt.isec.pa.tinypac.model.data;
 
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.Fruit;
+import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
 import java.util.Optional;
@@ -61,6 +62,12 @@ public class Pacman extends Organism {
         }
 
         p = new Map.Position(p.y() + dy, p.x() + dx);
+
+        if (elemAtNewPlace instanceof PowerfullFood) {
+            map.setGodMode();
+            this.map.set(new Empty(this.map), p.y(), p.x());
+        }
+
 
         if (elemAtNewPlace instanceof Food) {
             map.incFoodScore();

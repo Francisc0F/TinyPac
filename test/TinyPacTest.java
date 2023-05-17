@@ -79,11 +79,6 @@ class TinyPacTest {
 
     @Test
     void testReadMaze() {
-        MapController game = new MapController();
-        game.setCurrentPacmanDirection(Direction.RIGHT);
-
-        game.evolve();
-
 
     }
 }

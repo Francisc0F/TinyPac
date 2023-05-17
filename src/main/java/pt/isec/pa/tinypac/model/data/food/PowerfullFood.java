@@ -12,6 +12,7 @@ public class PowerfullFood extends Organism implements IMazeElement {
 
     @Override
     public void evolve() {
+        return;
     }
 
     @Override

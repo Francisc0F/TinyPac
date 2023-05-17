@@ -35,7 +35,7 @@ public class TinyPacStateMachine {
     }
 
     public char[][] getMap() {
-        return mapController.getMap();
+        return mapController.map.buildMap();
     }
 
     public boolean evolve() {

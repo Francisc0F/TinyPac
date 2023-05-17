@@ -33,6 +33,7 @@ D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\model\data\Pacman.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\model\data\Ghosts\IGhost.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\model\fsm\states\PacmanPowerfullState.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\model\data\Ghosts\Ghost.java
+D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\ui\gui\javafx\MainJFX.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\Main.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\model\data\MapController.java
 D:\ISEC\AulasPA\TinyPac\src\main\java\pt\isec\pa\tinypac\ui\gui\javafx\UI_pacman.java
