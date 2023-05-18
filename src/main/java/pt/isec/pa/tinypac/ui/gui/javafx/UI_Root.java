@@ -1,25 +1,21 @@
 package pt.isec.pa.tinypac.ui.gui.javafx;
 
-import javafx.event.ActionEvent;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
-import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
-import java.awt.*;
 import java.util.Objects;
 
-import static com.sun.javafx.event.EventUtil.fireEvent;
 
 public class UI_Root extends BorderPane {
 
@@ -33,7 +29,7 @@ public class UI_Root extends BorderPane {
     Image powerfullFruit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/powerfull-food.png")));
     Image ghost = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ghost.png")));
 
-    TinyPacStateMachineObservable fsm;
+    TinyPacStateMachineObservable fsmObservable;
 
     public enum KeyPress {
         UP(KeyCode.UP),
@@ -54,43 +50,41 @@ public class UI_Root extends BorderPane {
     private static final int WIDTH = 29;
     private static final int HEIGHT = 31;
 
-    private Group placesGroup;
+    private Group board = new Group();
+    private Label scoreLabel = new Label("Normal Food Score: 0");
 
-    public UI_Root(TinyPacStateMachineObservable fsm) {
-        this.fsm = fsm;
-        menus();
-    }
+    public UI_Root(TinyPacStateMachineObservable fsmObservable) {
+        this.fsmObservable = fsmObservable;
+        buildView();
 
-
-    public void start(Stage primaryStage, char[][] board) {
-        placesGroup = new Group();
-        updateBoard(board);
-        Scene scene = new Scene(placesGroup, WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Tinypac");
-
-        scene.setOnKeyPressed(event -> {
-            KeyCode keyCode = event.getCode();
-            KeyPress keyPress = switch (keyCode) {
-                case UP -> KeyPress.UP;
-                case DOWN -> KeyPress.DOWN;
-                case LEFT -> KeyPress.LEFT;
-                case RIGHT -> KeyPress.RIGHT;
-                case SPACE -> KeyPress.SPACE;
-                case ENTER -> KeyPress.ENTER;
-                default -> null;
-            };
-
-            if (keyPress != null) {
-                mapKeyToAction(keyPress);
-            }
+        fsmObservable.addPropertyChangeListener(Events.updateBoard, evt -> {
+            updateBoard();
+            this.scoreLabel.setText("Normal Food Score: " + this.fsmObservable.getScore());
         });
 
-        primaryStage.show();
+        fsmObservable.addPropertyChangeListener(Events.updateScore, evt -> {
+        });
     }
 
-    public void updateBoard(char[][] board) {
-        placesGroup.getChildren().removeAll();
+    private void buildView() {
+        VBox centralCol = new VBox();
+        centralCol.setMinWidth(700);
+        centralCol.setMinHeight(700);
+        HBox hgroup = new HBox();
+        Button pause = new Button("Pause");
+        Button save =  new Button("Save");
+
+
+        hgroup.getChildren().addAll(this.scoreLabel);
+        centralCol.getChildren().add(hgroup);
+        centralCol.getChildren().add(this.board);
+        setCenter(centralCol);
+    }
+
+    public void updateBoard() {
+        char board[][] = this.fsmObservable.getMap();
+        this.board.getChildren().removeAll();
+
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[x].length; x++) {
                 ImageView block = new ImageView();
@@ -110,7 +104,7 @@ public class UI_Root extends BorderPane {
                     case 'W' -> block.setImage(wrap);
                     case '@', '&', '#' -> block.setImage(ghost);
                 }
-                placesGroup.getChildren().add(block);
+                this.board.getChildren().add(block);
             }
         }
     }
@@ -118,19 +112,19 @@ public class UI_Root extends BorderPane {
     public boolean mapKeyToAction(KeyPress keyPress) {
         return switch (keyPress) {
             case UP -> {
-                fsm.registDirection(Direction.UP);
+                fsmObservable.registDirection(Direction.UP);
                 yield true;
             }
             case DOWN -> {
-                fsm.registDirection(Direction.DOWN);
+                fsmObservable.registDirection(Direction.DOWN);
                 yield true;
             }
             case RIGHT -> {
-                fsm.registDirection(Direction.RIGHT);
+                fsmObservable.registDirection(Direction.RIGHT);
                 yield true;
             }
             case LEFT -> {
-                fsm.registDirection(Direction.LEFT);
+                fsmObservable.registDirection(Direction.LEFT);
                 yield true;
             }
             case ENTER -> {
@@ -144,9 +138,8 @@ public class UI_Root extends BorderPane {
         };
     }
 
-    private void menus() {
+    private MenuBar menus() {
         MenuBar menuBar = new MenuBar();
-        //setTop(menuBar);
 
         // menu Jogo
         Menu jogoMenu = new Menu("_Jogo");  // underscore: abre com alt + j
@@ -157,21 +150,17 @@ public class UI_Root extends BorderPane {
 
         MenuItem sairAplicacao = new MenuItem("Sair");
         //sairAplicacao.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+        jogoMenu.getItems().addAll(interromperJogo, new SeparatorMenuItem(), sairAplicacao);
 
-        jogoMenu.add(interromperJogo);
-       /* SeparatorMenuItem sep = new SeparatorMenuItem();
-        jogoMenu.add((MenuItem) sep);*/
-        jogoMenu.add(sairAplicacao);
-
-        interromperJogo.addActionListener((e)->{
+        interromperJogo.setOnAction((e) -> {
             //fsm.interrompeJogo();
             Stage janela = (Stage) this.getScene().getWindow();
-            fireEvent( new WindowEvent(janela, WindowEvent.WINDOW_CLOSE_REQUEST));
+            fireEvent(new WindowEvent(janela, WindowEvent.WINDOW_CLOSE_REQUEST));
         });
 
-        sairAplicacao.addActionListener((e)-> {
+        sairAplicacao.setOnAction((e) -> {
             Stage janela = (Stage) this.getScene().getWindow();
-            fireEvent( new WindowEvent(janela, WindowEvent.WINDOW_CLOSE_REQUEST));
+            fireEvent(new WindowEvent(janela, WindowEvent.WINDOW_CLOSE_REQUEST));
         });
 
 /*
@@ -189,7 +178,7 @@ public class UI_Root extends BorderPane {
         comoJogarMI.setOnAction(new AjudaListener());
         acercaMI.setOnAction(new AcercaListener());
 */
-        menuBar.add(jogoMenu);
+        menuBar.getMenus().addAll(jogoMenu);
+        return menuBar;
     }
-
 }

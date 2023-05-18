@@ -22,4 +22,24 @@ public class TinyPacStateMachineObservable {
     public void registDirection(Direction direction) {
         this.fsm.registDirection(direction);
     }
+
+    public char[][] getMap() {
+        return this.fsm.getMap();
+    }
+
+
+
+    public void updateBoard() {
+        this.fsm.evolve();
+        propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+    }
+
+
+    public void evolve() {
+        propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+    }
+
+    public int getScore() {
+        return fsm.getTotalPoints();
+    }
 }
