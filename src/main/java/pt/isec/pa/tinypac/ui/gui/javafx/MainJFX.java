@@ -7,28 +7,25 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import pt.isec.pa.tinypac.gameengine.GameEngine;
-import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
-import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
+import pt.isec.pa.tinypac.model.TinyPac;
 
 public class MainJFX extends Application {
 
-    public static TinyPacStateMachine fsm;
-    public static TinyPacStateMachineObservable fsmObs;
+    public TinyPac model;
     public static UI_Root gui;
 
     @Override
     public void start(Stage stage) {
-        fsm = new TinyPacStateMachine();
-        fsmObs = new TinyPacStateMachineObservable(fsm);
-
-        gui = new UI_Root(fsmObs);
+        this.model = new TinyPac();
+        gui = new UI_Root(model);
 
         Scene scene = new Scene(gui);
-        setupGameEngine(fsm);
+        setupGameEngine();
 
         stage.setScene(scene);
         stage.setTitle("Tinypac");
-
+        stage.setWidth(1000);
+        stage.setHeight(700);
 
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();
@@ -53,11 +50,11 @@ public class MainJFX extends Application {
         launch(args);
     }
 
-    public static void setupGameEngine(TinyPacStateMachine fsm) {
+    public void setupGameEngine() {
         GameEngine gameEngine = new GameEngine();
         gameEngine.registerClient((g, t) -> {
             Platform.runLater(() -> {
-                fsmObs.updateBoard();
+                this.model.getFsmObs().updateBoard();
             });
         });
 
