@@ -1,7 +1,7 @@
 package pt.isec.pa.tinypac.model.data;
 
 
-import pt.isec.pa.tinypac.model.data.Ghosts.*;
+import pt.isec.pa.tinypac.model.data.ghosts.*;
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
@@ -36,12 +36,12 @@ public class Map {
         iteration++;
     }
 
-    public record Position(int y, int x) {
+    public record Position(int y, int x)  {
 
         static public int getDistance(Position pos1, Position pos2) {
             int dy = pos1.y - pos2.y;
             int dx = pos1.x - pos2.x;
-            return (int) Math.sqrt(dy * dy + dx * dx);
+            return (int)Math.sqrt(dy * dy + dx * dx);
         }
     }
 
@@ -158,9 +158,9 @@ public class Map {
         this.ghostsInitialPosition = p;
 
         /* this.ghosts.add(new Clyde(this));*/
-        this.ghosts.add(new Blinky(this, ghostsInitialPosition));
+/*        this.ghosts.add(new Blinky(this, ghostsInitialPosition));*/
         this.ghosts.add(new Pinky(this, ghostsInitialPosition));
-        this.ghosts.add(new Inky(this, ghostsInitialPosition));
+/*        this.ghosts.add(new Inky(this, ghostsInitialPosition));*/
     }
 
     public void placeFruit(Fruit fruit) {

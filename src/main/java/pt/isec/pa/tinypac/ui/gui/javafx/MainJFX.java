@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import pt.isec.pa.tinypac.gameengine.GameEngine;
@@ -23,6 +25,21 @@ public class MainJFX extends Application {
         setupGameEngine();
 
         stage.setScene(scene);
+
+        stage.setOnCloseRequest(event -> {
+            // Create a confirmation dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Sair");
+            alert.setHeaderText("De certeza que quer sair do jogo?");
+
+            // Show the confirmation dialog and wait for user response
+            ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+
+            // If the user chooses to cancel, consume the event (prevent window closure)
+            if (result != ButtonType.OK) {
+                event.consume();
+            }
+        });
         stage.setTitle("Tinypac");
         stage.setWidth(1000);
         stage.setHeight(700);
@@ -58,6 +75,6 @@ public class MainJFX extends Application {
             });
         });
 
-        gameEngine.start(200);
+        gameEngine.start(100);
     }
 }

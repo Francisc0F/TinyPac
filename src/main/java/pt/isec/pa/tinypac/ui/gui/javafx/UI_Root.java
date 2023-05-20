@@ -10,6 +10,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -91,7 +94,7 @@ public class UI_Root extends BorderPane {
         label.setFont(Font.font("Arial", FontWeight.BOLD, 24));
 
         // Create the label
-        Text subtitle = new Text("TinyPac 2023");
+        Text subtitle = new Text("TinyPac 2023 LEI-PL DEIS-ISEC-IPC");
         Text subtitle2 = new Text("Francisco Ferreira");
         Text subtitle3 = new Text("2019113494");
         subtitle.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
@@ -101,24 +104,24 @@ public class UI_Root extends BorderPane {
         Button button2 = new Button("Consultar Top 5");
         Button button3 = new Button("Sair");
 
-        button1.setOnAction( event -> {
+        button1.setOnAction(event -> {
             buildGame();
         });
         button1.setMinWidth(150);
         button2.setMinWidth(150);
         button3.setMinWidth(150);
         // Add the elements to the VBox
-        root.getChildren().addAll(logo, label,subtitle,subtitle2, subtitle3, button1, button2, button3);
+        root.getChildren().addAll(logo, label, subtitle, subtitle2, subtitle3, button1, button2, button3);
         setWidth(700);
         setCenter(root);
     }
 
-    private void buildGame(){
+    private void buildGame() {
         VBox centralCol = new VBox();
         centralCol.setAlignment(Pos.CENTER);
         HBox hgroup = new HBox();
         Button pause = new Button("Pause");
-        Button save =  new Button("Save");
+        Button save = new Button("Save");
         save.setFocusTraversable(false);
         pause.setFocusTraversable(false);
 
@@ -128,9 +131,17 @@ public class UI_Root extends BorderPane {
         setCenter(centralCol);
     }
 
+    private Circle buildCircle(int x, int y, Color color, double radius) {
+        Circle shape = null;
+        shape = new Circle(x * BLOCK_SIZE + 10, y * BLOCK_SIZE + 10, radius);
+        shape.setFill(color);
+        return shape;
+    }
+
     public void updateBoard() {
         char board[][] = this.model.getFsmObs().getMap();
-        this.board.getChildren().removeAll();
+        this.board.getChildren().clear();
+
 
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[x].length; x++) {
@@ -140,18 +151,36 @@ public class UI_Root extends BorderPane {
                 block.setFitWidth(BLOCK_SIZE);
                 block.setFitHeight(BLOCK_SIZE);
                 block.setImage(white);
+                Circle shape = null;
                 switch (board[y][x]) {
                     case '?' -> block.setImage(white);
                     case ' ' -> block.setImage(empty);
                     case 'x' -> block.setImage(wall);
-                    case 'o' -> block.setImage(food);
+                    case 'o' -> {
+                        shape = buildCircle(x, y, Color.rgb(255, 204, 0), 3);
+                    }
                     case 'M' -> block.setImage(pacmanopen);
                     case 'F' -> block.setImage(fruit);
-                    case 'O' -> block.setImage(powerfullFruit);
+                    case 'O' -> {
+                        shape = buildCircle(x, y, Color.rgb(255, 230, 0), 5);
+                    }
                     case 'W' -> block.setImage(wrap);
-                    case '@', '&', '#' -> block.setImage(ghost);
+                    case '@' -> {
+                        shape = buildCircle(x, y, Color.BLUE, 10);
+                    }
+                    case '&' -> {
+                        shape = buildCircle(x, y, Color.RED, 10);
+                    }
+                    case '#' -> {
+                        shape = buildCircle(x, y, Color.GREEN, 10);
+                    }
+                    default -> block.setImage(white);
                 }
-                this.board.getChildren().add(block);
+                if (shape != null) {
+                    this.board.getChildren().add(shape);
+                } else {
+                    this.board.getChildren().add(block);
+                }
             }
         }
     }
