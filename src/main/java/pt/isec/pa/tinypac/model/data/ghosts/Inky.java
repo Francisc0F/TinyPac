@@ -9,8 +9,8 @@ public class Inky extends Ghost {
     public Inky(Map p, Map.Position po) {
         super(p);
         this.p = po;
+        savePosition();
     }
-
 
     @Override
     public void evolve() {
@@ -21,18 +21,11 @@ public class Inky extends Ghost {
             case RIGHT -> this.right();
             case LEFT -> this.left();
         }
+        savePosition();
     }
 
     @Override
     public char getSymbol() {
         return '#';
     }
-
-    @Override
-    protected void move(int dx, int dy) {
-        Map.Position newp = checkIsPacman(dx, dy);
-        if (newp == null) return;
-        p = newp;
-    }
-
 }

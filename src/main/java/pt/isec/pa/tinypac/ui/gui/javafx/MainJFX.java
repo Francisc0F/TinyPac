@@ -2,7 +2,6 @@ package pt.isec.pa.tinypac.ui.gui.javafx;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -75,6 +74,6 @@ public class MainJFX extends Application {
             });
         });
 
-        gameEngine.start(100);
+        gameEngine.start(200 );
     }
 }

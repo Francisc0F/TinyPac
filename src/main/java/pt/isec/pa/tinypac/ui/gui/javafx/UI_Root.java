@@ -150,10 +150,9 @@ public class UI_Root extends BorderPane {
                 block.setY(y * BLOCK_SIZE);
                 block.setFitWidth(BLOCK_SIZE);
                 block.setFitHeight(BLOCK_SIZE);
-                block.setImage(white);
                 Circle shape = null;
                 switch (board[y][x]) {
-                    case '?' -> block.setImage(white);
+
                     case ' ' -> block.setImage(empty);
                     case 'x' -> block.setImage(wall);
                     case 'o' -> {
@@ -165,6 +164,9 @@ public class UI_Root extends BorderPane {
                         shape = buildCircle(x, y, Color.rgb(255, 230, 0), 5);
                     }
                     case 'W' -> block.setImage(wrap);
+                    case '%' -> {
+                        shape = buildCircle(x, y, Color.PINK, 10);
+                    }
                     case '@' -> {
                         shape = buildCircle(x, y, Color.BLUE, 10);
                     }
@@ -174,7 +176,6 @@ public class UI_Root extends BorderPane {
                     case '#' -> {
                         shape = buildCircle(x, y, Color.GREEN, 10);
                     }
-                    default -> block.setImage(white);
                 }
                 if (shape != null) {
                     this.board.getChildren().add(shape);

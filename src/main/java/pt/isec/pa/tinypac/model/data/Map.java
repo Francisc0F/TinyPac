@@ -157,10 +157,10 @@ public class Map {
     public void setGhostsInitialPosition(Map.Position p) {
         this.ghostsInitialPosition = p;
 
-        /* this.ghosts.add(new Clyde(this));*/
-/*        this.ghosts.add(new Blinky(this, ghostsInitialPosition));*/
+         this.ghosts.add(new Clyde(this, ghostsInitialPosition));
+        this.ghosts.add(new Blinky(this, ghostsInitialPosition));
         this.ghosts.add(new Pinky(this, ghostsInitialPosition));
-/*        this.ghosts.add(new Inky(this, ghostsInitialPosition));*/
+        this.ghosts.add(new Inky(this, ghostsInitialPosition));
     }
 
     public void placeFruit(Fruit fruit) {

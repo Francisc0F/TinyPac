@@ -79,9 +79,16 @@ public abstract class Ghost extends Organism implements IGhost {
 
     public void savePosition() {
         previousMoves.push(new Map.Position(p.x(), p.y()));
-        currentCornerMoves.push(new Map.Position(p.y(), p.x()));
+        addToCornerStack(new Map.Position(p.y(), p.x()));
     }
 
+    private void addToCornerStack(Map.Position newPosition) {
+        currentCornerMoves.push(newPosition);
+
+        if (currentCornerMoves.size() > 2) {
+            currentCornerMoves.remove(0);
+        }
+    }
 
     protected Map.Position checkIsPacman(int dx, int dy) {
         Map.Position newp = new Map.Position(p.y() + dy, p.x() + dx);
@@ -95,6 +102,8 @@ public abstract class Ghost extends Organism implements IGhost {
         return newp;
     }
 
+
+
     private void killPacman() {
         map.killPacman();
     }
@@ -103,6 +112,26 @@ public abstract class Ghost extends Organism implements IGhost {
         Map.Position newp = checkIsPacman(dx, dy);
         if (newp == null) return;
         p = newp;
+    }
+
+    protected Direction generateDirectionRandom() {
+        ArrayList<Direction> allowedDirections = new ArrayList<>(10);
+
+        for (Direction dir : Direction.values()) {
+            if (direction.opposite() != dir) {
+                Map.Position pos = getDeltaByDirection(dir);
+                if (canMove(this.map.getOrganism(pos.y(), pos.x()))) {
+                    allowedDirections.add(dir);
+                }
+            }
+        }
+
+        // if no direction is available go backwards
+        if (allowedDirections.isEmpty()) {
+            allowedDirections.add(direction.opposite());
+        }
+
+        return getRandomDirection(allowedDirections);
     }
 
     @Override
@@ -200,28 +229,38 @@ public abstract class Ghost extends Organism implements IGhost {
     }
 
 
-    //todo compare current position to corner, so it wont get stuck
-    // if the current position is the best execute .nextCorner
+    /**
+     * @return next direction for
+     * pinky & inky corner logic
+     */
     protected Direction getNextDirection() {
         int currentDistanceToCorner = Map.Position.getDistance(p, CornersOrder.getCurrentCornerPosition(currentCorner, map));
 
         if (currentDistanceToCorner <= distanceToChangeDirection) {
             currentCorner = CornersOrder.nextCorner(order, currentCorner);
             currentCornerMoves = new Stack();
-            // System.out.println("currentCorner: " + currentCorner);
         }
-        ArrayList<Direction> allowed = getAllowedDirections();
 
+        ArrayList<Direction> allowed = getAllowedDirections();
 
 
         int minDistance = Integer.MAX_VALUE;
         Direction nextDirection = null;
-        //System.out.println("allowed: " + allowed);
-        for (Direction direction : removeRepeatedPositions(allowed)) {
-            int distance = getDeltaDirectionDistance(direction, currentCorner);
-            if (distance < minDistance) {
-                minDistance = distance;
-                nextDirection = direction;
+
+        List<Direction> filtered = removeRepeatedPositions(allowed);
+        System.out.println("filtered: " + filtered);
+
+        if(filtered.isEmpty()){
+            nextDirection= direction.opposite();
+            // this will fill the stack so it can go backwards
+            addToCornerStack(new Map.Position(p.y(), p.x()));
+        }else{
+            for (Direction direction : filtered) {
+                int distance = getDeltaDirectionDistance(direction, currentCorner);
+                if (distance <= minDistance) {
+                    minDistance = distance;
+                    nextDirection = direction;
+                }
             }
         }
 
@@ -231,19 +270,68 @@ public abstract class Ghost extends Organism implements IGhost {
         return nextDirection;
     }
 
-    private List<Direction> removeRepeatedPositions(ArrayList<Direction> allowed){
+    protected Direction getBlinkyDirection(){
+        Map.Position pos = getDeltaByDirection(direction);
+        if (canMove(this.map.getOrganism(pos.y(), pos.x()))) {
+            return direction;
+        }
+        return generateDirectionRandom();
+    }
+
+    private boolean isPacmanOnDirection(Direction direction) {
+        Map.Position pacP = this.map.getPacmanPosition();
+        int x = p.x(),y = p.y();
+        while (true) {
+            x += direction.getDeltaX();
+            y += direction.getDeltaY();
+            if (canotMove(this.map.getOrganism(y, x))) {
+                return false;
+            }
+
+            if(pacP.equals(new Map.Position(y,x))){
+                return true;
+            }
+        }
+    }
+
+    /**
+     * pursuit mode on finding pacaman in available directions
+     * @return
+     */
+    protected Direction getClydeDirection(){
+        List<Direction> allowed =  getAllowedDirections();
+        for(Direction dir: allowed){
+            if(isPacmanOnDirection(dir)){
+                return dir;
+            }
+        }
+        return getBlinkyDirection();
+    }
+    /**
+     * @param allowed list
+     * @return filtered by current corner position
+     */
+    private List<Direction> removeRepeatedPositions(ArrayList<Direction> allowed) {
         return allowed.stream().filter(item -> !positionAlreadyVisitedInThisCorner(getDeltaByDirection(item))).toList();
     }
 
-    private boolean positionAlreadyVisitedInThisCorner( Map.Position newP){
-        if(!currentCornerMoves.isEmpty()){
-            Optional<Map.Position> p =  currentCornerMoves.stream().filter(item -> item.equals(newP)).findFirst();
+    private boolean positionAlreadyVisitedInThisCorner(Map.Position newP) {
+        if (!currentCornerMoves.isEmpty()) {
+
+            Optional<Map.Position> p = currentCornerMoves.stream().filter(item -> item.equals(newP)).findFirst();
             return p.isPresent();
-        }else{
+        } else {
             return false;
         }
     }
 
+    /**
+     * @param direction
+     * @param corner
+     * @return distance
+     * for a given position on a direction delta
+     * for a given corner in the map
+     */
     private int getDeltaDirectionDistance(Direction direction, CornersOrder corner) {
         Map.Position pos = getDeltaByDirection(direction);
         return Map.Position.getDistance(pos, CornersOrder.getCurrentCornerPosition(corner, map));
