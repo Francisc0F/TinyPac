@@ -79,23 +79,7 @@ public class UI_Root extends BorderPane {
     }
 
     private void setPacmanRotation(ImageView imageView, Direction direction) {
-        double angle = 0;
-        switch (direction) {
-            case UP:
-                angle = -90;
-                break;
-            case DOWN:
-                angle = 90;
-                break;
-            case LEFT:
-                angle = 180;
-                break;
-            case RIGHT:
-                angle = 0;
-                break;
-        }
-
-        imageView.setRotate(angle);
+        imageView.setRotate(direction.getAngle());
     }
 
     private void buildInitialScreen() {
