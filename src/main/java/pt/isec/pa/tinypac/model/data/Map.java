@@ -36,6 +36,13 @@ public class Map {
         iteration++;
     }
 
+    public Direction getPacmanDirection() {
+        if(this.pacman != null){
+            return this.pacman.getDirection();
+        }
+        return null;
+    }
+
     public record Position(int y, int x)  {
 
         static public int getDistance(Position pos1, Position pos2) {

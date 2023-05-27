@@ -9,13 +9,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
@@ -66,19 +67,38 @@ public class UI_Root extends BorderPane {
 
     public UI_Root(TinyPac model) {
         this.model = model;
-        buildView();
-        scoreLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 24px;");
-
+        buildInitialScreen();
+        scoreLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24));
         this.model.getFsmObs().addPropertyChangeListener(Events.updateBoard, evt -> {
             updateBoard();
-            this.scoreLabel.setText("Score: " + this.model.getFsmObs().getScore());
+            this.scoreLabel.setText("" + this.model.getFsmObs().getScore());
         });
 
         this.model.getFsmObs().addPropertyChangeListener(Events.updateScore, evt -> {
         });
     }
 
-    private void buildView() {
+    private void setPacmanRotation(ImageView imageView, Direction direction) {
+        double angle = 0;
+        switch (direction) {
+            case UP:
+                angle = -90;
+                break;
+            case DOWN:
+                angle = 90;
+                break;
+            case LEFT:
+                angle = 180;
+                break;
+            case RIGHT:
+                angle = 0;
+                break;
+        }
+
+        imageView.setRotate(angle);
+    }
+
+    private void buildInitialScreen() {
 
         VBox root = new VBox();
         root.setAlignment(Pos.CENTER);
@@ -118,16 +138,49 @@ public class UI_Root extends BorderPane {
 
     private void buildGame() {
         VBox centralCol = new VBox();
-        centralCol.setAlignment(Pos.CENTER);
         HBox hgroup = new HBox();
+
+        centralCol.setAlignment(Pos.CENTER);
+        hgroup.setAlignment(Pos.CENTER);
+
+        //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
+        centralCol.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
+
+
         Button pause = new Button("Pause");
         Button save = new Button("Save");
         save.setFocusTraversable(false);
         pause.setFocusTraversable(false);
 
-        hgroup.getChildren().addAll(this.scoreLabel, pause, save);
+
+        hgroup.getChildren().addAll(scoreLabel, pause, save);
+
         centralCol.getChildren().add(hgroup);
-        centralCol.getChildren().add(this.board);
+
+        Pane boardContainer = new Pane(this.board);
+        board.layoutXProperty().bind(boardContainer.widthProperty().subtract(board.getBoundsInParent().getWidth()).divide(2));
+        board.layoutYProperty().bind(boardContainer.heightProperty().subtract(board.getBoundsInParent().getHeight()).divide(2));
+
+
+
+        HBox contentCenteredWrapper = new HBox(boardContainer);
+
+        boardContainer.setStyle("" +
+                "-fx-border-color: grey; " +
+                "-fx-border-width: 5px; " +
+                "-fx-border-style: solid;" +
+                "-fx-border-radius: 3px;" +
+                "-fx-background-color: lighgrey;"+
+                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
+        );
+
+        contentCenteredWrapper.setStyle("" +
+                "-fx-background-color: lighgrey;"+
+                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
+        );
+        contentCenteredWrapper.setAlignment(Pos.CENTER);
+
+        centralCol.getChildren().add(contentCenteredWrapper);
         setCenter(centralCol);
     }
 
@@ -141,29 +194,35 @@ public class UI_Root extends BorderPane {
     public void updateBoard() {
         char board[][] = this.model.getFsmObs().getMap();
         this.board.getChildren().clear();
-
+        Direction pacmanDirection = this.model.getFsmObs().getDirection();
 
         for (int y = 0; y < board.length; y++) {
             for (int x = 0; x < board[x].length; x++) {
-                ImageView block = new ImageView();
-                block.setX(x * BLOCK_SIZE);
-                block.setY(y * BLOCK_SIZE);
-                block.setFitWidth(BLOCK_SIZE);
-                block.setFitHeight(BLOCK_SIZE);
+                ImageView image = new ImageView();
+                image.setX(x * BLOCK_SIZE);
+                image.setY(y * BLOCK_SIZE);
+                image.setPreserveRatio(true);
+                image.setFitWidth(BLOCK_SIZE);
+                image.setSmooth(true); //not working imaged is suffering from antialiasing
                 Circle shape = null;
                 switch (board[y][x]) {
 
-                    case ' ' -> block.setImage(empty);
-                    case 'x' -> block.setImage(wall);
+                    case ' ' -> image.setImage(empty);
+                    case 'x' -> image.setImage(wall);
                     case 'o' -> {
                         shape = buildCircle(x, y, Color.rgb(255, 204, 0), 3);
                     }
-                    case 'M' -> block.setImage(pacmanopen);
-                    case 'F' -> block.setImage(fruit);
+                    case 'M' -> {
+                        image.setImage(pacmanopen);
+                        if(pacmanDirection != null){
+                            setPacmanRotation(image, pacmanDirection);
+                        }
+                    }
+                    case 'F' -> image.setImage(fruit);
                     case 'O' -> {
                         shape = buildCircle(x, y, Color.rgb(255, 230, 0), 5);
                     }
-                    case 'W' -> block.setImage(wrap);
+                    case 'W' -> image.setImage(wrap);
                     case '%' -> {
                         shape = buildCircle(x, y, Color.PINK, 10);
                     }
@@ -178,10 +237,15 @@ public class UI_Root extends BorderPane {
                     }
                 }
                 if (shape != null) {
-                    this.board.getChildren().add(shape);
-                } else {
-                    this.board.getChildren().add(block);
+                   /* shape.setStroke(Color.RED);
+                    shape.setStrokeWidth(1);*/
                 }
+
+                Pane container = new Pane(shape != null ? shape : image);
+                container.setPrefSize(BLOCK_SIZE, BLOCK_SIZE);
+
+                //container.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
+                this.board.getChildren().add(container);
             }
         }
     }

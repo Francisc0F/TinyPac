@@ -69,11 +69,9 @@ public class MainJFX extends Application {
     public void setupGameEngine() {
         GameEngine gameEngine = new GameEngine();
         gameEngine.registerClient((g, t) -> {
-            Platform.runLater(() -> {
-                this.model.getFsmObs().updateBoard();
-            });
+            this.model.getFsmObs().updateBoard();
         });
 
-        gameEngine.start(200 );
+        gameEngine.start(200);
     }
 }

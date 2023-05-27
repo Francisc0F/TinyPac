@@ -50,4 +50,8 @@ public class TinyPacStateMachine {
     public void leave() {
         this.state.leave();
     }
+
+    public Direction getDirection() {
+        return this.mapController.map.getPacmanDirection();
+    }
 }

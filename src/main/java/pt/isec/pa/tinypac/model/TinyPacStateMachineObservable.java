@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.model;
 
+import javafx.application.Platform;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
@@ -28,10 +29,11 @@ public class TinyPacStateMachineObservable {
     }
 
 
-
     public void updateBoard() {
         this.fsm.evolve();
-        propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+        Platform.runLater(() -> {
+            propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+        });
     }
 
 
@@ -41,5 +43,9 @@ public class TinyPacStateMachineObservable {
 
     public int getScore() {
         return fsm.getTotalPoints();
+    }
+
+    public Direction getDirection() {
+        return fsm.getDirection();
     }
 }

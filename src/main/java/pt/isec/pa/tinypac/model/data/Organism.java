@@ -1,6 +1,8 @@
 package pt.isec.pa.tinypac.model.data;
 
 
+import pt.isec.pa.utils.Direction;
+
 public abstract class Organism implements IMazeElement {
     protected Map map;
 
@@ -11,4 +13,5 @@ public abstract class Organism implements IMazeElement {
     abstract public void evolve();
 
     abstract public char getSymbol();
+
 }
