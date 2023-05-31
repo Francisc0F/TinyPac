@@ -3,14 +3,12 @@ package pt.isec.pa.tinypac.ui.gui.javafx;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -21,6 +19,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
+import pt.isec.pa.tinypac.ui.gui.javafx.views.InitGameStateViewStack;
+import pt.isec.pa.tinypac.ui.gui.javafx.views.UpdateCurrentGameStateViewStack;
 import pt.isec.pa.utils.Direction;
 
 import java.util.Objects;
@@ -28,19 +29,7 @@ import java.util.Objects;
 
 public class UI_Root extends BorderPane {
 
-    Image empty = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/empty.png")));
-    Image white = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/white.png")));
-    Image wall = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/wall.png")));
-    Image food = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/food.png")));
-    Image pacmanopen = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/pacman-open.png")));
-    Image wrap = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warp.png")));
-    Image fruit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/fruit.png")));
-    Image powerfullFruit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/powerfull-food.png")));
-    Image ghost = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ghost.png")));
-
-
-    Image logoIsec = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logoisec.png")));
-
+    Utils utils = new Utils();
     TinyPac model;
 
     public enum KeyPress {
@@ -58,29 +47,13 @@ public class UI_Root extends BorderPane {
         }
     }
 
-    private static final int BLOCK_SIZE = 20;
-    private static final int WIDTH = 29;
-    private static final int HEIGHT = 31;
-
-    private Group board = new Group();
-    private Label scoreLabel = new Label("Score: 0");
-
     public UI_Root(TinyPac model) {
         this.model = model;
         buildInitialScreen();
-        scoreLabel.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24));
-        this.model.getFsmObs().addPropertyChangeListener(Events.updateBoard, evt -> {
-            updateBoard();
-            this.scoreLabel.setText("" + this.model.getFsmObs().getScore());
-        });
 
-        this.model.getFsmObs().addPropertyChangeListener(Events.updateScore, evt -> {
-        });
     }
 
-    private void setPacmanRotation(ImageView imageView, Direction direction) {
-        imageView.setRotate(direction.getAngle());
-    }
+
 
     private void buildInitialScreen() {
 
@@ -90,7 +63,7 @@ public class UI_Root extends BorderPane {
         root.setSpacing(10);
         root.setPadding(new Insets(20));
 
-        ImageView logo = new ImageView(logoIsec);
+        ImageView logo = new ImageView(utils.logoIsec);
         logo.setFitWidth(200);
         logo.setPreserveRatio(true);
 
@@ -104,135 +77,31 @@ public class UI_Root extends BorderPane {
         subtitle.setFont(Font.font("Arial", FontWeight.NORMAL, 16));
 
         // Create the buttons
-        Button button1 = new Button("Iniciar Jogo");
+        Button startGame = new Button("Iniciar Jogo");
         Button button2 = new Button("Consultar Top 5");
         Button button3 = new Button("Sair");
 
-        button1.setOnAction(event -> {
-            buildGame();
+        startGame.setOnAction(event -> {
+            BuildStateView();
         });
-        button1.setMinWidth(150);
+        startGame.setMinWidth(150);
         button2.setMinWidth(150);
         button3.setMinWidth(150);
         // Add the elements to the VBox
-        root.getChildren().addAll(logo, label, subtitle, subtitle2, subtitle3, button1, button2, button3);
+        root.getChildren().addAll(logo, label, subtitle, subtitle2, subtitle3, startGame, button2, button3);
         setWidth(700);
         setCenter(root);
     }
 
-    private void buildGame() {
-        VBox centralCol = new VBox();
-        HBox hgroup = new HBox();
-
-        centralCol.setAlignment(Pos.CENTER);
-        hgroup.setAlignment(Pos.CENTER);
-
-        //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
-        centralCol.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
-
-
-        Button pause = new Button("Pause");
-        Button save = new Button("Save");
-        save.setFocusTraversable(false);
-        pause.setFocusTraversable(false);
-
-
-        hgroup.getChildren().addAll(scoreLabel, pause, save);
-
-        centralCol.getChildren().add(hgroup);
-
-        Pane boardContainer = new Pane(this.board);
-        board.layoutXProperty().bind(boardContainer.widthProperty().subtract(board.getBoundsInParent().getWidth()).divide(2));
-        board.layoutYProperty().bind(boardContainer.heightProperty().subtract(board.getBoundsInParent().getHeight()).divide(2));
-
-
-
-        HBox contentCenteredWrapper = new HBox(boardContainer);
-
-        boardContainer.setStyle("" +
-                "-fx-border-color: grey; " +
-                "-fx-border-width: 5px; " +
-                "-fx-border-style: solid;" +
-                "-fx-border-radius: 3px;" +
-                "-fx-background-color: lighgrey;"+
-                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
-        );
-
-        contentCenteredWrapper.setStyle("" +
-                "-fx-background-color: lighgrey;"+
-                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
-        );
-        contentCenteredWrapper.setAlignment(Pos.CENTER);
-
-        centralCol.getChildren().add(contentCenteredWrapper);
-        setCenter(centralCol);
+    private void BuildStateView() {
+        InitGameStateViewStack start = new InitGameStateViewStack(this.model.getFsmObs());
+        StackPane stackPane = new StackPane(start);
+        stackPane.setAlignment(Pos.CENTER);
+        setCenter(stackPane);
     }
 
-    private Circle buildCircle(int x, int y, Color color, double radius) {
-        Circle shape = null;
-        shape = new Circle(x * BLOCK_SIZE + 10, y * BLOCK_SIZE + 10, radius);
-        shape.setFill(color);
-        return shape;
-    }
 
-    public void updateBoard() {
-        char board[][] = this.model.getFsmObs().getMap();
-        this.board.getChildren().clear();
-        Direction pacmanDirection = this.model.getFsmObs().getDirection();
 
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[x].length; x++) {
-                ImageView image = new ImageView();
-                image.setX(x * BLOCK_SIZE);
-                image.setY(y * BLOCK_SIZE);
-                image.setPreserveRatio(true);
-                image.setFitWidth(BLOCK_SIZE);
-                image.setSmooth(true); //not working imaged is suffering from antialiasing
-                Circle shape = null;
-                switch (board[y][x]) {
-
-                    case ' ' -> image.setImage(empty);
-                    case 'x' -> image.setImage(wall);
-                    case 'o' -> {
-                        shape = buildCircle(x, y, Color.rgb(255, 204, 0), 3);
-                    }
-                    case 'M' -> {
-                        image.setImage(pacmanopen);
-                        if(pacmanDirection != null){
-                            setPacmanRotation(image, pacmanDirection);
-                        }
-                    }
-                    case 'F' -> image.setImage(fruit);
-                    case 'O' -> {
-                        shape = buildCircle(x, y, Color.rgb(255, 230, 0), 5);
-                    }
-                    case 'W' -> image.setImage(wrap);
-                    case '%' -> {
-                        shape = buildCircle(x, y, Color.PINK, 10);
-                    }
-                    case '@' -> {
-                        shape = buildCircle(x, y, Color.BLUE, 10);
-                    }
-                    case '&' -> {
-                        shape = buildCircle(x, y, Color.RED, 10);
-                    }
-                    case '#' -> {
-                        shape = buildCircle(x, y, Color.GREEN, 10);
-                    }
-                }
-                if (shape != null) {
-                   /* shape.setStroke(Color.RED);
-                    shape.setStrokeWidth(1);*/
-                }
-
-                Pane container = new Pane(shape != null ? shape : image);
-                container.setPrefSize(BLOCK_SIZE, BLOCK_SIZE);
-
-                //container.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
-                this.board.getChildren().add(container);
-            }
-        }
-    }
 
     public boolean mapKeyToAction(KeyPress keyPress) {
         return switch (keyPress) {

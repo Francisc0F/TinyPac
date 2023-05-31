@@ -2,6 +2,7 @@ package pt.isec.pa.tinypac.model;
 
 import javafx.application.Platform;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
+import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.utils.Direction;
 
 import java.beans.PropertyChangeListener;
@@ -47,5 +48,9 @@ public class TinyPacStateMachineObservable {
 
     public Direction getDirection() {
         return fsm.getDirection();
+    }
+
+    public TinyPacState getState() {
+        return fsm.getState();
     }
 }

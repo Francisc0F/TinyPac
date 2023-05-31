@@ -4,7 +4,7 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 
 public class TinyPac {
     TinyPacStateMachine fsm;
-    TinyPacStateMachineObservable fsmObs;
+    private TinyPacStateMachineObservable fsmObs;
     // todo save/load games
 
     public TinyPac(){
