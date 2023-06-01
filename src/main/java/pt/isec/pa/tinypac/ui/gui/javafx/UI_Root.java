@@ -95,7 +95,8 @@ public class UI_Root extends BorderPane {
 
     private void BuildStateView() {
         InitGameStateViewStack start = new InitGameStateViewStack(this.model.getFsmObs());
-        StackPane stackPane = new StackPane(start);
+        UpdateCurrentGameStateViewStack updateCurrentGameStateViewStack = new UpdateCurrentGameStateViewStack(this.model.getFsmObs());
+        StackPane stackPane = new StackPane(start, updateCurrentGameStateViewStack);
         stackPane.setAlignment(Pos.CENTER);
         setCenter(stackPane);
     }

@@ -75,11 +75,12 @@ public class InitGameStateViewStack extends VBox {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
             updateBoard();
             this.scoreLabel.setText("" + this.fsmObs.getScore());
+            setPanelVisible();
         });
     }
 
     private void setPanelVisible(){
-        this.setVisible(this.fsmObs.getState() == TinyPacState.INITGAMESTATE);
+        setVisible(this.fsmObs.getState() == TinyPacState.INITGAMESTATE);
     }
 
     public void updateBoard() {
