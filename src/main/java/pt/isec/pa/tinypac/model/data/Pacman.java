@@ -6,11 +6,12 @@ import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
-import java.util.Optional;
+import java.util.*;
 
-public class Pacman extends Organism {
+public class Pacman extends Organism implements Cloneable {
     private Direction direction;
     private Map.Position p;
+    private Wrap enteredWrap = null;
 
     public Pacman(Map map, Map.Position p) {
         super(map);
@@ -48,8 +49,13 @@ public class Pacman extends Organism {
     }
 
     private void move(int dx, int dy) {
-        Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
+        if (enteredWrap != null) {
+            Map.Position previousWrapEntered = enteredWrap.getP();
+            map.set(enteredWrap.clone(), previousWrapEntered.y(), previousWrapEntered.x());
+            enteredWrap = null;
+        }
 
+        Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
         if (canNotMove(elemAtNewPlace)) {
             return;
         }
@@ -59,35 +65,59 @@ public class Pacman extends Organism {
                     .stream()
                     .filter(item -> item != elemAtNewPlace).findFirst();
             if (other.isPresent()) {
+                enteredWrap = other.get().clone();
                 Map.Position otherWrapPosi = this.map.getPositionOf(other.get());
-                p = new Map.Position(otherWrapPosi.y(), otherWrapPosi.x());
+                enteredWrap.setP(otherWrapPosi);
+                movePacmanTo(otherWrapPosi.y(), otherWrapPosi.x());
             }
             return;
         }
 
-        p = new Map.Position(p.y() + dy, p.x() + dx);
+        if (elemAtNewPlace instanceof Empty) {
+            movePacaman(dy, dx);
+        }
 
         if (elemAtNewPlace instanceof PowerfullFood) {
             map.setGodMode();
-            this.map.set(new Empty(this.map), p.y(), p.x());
+            movePacaman(dy, dx);
         }
 
 
         if (elemAtNewPlace instanceof Food) {
             map.incFoodScore();
-            this.map.set(new Empty(this.map), p.y(), p.x());
+            movePacaman(dy, dx);
         }
 
-        Fruit currentFruit = this.map.getFruit();
-        if (currentFruit != null) {
-            Map.Position f = currentFruit.getP();
-            if (f.equals(p)) {
-                map.incFruitScore();
-                this.map.setNoFruit();
-                this.map.set(new Empty(this.map), p.y(), p.x());
-
-            }
+        if (elemAtNewPlace instanceof Fruit) {
+            map.incFruitScore();
+            movePacaman(dy, dx);
         }
+    }
+
+    private void movePacaman(int dy, int dx) {
+        List<Pacman> pacmanList = this.map.findElementsOf(Pacman.class)
+                .stream()
+                .toList();
+        if (pacmanList.size() > 0) {
+            Pacman other = this.map.findElementsOf(Pacman.class)
+                    .stream()
+                    .toList().get(0).clone();
+            this.map.set(new Empty(map), other.p.y(), other.p.x());
+        }
+
+        p = new Map.Position(p.y() + dy, p.x() + dx);
+        this.map.set(this, p.y(), p.x());
+    }
+
+    private void movePacmanTo(int y, int x) {
+        Pacman other = this.map.findElementsOf(Pacman.class)
+                .stream()
+                .toList().get(0).clone();
+        this.map.set(new Empty(map), other.p.y(), other.p.x());
+
+
+        p = new Map.Position(y, x);
+        this.map.set(this, p.y(), p.x());
     }
 
     private boolean canNotMove(Organism item) {
@@ -108,6 +138,15 @@ public class Pacman extends Organism {
 
     private void down() {
         move(0, 1);
+    }
+
+    @Override
+    public Pacman clone() {
+        try {
+            return (Pacman) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
 }

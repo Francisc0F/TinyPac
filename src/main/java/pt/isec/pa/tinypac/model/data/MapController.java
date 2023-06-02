@@ -1,7 +1,6 @@
 package pt.isec.pa.tinypac.model.data;
 
 import pt.isec.pa.tinypac.model.data.food.Food;
-import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
@@ -34,7 +33,7 @@ public class MapController {
         while ((st = br.readLine()) != null) {
             for (int x = 0; x < st.length(); x++) {
                 Organism created = this.buildByChar(st.charAt(x), y, x);
-                map.addElement(created, y, x);
+                map.set(created, y, x);
             }
             y++;
         }
@@ -48,22 +47,31 @@ public class MapController {
 
         return switch (symbol) {
             case 'M' -> {
-                this.map.setPacman(new Pacman(map, new Map.Position(y, x)));
-                yield null;
+                Pacman p = new Pacman(map, new Map.Position(y, x));
+                this.map.setPacman(p);
+                yield p;
             }
             case 'x' -> new Wall(map);
             case 'W' -> new Wrap(map);
-            case 'o' -> new Food(map);
+            case 'o' -> {
+                Food f = new Food(map);
+                this.map.addToFoodList(f);
+                yield f;
+            }
             case 'y' -> new GhostCave(map);
             case 'Y' -> {
                 this.map.setGhostsInitialPosition(new Map.Position(y, x));
                 yield new GhostStart(map);
             }
             case 'F' -> {
-                this.map.placeFruit(new Fruit(map, new Map.Position(y, x)));
+                this.map.createFruit(new Map.Position(y, x));
                 yield null;
             }
-            case 'O' -> new PowerfullFood(map);
+            case 'O' -> {
+                PowerfullFood f = new PowerfullFood(map);
+                this.map.addToPowerFullFoodList(f);
+                yield f;
+            }
             default -> new MazeElement(symbol, map);
         };
     }

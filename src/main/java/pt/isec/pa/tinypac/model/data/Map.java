@@ -18,7 +18,8 @@ public class Map {
     private final int godModeIterationTime = 20;
     private int godModeIteration = 0;
     private boolean isGodMode = false;
-
+    private List<Food> foodList = new ArrayList<>(90);
+    private List<PowerfullFood> powerfullFoodList = new ArrayList<>(90);
     public void incGoodModeIteration() {
         godModeIteration++;
     }
@@ -37,18 +38,26 @@ public class Map {
     }
 
     public Direction getPacmanDirection() {
-        if(this.pacman != null){
+        if (this.pacman != null) {
             return this.pacman.getDirection();
         }
         return null;
     }
 
-    public record Position(int y, int x)  {
+    public void addToFoodList(Food f) {
+        this.foodList.add(f);
+    }
+
+    public void addToPowerFullFoodList(PowerfullFood f) {
+        this.powerfullFoodList.add(f);
+    }
+
+    public record Position(int y, int x) {
 
         static public int getDistance(Position pos1, Position pos2) {
             int dy = pos1.y - pos2.y;
             int dx = pos1.x - pos2.x;
-            return (int)Math.sqrt(dy * dy + dx * dx);
+            return (int) Math.sqrt(dy * dy + dx * dx);
         }
     }
 
@@ -59,7 +68,6 @@ public class Map {
     private ArrayList<Ghost> ghosts = new ArrayList<>(4);
     private Pacman pacman;
     private Fruit fruit;
-    private Map.Position defaultFruitPosition;
     private Position ghostsInitialPosition;
     private int iteration = 1;
     private int foodEaten = 0;
@@ -119,17 +127,6 @@ public class Map {
         return pacman.getP();
     }
 
-    public Fruit getFruit() {
-        return fruit;
-    }
-
-    public void setNoFruit() {
-        fruit = null;
-    }
-
-    public void addElement(Organism organism, int y, int x) {
-        maze.set(y, x, organism);
-    }
 
     public void set(Organism organism, int y, int x) {
         maze.set(y, x, organism);
@@ -164,15 +161,14 @@ public class Map {
     public void setGhostsInitialPosition(Map.Position p) {
         this.ghostsInitialPosition = p;
 
-         this.ghosts.add(new Clyde(this, ghostsInitialPosition));
+        this.ghosts.add(new Clyde(this, ghostsInitialPosition));
         this.ghosts.add(new Blinky(this, ghostsInitialPosition));
         this.ghosts.add(new Pinky(this, ghostsInitialPosition));
         this.ghosts.add(new Inky(this, ghostsInitialPosition));
     }
 
-    public void placeFruit(Fruit fruit) {
-        Map.Position p = fruit.getP();
-        defaultFruitPosition = new Map.Position(p.y(), p.x());
+    public void createFruit(Map.Position p) {
+        this.fruit = new Fruit(this, p);
     }
 
     public Position getPositionOf(Organism organism) {
@@ -195,7 +191,6 @@ public class Map {
         return this.pacman != null;
     }
 
-
     public boolean noLivesRemaining() {
         return lifesRemaining == 0;
     }
@@ -215,49 +210,23 @@ public class Map {
         List<Organism> lst = new ArrayList<>();
         this.pacman.setDirection(currentPacmanDirection);
         lst.add(this.pacman);
+        lst.add(fruit);
 
         if (ghostsEnabled()) {
             lst.addAll(this.ghosts);
         }
 
-
-        placeFruit();
         for (var organism : lst)
             organism.evolve();
     }
-/*
-    public EvolvedAction evolve() {
-        if (this.pacman == null) {
-            lifesRemaining--;
-            if (lifesRemaining == 0) {
-                return EvolvedAction.LOSTLEVEL;
-            }
-            return EvolvedAction.PACKILLED;
-        }
 
-        updateLiveOrganisms();
 
-        iteration++;
-        return EvolvedAction.SUCCEED;
-    }*/
-
-    private void placeFruit() {
-        if (this.fruit == null && getFoodScore() > 0 &&
-                getFoodScore() % 20 == 0) {
-            this.fruit = new Fruit(this, defaultFruitPosition);
-        }
-    }
-
+    /**
+     *
+     * todo check ghosts
+     */
     public char[][] buildMap() {
         char[][] char_board = maze.getMaze();
-
-
-        if (fruit != null) {
-            Map.Position p = fruit.getP();
-            char_board[p.y()][p.x()] = 'F';
-        } else if (defaultFruitPosition != null) {
-            char_board[defaultFruitPosition.y()][defaultFruitPosition.x()] = ' ';
-        }
 
         if (ghostsEnabled()) {
             ghosts.forEach(x -> {
@@ -266,10 +235,7 @@ public class Map {
             });
         }
 
-        if (pacman != null) {
-            Map.Position pacP = pacman.getP();
-            char_board[pacP.y()][pacP.x()] = 'M';
-        }
+
         return char_board;
     }
 }

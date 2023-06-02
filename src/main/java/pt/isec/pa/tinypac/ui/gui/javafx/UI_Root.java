@@ -9,23 +9,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPac;
-import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.views.InitGameStateViewStack;
 import pt.isec.pa.tinypac.ui.gui.javafx.views.UpdateCurrentGameStateViewStack;
 import pt.isec.pa.utils.Direction;
-
-import java.util.Objects;
-
 
 public class UI_Root extends BorderPane {
 
@@ -52,8 +44,6 @@ public class UI_Root extends BorderPane {
         buildInitialScreen();
 
     }
-
-
 
     private void buildInitialScreen() {
 
@@ -96,12 +86,14 @@ public class UI_Root extends BorderPane {
     private void BuildStateView() {
         InitGameStateViewStack start = new InitGameStateViewStack(this.model.getFsmObs());
         UpdateCurrentGameStateViewStack updateCurrentGameStateViewStack = new UpdateCurrentGameStateViewStack(this.model.getFsmObs());
-        StackPane stackPane = new StackPane(start, updateCurrentGameStateViewStack);
+
+        StackPane stackPane = new StackPane(
+                start,
+                updateCurrentGameStateViewStack
+        );
         stackPane.setAlignment(Pos.CENTER);
         setCenter(stackPane);
     }
-
-
 
 
     public boolean mapKeyToAction(KeyPress keyPress) {

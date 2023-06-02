@@ -4,6 +4,8 @@ import pt.isec.pa.tinypac.model.data.GhostCave;
 import pt.isec.pa.tinypac.model.data.Map;
 import pt.isec.pa.tinypac.model.data.Organism;
 import pt.isec.pa.tinypac.model.data.Wall;
+import pt.isec.pa.tinypac.model.data.food.Food;
+import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
 import java.util.*;
@@ -19,6 +21,7 @@ public abstract class Ghost extends Organism implements IGhost {
     protected ArrayList<CornersOrder> order = new ArrayList<>(4);
     private final int distanceToChangeDirection = 5;
     private int previousDistanceToCorner = 0;
+    private Organism ignoredItemBelow;
 
     public Ghost(Map map) {
         super(map);
@@ -103,7 +106,6 @@ public abstract class Ghost extends Organism implements IGhost {
     }
 
 
-
     private void killPacman() {
         map.killPacman();
     }
@@ -111,7 +113,13 @@ public abstract class Ghost extends Organism implements IGhost {
     protected void move(int dx, int dy) {
         Map.Position newp = checkIsPacman(dx, dy);
         if (newp == null) return;
+       /* this.ignoredItemBelow = map.getOrganism(p.y(), p.x());
+        map.set(this, newp.y(), newp.x());
+        if(this.ignoredItemBelow instanceof Food || this.ignoredItemBelow instanceof PowerfullFood){
+            map.set(this.ignoredItemBelow, p.y(), p.x());
+        }*/
         p = newp;
+
     }
 
     protected Direction generateDirectionRandom() {
@@ -248,13 +256,12 @@ public abstract class Ghost extends Organism implements IGhost {
         Direction nextDirection = null;
 
         List<Direction> filtered = removeRepeatedPositions(allowed);
-        System.out.println("filtered: " + filtered);
 
-        if(filtered.isEmpty()){
-            nextDirection= direction.opposite();
+        if (filtered.isEmpty()) {
+            nextDirection = direction.opposite();
             // this will fill the stack so it can go backwards
             addToCornerStack(new Map.Position(p.y(), p.x()));
-        }else{
+        } else {
             for (Direction direction : filtered) {
                 int distance = getDeltaDirectionDistance(direction, currentCorner);
                 if (distance <= minDistance) {
@@ -270,7 +277,7 @@ public abstract class Ghost extends Organism implements IGhost {
         return nextDirection;
     }
 
-    protected Direction getBlinkyDirection(){
+    protected Direction getBlinkyDirection() {
         Map.Position pos = getDeltaByDirection(direction);
         if (canMove(this.map.getOrganism(pos.y(), pos.x()))) {
             return direction;
@@ -280,7 +287,7 @@ public abstract class Ghost extends Organism implements IGhost {
 
     private boolean isPacmanOnDirection(Direction direction) {
         Map.Position pacP = this.map.getPacmanPosition();
-        int x = p.x(),y = p.y();
+        int x = p.x(), y = p.y();
         while (true) {
             x += direction.getDeltaX();
             y += direction.getDeltaY();
@@ -288,7 +295,7 @@ public abstract class Ghost extends Organism implements IGhost {
                 return false;
             }
 
-            if(pacP.equals(new Map.Position(y,x))){
+            if (pacP.equals(new Map.Position(y, x))) {
                 return true;
             }
         }
@@ -296,17 +303,19 @@ public abstract class Ghost extends Organism implements IGhost {
 
     /**
      * pursuit mode on finding pacaman in available directions
+     *
      * @return
      */
-    protected Direction getClydeDirection(){
-        List<Direction> allowed =  getAllowedDirections();
-        for(Direction dir: allowed){
-            if(isPacmanOnDirection(dir)){
+    protected Direction getClydeDirection() {
+        List<Direction> allowed = getAllowedDirections();
+        for (Direction dir : allowed) {
+            if (isPacmanOnDirection(dir)) {
                 return dir;
             }
         }
         return getBlinkyDirection();
     }
+
     /**
      * @param allowed list
      * @return filtered by current corner position

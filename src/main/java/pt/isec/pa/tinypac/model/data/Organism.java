@@ -1,8 +1,5 @@
 package pt.isec.pa.tinypac.model.data;
 
-
-import pt.isec.pa.utils.Direction;
-
 public abstract class Organism implements IMazeElement {
     protected Map map;
 
