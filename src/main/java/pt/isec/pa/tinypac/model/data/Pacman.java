@@ -9,12 +9,16 @@ import pt.isec.pa.utils.Direction;
 import java.util.*;
 
 public class Pacman extends Organism implements Cloneable {
+    private final Map.Position start;
     private Direction direction;
     private Map.Position p;
     private Wrap enteredWrap = null;
+    private boolean isDeath = false;
+
 
     public Pacman(Map map, Map.Position p) {
         super(map);
+        start = new Map.Position(p.y(), p.x());
         this.p = p;
     }
 
@@ -33,10 +37,15 @@ public class Pacman extends Organism implements Cloneable {
             case UP -> this.up();
             case DOWN -> this.down();
         }
+
     }
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public boolean getIsDeath() {
+        return isDeath;
     }
 
     public void setDirection(Direction direction) {
@@ -57,6 +66,7 @@ public class Pacman extends Organism implements Cloneable {
 
         Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
         if (canNotMove(elemAtNewPlace)) {
+            movePacaman(0, 0);
             return;
         }
 
@@ -73,18 +83,12 @@ public class Pacman extends Organism implements Cloneable {
             return;
         }
 
-        if (elemAtNewPlace instanceof Empty) {
+        if (elemAtNewPlace == null) {
             movePacaman(dy, dx);
         }
 
-        if (elemAtNewPlace instanceof PowerfullFood) {
-            map.setGodMode();
-            movePacaman(dy, dx);
-        }
-
-
-        if (elemAtNewPlace instanceof Food) {
-            map.incFoodScore();
+        if (elemAtNewPlace instanceof PowerfullFood || elemAtNewPlace instanceof Food) {
+            map.eatFood(elemAtNewPlace);
             movePacaman(dy, dx);
         }
 
@@ -95,27 +99,21 @@ public class Pacman extends Organism implements Cloneable {
     }
 
     private void movePacaman(int dy, int dx) {
-        List<Pacman> pacmanList = this.map.findElementsOf(Pacman.class)
-                .stream()
-                .toList();
-        if (pacmanList.size() > 0) {
-            Pacman other = this.map.findElementsOf(Pacman.class)
-                    .stream()
-                    .toList().get(0).clone();
-            this.map.set(new Empty(map), other.p.y(), other.p.x());
+        if(isDeath){
+            return;
         }
-
+        map.set(null, p.y(), p.x());
         p = new Map.Position(p.y() + dy, p.x() + dx);
         this.map.set(this, p.y(), p.x());
     }
 
     private void movePacmanTo(int y, int x) {
-        Pacman other = this.map.findElementsOf(Pacman.class)
-                .stream()
-                .toList().get(0).clone();
-        this.map.set(new Empty(map), other.p.y(), other.p.x());
+        if(isDeath){
+            return;
+        }
 
 
+        map.set(null, p.y(), p.x());
         p = new Map.Position(y, x);
         this.map.set(this, p.y(), p.x());
     }
@@ -149,4 +147,12 @@ public class Pacman extends Organism implements Cloneable {
         }
     }
 
+    public void reset(){
+        p = new Map.Position(start.y(), start.x());
+        isDeath = false;
+    }
+
+    public void kill() {
+        isDeath = true;
+    }
 }

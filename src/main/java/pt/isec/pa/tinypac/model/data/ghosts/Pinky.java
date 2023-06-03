@@ -16,8 +16,7 @@ import pt.isec.pa.tinypac.model.data.Map;
 public class Pinky extends Ghost {
 
     public Pinky(Map map, Map.Position p) {
-        super(map);
-        this.p = p;
+        super(map, p);
         savePosition();
     }
 
@@ -28,6 +27,9 @@ public class Pinky extends Ghost {
 
     @Override
     public void evolve() {
+        if(!this.map.ghostsEnabled()){
+            return;
+        }
         direction = getNextDirection();
         switch (direction) {
             case UP -> this.up();

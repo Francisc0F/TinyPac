@@ -82,7 +82,7 @@ public class PacmanPowefullStateViewStack extends VBox {
     }
 
     private void setPanelVisible(){
-        setVisible(this.fsmObs.getState() == TinyPacState.UPDATECURRENTGAMESTATE);
+        setVisible(this.fsmObs.getState() == TinyPacState.PACMANPOWERFULLSTATE);
     }
 
     public void updateBoard() {

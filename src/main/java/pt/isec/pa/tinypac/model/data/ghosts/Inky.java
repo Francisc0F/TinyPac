@@ -6,14 +6,17 @@ import pt.isec.pa.tinypac.model.data.Map;
 public class Inky extends Ghost {
 
 
-    public Inky(Map p, Map.Position po) {
-        super(p);
-        this.p = po;
+    public Inky(Map map, Map.Position po) {
+        super(map, po);
         savePosition();
     }
 
     @Override
     public void evolve() {
+        if(!this.map.ghostsEnabled()){
+            return;
+        }
+
         direction = getNextDirection();
         switch (direction) {
             case UP -> this.up();

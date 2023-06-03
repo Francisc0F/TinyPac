@@ -18,8 +18,10 @@ public class Map {
     private final int godModeIterationTime = 20;
     private int godModeIteration = 0;
     private boolean isGodMode = false;
-    private List<Food> foodList = new ArrayList<>(90);
-    private List<PowerfullFood> powerfullFoodList = new ArrayList<>(90);
+    private List<Wrap> wrapList = new ArrayList<>(2);
+    private List<Food> foodList = new ArrayList<>(295);
+    private List<PowerfullFood> powerfullFoodList = new ArrayList<>(4);
+
     public void incGoodModeIteration() {
         godModeIteration++;
     }
@@ -28,7 +30,7 @@ public class Map {
         return godModeIteration >= godModeIterationTime;
     }
 
-    public void setGodMode() {
+    private void setGodMode() {
         godModeIteration = 0;
         isGodMode = true;
     }
@@ -48,6 +50,10 @@ public class Map {
         this.foodList.add(f);
     }
 
+    public void addToWrapList(Wrap f) {
+        this.wrapList.add(f);
+    }
+
     public void addToPowerFullFoodList(PowerfullFood f) {
         this.powerfullFoodList.add(f);
     }
@@ -59,16 +65,16 @@ public class Map {
             int dx = pos1.x - pos2.x;
             return (int) Math.sqrt(dy * dy + dx * dx);
         }
+
     }
 
     private final int height;
+
     private final int width;
     private Maze maze;
-    private Direction currentPacmanDirection;
     private ArrayList<Ghost> ghosts = new ArrayList<>(4);
     private Pacman pacman;
     private Fruit fruit;
-    private Position ghostsInitialPosition;
     private int iteration = 1;
     private int foodEaten = 0;
     private int fruitScore = 0;
@@ -89,6 +95,15 @@ public class Map {
 
     public int getHeight() {
         return height;
+    }
+
+    public void resetLevel() {
+        iteration = 0;
+
+        for (var ghost : ghosts)
+            ghost.reset();
+
+        pacman.reset();
     }
 
     public int getWidth() {
@@ -112,14 +127,14 @@ public class Map {
     }
 
     public void killPacman() {
-        this.pacman = null;
+        this.pacman.kill();
     }
 
     public int getFoodScore() {
         return foodEaten;
     }
 
-    public void incFoodScore() {
+    private void incFoodScore() {
         foodEaten++;
     }
 
@@ -159,12 +174,10 @@ public class Map {
     }
 
     public void setGhostsInitialPosition(Map.Position p) {
-        this.ghostsInitialPosition = p;
-
-        this.ghosts.add(new Clyde(this, ghostsInitialPosition));
-        this.ghosts.add(new Blinky(this, ghostsInitialPosition));
-        this.ghosts.add(new Pinky(this, ghostsInitialPosition));
-        this.ghosts.add(new Inky(this, ghostsInitialPosition));
+        this.ghosts.add(new Clyde(this, p));
+        this.ghosts.add(new Blinky(this, p));
+        this.ghosts.add(new Pinky(this, p));
+        this.ghosts.add(new Inky(this, p));
     }
 
     public void createFruit(Map.Position p) {
@@ -180,15 +193,15 @@ public class Map {
     }
 
     public void setCurrentPacmanDirection(Direction direction) {
-        this.currentPacmanDirection = direction;
+        pacman.setDirection(direction);
     }
 
-    private boolean ghostsEnabled() {
+    public boolean ghostsEnabled() {
         return iteration > ghostsEntrance;
     }
 
-    public boolean isPacmanAlive() {
-        return this.pacman != null;
+    public boolean isPacmanDeath() {
+        return this.pacman.getIsDeath();
     }
 
     public boolean noLivesRemaining() {
@@ -205,37 +218,51 @@ public class Map {
         return food.size() == 0 && powerfulFoods.size() == 0;
     }
 
-
-    public void updateLiveOrganisms() {
-        List<Organism> lst = new ArrayList<>();
-        this.pacman.setDirection(currentPacmanDirection);
-        lst.add(this.pacman);
-        lst.add(fruit);
-
-        if (ghostsEnabled()) {
-            lst.addAll(this.ghosts);
+    public boolean eatFood(Organism food) {
+        if (food instanceof Food) {
+            ((Food) food).setEated(true);
+            incFoodScore();
+            return true;
+         /*   if(foodList.remove(food)){
+                incFoodScore();
+                return true;
+            }
+            return false;*/
         }
 
-        for (var organism : lst)
+        if (food instanceof PowerfullFood) {
+            ((PowerfullFood) food).setEated(true);
+            setGodMode();
+            return true;
+           /* if(powerfullFoodList.remove(food)){
+                setGodMode();
+                return true;
+            }
+            return false;
+            */
+
+        }
+        return false;
+    }
+
+    public void updateLiveOrganisms() {
+        List<Organism> list = new ArrayList<>();
+        list.add(fruit);
+        list.addAll(foodList);
+        list.addAll(powerfullFoodList);
+        list.addAll(wrapList);
+
+        list.addAll(ghosts);
+        list.add(pacman);
+/*
+        if(pacman.getIsDeath()){
+            return;
+        }*/
+        for (var organism : list)
             organism.evolve();
     }
 
-
-    /**
-     *
-     * todo check ghosts
-     */
     public char[][] buildMap() {
-        char[][] char_board = maze.getMaze();
-
-        if (ghostsEnabled()) {
-            ghosts.forEach(x -> {
-                Map.Position xp = x.getP();
-                char_board[xp.y()][xp.x()] = x.getSymbol();
-            });
-        }
-
-
-        return char_board;
+        return maze.getMaze();
     }
 }

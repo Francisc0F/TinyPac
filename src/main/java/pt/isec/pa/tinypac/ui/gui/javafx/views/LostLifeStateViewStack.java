@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
@@ -47,8 +48,9 @@ public class LostLifeStateViewStack extends VBox {
         save.setFocusTraversable(false);
         pause.setFocusTraversable(false);
 
-
-        hgroup.getChildren().addAll(new Label("LostLife state"),scoreLabel, pause, save);
+        Label lostLife = new Label("You have died");
+        lostLife.setPadding(new Insets( 0,10,0, 0));
+        hgroup.getChildren().addAll(lostLife,scoreLabel, pause, save);
 
         getChildren().add(hgroup);
 
@@ -82,7 +84,7 @@ public class LostLifeStateViewStack extends VBox {
     }
 
     private void setPanelVisible(){
-        setVisible(this.fsmObs.getState() == TinyPacState.UPDATECURRENTGAMESTATE);
+        setVisible(this.fsmObs.getState() == TinyPacState.LOSTLIFESTATE);
     }
 
     public void updateBoard() {

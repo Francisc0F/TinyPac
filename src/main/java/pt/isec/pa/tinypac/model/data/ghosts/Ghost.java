@@ -1,10 +1,9 @@
 package pt.isec.pa.tinypac.model.data.ghosts;
 
-import pt.isec.pa.tinypac.model.data.GhostCave;
+import pt.isec.pa.tinypac.model.data.*;
 import pt.isec.pa.tinypac.model.data.Map;
-import pt.isec.pa.tinypac.model.data.Organism;
-import pt.isec.pa.tinypac.model.data.Wall;
 import pt.isec.pa.tinypac.model.data.food.Food;
+import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
@@ -20,11 +19,12 @@ public abstract class Ghost extends Organism implements IGhost {
     protected CornersOrder currentCorner;
     protected ArrayList<CornersOrder> order = new ArrayList<>(4);
     private final int distanceToChangeDirection = 5;
-    private int previousDistanceToCorner = 0;
-    private Organism ignoredItemBelow;
 
-    public Ghost(Map map) {
+    private Map.Position start;
+    public Ghost(Map map, Map.Position p) {
         super(map);
+        this.p = p;
+        start =  new Map.Position(p.y(), p.x());
         if (this instanceof Inky) {
             order.add(CornersOrder.BOTTOM_RIGHT);
             order.add(CornersOrder.BOTTOM_LEFT);
@@ -44,7 +44,9 @@ public abstract class Ghost extends Organism implements IGhost {
         }
 
     }
-
+    public void reset(){
+        p = new Map.Position(start.y(), start.x());
+    }
 
     public enum CornersOrder {
         BOTTOM_RIGHT, BOTTOM_LEFT, TOP_RIGHT, TOP_LEFT;
@@ -61,15 +63,9 @@ public abstract class Ghost extends Organism implements IGhost {
                 case TOP_RIGHT -> new Map.Position(0, map.getWidth() - 1);
                 case BOTTOM_LEFT -> new Map.Position(map.getHeight() - 1, 0);
                 case BOTTOM_RIGHT -> new Map.Position(map.getHeight() - 1, map.getWidth() - 1);
-                default -> null;
             };
         }
     }
-
-    public Map.Position getP() {
-        return p;
-    }
-
 
     @Override
     public void evolve() {
@@ -113,13 +109,16 @@ public abstract class Ghost extends Organism implements IGhost {
     protected void move(int dx, int dy) {
         Map.Position newp = checkIsPacman(dx, dy);
         if (newp == null) return;
-       /* this.ignoredItemBelow = map.getOrganism(p.y(), p.x());
-        map.set(this, newp.y(), newp.x());
-        if(this.ignoredItemBelow instanceof Food || this.ignoredItemBelow instanceof PowerfullFood){
-            map.set(this.ignoredItemBelow, p.y(), p.x());
-        }*/
-        p = newp;
+        moveGhost(newp.y(), newp.x());
+    }
 
+    private void moveGhost(int y, int x) {
+        Organism item = map.getOrganism(p.y(), p.x());
+        if(item == null || item instanceof Ghost){
+            map.set(null, p.y(), p.x());
+        }
+        p = new Map.Position(y, x);
+        map.set(this, p.y(), p.x());
     }
 
     protected Direction generateDirectionRandom() {
@@ -350,4 +349,13 @@ public abstract class Ghost extends Organism implements IGhost {
         position = previousMoves.pop();
     }
 */
+
+    @Override
+    public Ghost clone() {
+        try {
+            return (Ghost) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

@@ -29,12 +29,12 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
             return true;
         }
 
-        if (!map.isPacmanAlive() && map.noLivesRemaining()) {
+        if (!map.isPacmanDeath() && map.noLivesRemaining()) {
             changeState(TinyPacState.LOSTGAMESTATE);
             return true;
         }
 
-        if (!map.isPacmanAlive() && !map.noLivesRemaining()) {
+        if (map.isPacmanDeath() && !map.noLivesRemaining()) {
             changeState(TinyPacState.LOSTLIFESTATE);
             return true;
         }

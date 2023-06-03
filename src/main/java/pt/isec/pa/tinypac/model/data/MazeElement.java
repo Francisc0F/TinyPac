@@ -18,7 +18,4 @@ public class MazeElement extends Organism implements IMazeElement {
         return this.symbol;
     }
 
-    public boolean isWall() {
-        return symbol == 'x';
-    }
 }

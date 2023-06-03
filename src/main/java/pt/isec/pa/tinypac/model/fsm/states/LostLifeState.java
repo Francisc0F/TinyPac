@@ -10,6 +10,7 @@ public class LostLifeState extends TinyPacStateAdapter {
     public LostLifeState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
         map.decLives();
+        map.resetLevel();
     }
 
     @Override

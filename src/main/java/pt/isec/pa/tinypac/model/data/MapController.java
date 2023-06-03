@@ -44,35 +44,39 @@ public class MapController {
     }
 
     private Organism buildByChar(char symbol, int y, int x) {
-
+        Map.Position position = new Map.Position(y, x);
         return switch (symbol) {
             case 'M' -> {
-                Pacman p = new Pacman(map, new Map.Position(y, x));
+                Pacman p = new Pacman(map, position);
                 this.map.setPacman(p);
                 yield p;
             }
             case 'x' -> new Wall(map);
-            case 'W' -> new Wrap(map);
+            case 'W' -> {
+                Wrap wrap = new Wrap(map, position);
+                this.map.addToWrapList(wrap);
+                yield wrap;
+            }
             case 'o' -> {
-                Food f = new Food(map);
+                Food f = new Food(map, position);
                 this.map.addToFoodList(f);
+                yield f;
+            }
+            case 'O' -> {
+                PowerfullFood f = new PowerfullFood(map, position);
+                this.map.addToPowerFullFoodList(f);
                 yield f;
             }
             case 'y' -> new GhostCave(map);
             case 'Y' -> {
-                this.map.setGhostsInitialPosition(new Map.Position(y, x));
+                this.map.setGhostsInitialPosition(position);
                 yield new GhostStart(map);
             }
             case 'F' -> {
-                this.map.createFruit(new Map.Position(y, x));
+                this.map.createFruit(position);
                 yield null;
             }
-            case 'O' -> {
-                PowerfullFood f = new PowerfullFood(map);
-                this.map.addToPowerFullFoodList(f);
-                yield f;
-            }
-            default -> new MazeElement(symbol, map);
+            default -> null;
         };
     }
 

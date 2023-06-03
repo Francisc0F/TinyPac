@@ -8,7 +8,7 @@ public class Fruit extends Organism implements IMazeElement {
     public Fruit(Map environment, Map.Position p) {
         super(environment);
         this.p = p;
-        this.map.set(new Empty(map), p.y(), p.x());
+        this.map.set(null, p.y(), p.x());
     }
 
     public void evolve() {

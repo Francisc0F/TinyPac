@@ -6,8 +6,9 @@ public class Wrap extends Organism implements IMazeElement, Cloneable {
 
     private Map.Position p;
 
-    public Wrap(Map environment) {
+    public Wrap(Map environment, Map.Position p) {
         super(environment);
+        this.p = p;
     }
 
     public void setP(Map.Position p) {
@@ -20,6 +21,7 @@ public class Wrap extends Organism implements IMazeElement, Cloneable {
 
     @Override
     public void evolve() {
+        this.map.set(this, p.y(), p.x());
     }
 
     @Override
