@@ -42,6 +42,11 @@ public class UpdateCurrentGameStateViewStack extends VBox {
 
         Button pause = new Button("Pause");
         Button save = new Button("Save");
+
+        pause.setOnAction(event -> {
+            fsmObs.pause();
+        });
+
         save.setFocusTraversable(false);
         pause.setFocusTraversable(false);
 

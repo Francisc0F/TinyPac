@@ -30,6 +30,16 @@ public class Pinky extends Ghost {
         if(!this.map.ghostsEnabled()){
             return;
         }
+
+        if(isVulnerable){
+            Map.Position next = previousMoves.pop();
+            moveGhost(next.y(), next.x());
+            if(previousMoves.size() == 0){
+                isVulnerable = false;
+            }
+            return;
+        }
+
         direction = getNextDirection();
         switch (direction) {
             case UP -> this.up();

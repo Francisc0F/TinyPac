@@ -8,6 +8,7 @@ import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,8 +16,36 @@ import java.util.List;
  * storing information about the walls, obstacles, and paths of the maze.
  */
 public class Map {
-    private final int godModeIterationTime = 20;
+
+    private class GhostsPoints implements Iterator<Integer> {
+        private int number;
+
+        public GhostsPoints() {
+            number = 50;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public Integer next() {
+            int currentNumber = number;
+            number += 50;
+            return currentNumber;
+        }
+
+        public void reset() {
+            number = 50;
+        }
+    }
+
+
+    private final int godModeIterationTime = 50;
     private int godModeIteration = 0;
+    private int ghostScore = 0;
+    private GhostsPoints ghostPoints = new GhostsPoints();
     private boolean isGodMode = false;
     private List<Wrap> wrapList = new ArrayList<>(2);
     private List<Food> foodList = new ArrayList<>(295);
@@ -26,13 +55,21 @@ public class Map {
         godModeIteration++;
     }
 
-    public boolean godModeEnded() {
+
+    public boolean godModeTimeEnded() {
         return godModeIteration >= godModeIterationTime;
     }
 
     private void setGodMode() {
+        ghostPoints.reset();
         godModeIteration = 0;
         isGodMode = true;
+        setGhostsVulnerable(true);
+    }
+
+    public void setNormalMode() {
+        isGodMode = false;
+        setGhostsVulnerable(false);
     }
 
     public void incIteration() {
@@ -55,7 +92,22 @@ public class Map {
     }
 
     public void addToPowerFullFoodList(PowerfullFood f) {
+        ghostPoints.reset();
         this.powerfullFoodList.add(f);
+    }
+
+    public void setGhostsVulnerable(boolean isVulnerable) {
+        for (var organism : ghosts)
+            organism.setVulnerable(isVulnerable);
+    }
+
+    public boolean isGodMode() {
+        return isGodMode;
+    }
+
+    public void eatGhost(Ghost ghost) {
+        ghost.setDeath();
+        ghostScore += ghostPoints.next();
     }
 
     public record Position(int y, int x) {
@@ -65,7 +117,6 @@ public class Map {
             int dx = pos1.x - pos2.x;
             return (int) Math.sqrt(dy * dy + dx * dx);
         }
-
     }
 
     private final int height;
@@ -115,7 +166,10 @@ public class Map {
     }
 
     public int getTotalScore() {
-        return this.getFoodScore() + this.getPowerfullFoodScore() + this.getFruitScore();
+        return this.getFoodScore() +
+                this.getPowerfullFoodScore() +
+                this.getFruitScore() +
+                ghostScore;
     }
 
     private int getPowerfullFoodScore() {
@@ -175,9 +229,9 @@ public class Map {
 
     public void setGhostsInitialPosition(Map.Position p) {
         this.ghosts.add(new Clyde(this, p));
-        this.ghosts.add(new Blinky(this, p));
+       /* this.ghosts.add(new Blinky(this, p));
         this.ghosts.add(new Pinky(this, p));
-        this.ghosts.add(new Inky(this, p));
+        this.ghosts.add(new Inky(this, p));*/
     }
 
     public void createFruit(Map.Position p) {

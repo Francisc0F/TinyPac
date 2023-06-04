@@ -15,10 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.TinyPac;
-import pt.isec.pa.tinypac.ui.gui.javafx.views.InitGameStateViewStack;
-import pt.isec.pa.tinypac.ui.gui.javafx.views.LostLifeStateViewStack;
-import pt.isec.pa.tinypac.ui.gui.javafx.views.PacmanPowefullStateViewStack;
-import pt.isec.pa.tinypac.ui.gui.javafx.views.UpdateCurrentGameStateViewStack;
+import pt.isec.pa.tinypac.ui.gui.javafx.views.*;
 import pt.isec.pa.utils.Direction;
 
 public class UI_Root extends BorderPane {
@@ -90,12 +87,14 @@ public class UI_Root extends BorderPane {
         UpdateCurrentGameStateViewStack updateCurrentGameStateViewStack = new UpdateCurrentGameStateViewStack(this.model.getFsmObs());
         LostLifeStateViewStack lostLifeStateViewStack = new LostLifeStateViewStack(this.model.getFsmObs());
         PacmanPowefullStateViewStack pacmanPowefullStateViewStack = new PacmanPowefullStateViewStack(this.model.getFsmObs());
+        PauseGameStateViewStack pauseGameStateViewStack = new PauseGameStateViewStack(this.model.getFsmObs());
 
         StackPane stackPane = new StackPane(
                 start,
                 updateCurrentGameStateViewStack,
                 lostLifeStateViewStack,
-                pacmanPowefullStateViewStack
+                pacmanPowefullStateViewStack,
+                pauseGameStateViewStack
         );
         stackPane.setAlignment(Pos.CENTER);
         setCenter(stackPane);

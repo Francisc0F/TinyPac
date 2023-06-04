@@ -45,6 +45,10 @@ public class InitGameStateViewStack extends VBox {
         save.setFocusTraversable(false);
         pause.setFocusTraversable(false);
 
+        pause.setOnAction(event -> {
+            fsmObs.pause();
+        });
+
 
         hgroup.getChildren().addAll(scoreLabel, pause, save);
 
@@ -79,7 +83,7 @@ public class InitGameStateViewStack extends VBox {
         });
     }
 
-    private void setPanelVisible(){
+    private void setPanelVisible() {
         setVisible(this.fsmObs.getState() == TinyPacState.INITGAMESTATE);
     }
 

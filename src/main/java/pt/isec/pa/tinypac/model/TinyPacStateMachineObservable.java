@@ -29,6 +29,15 @@ public class TinyPacStateMachineObservable {
         return this.fsm.getMap();
     }
 
+    public void pause(){
+        this.fsm.pause();
+        propertyChangeSupport.firePropertyChange(Events.pauseGame, null, null);
+    }
+
+    public void resume(){
+        this.fsm.resume();
+        propertyChangeSupport.firePropertyChange(Events.resumeGame, null, null);
+    }
 
     public void updateBoard() {
         this.fsm.evolve();

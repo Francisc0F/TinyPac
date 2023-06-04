@@ -12,8 +12,9 @@ import java.util.*;
 public abstract class Ghost extends Organism implements IGhost {
     public static final char SYMBOL = 'y';
     boolean isVulnerable = false;
+    protected  boolean isDeath = false;
     protected Direction direction = Direction.UP;
-    Stack<Map.Position> previousMoves = new Stack<Map.Position>();
+    Stack<Map.Position> previousMoves = new Stack<>();
     protected Stack<Map.Position> currentCornerMoves = new Stack<>();
     protected Map.Position p;
     protected CornersOrder currentCorner;
@@ -21,10 +22,11 @@ public abstract class Ghost extends Organism implements IGhost {
     private final int distanceToChangeDirection = 5;
 
     private Map.Position start;
+
     public Ghost(Map map, Map.Position p) {
         super(map);
         this.p = p;
-        start =  new Map.Position(p.y(), p.x());
+        start = new Map.Position(p.y(), p.x());
         if (this instanceof Inky) {
             order.add(CornersOrder.BOTTOM_RIGHT);
             order.add(CornersOrder.BOTTOM_LEFT);
@@ -44,8 +46,17 @@ public abstract class Ghost extends Organism implements IGhost {
         }
 
     }
-    public void reset(){
+
+    public void reset() {
         p = new Map.Position(start.y(), start.x());
+    }
+
+    public void setVulnerable( boolean isVulnerable) {
+        this.isVulnerable = isVulnerable;
+    }
+
+    public void setDeath(){
+         isDeath = true;
     }
 
     public enum CornersOrder {
@@ -77,7 +88,7 @@ public abstract class Ghost extends Organism implements IGhost {
 
 
     public void savePosition() {
-        previousMoves.push(new Map.Position(p.x(), p.y()));
+        previousMoves.push(new Map.Position(p.y(), p.x()));
         addToCornerStack(new Map.Position(p.y(), p.x()));
     }
 
@@ -112,9 +123,9 @@ public abstract class Ghost extends Organism implements IGhost {
         moveGhost(newp.y(), newp.x());
     }
 
-    private void moveGhost(int y, int x) {
+    protected void moveGhost(int y, int x) {
         Organism item = map.getOrganism(p.y(), p.x());
-        if(item == null || item instanceof Ghost){
+        if (item == null || item instanceof Ghost) {
             map.set(null, p.y(), p.x());
         }
         p = new Map.Position(y, x);
@@ -145,17 +156,6 @@ public abstract class Ghost extends Organism implements IGhost {
     public char getSymbol() {
         return SYMBOL;
     }
-
-    // todo postion save list and backwards move
-    /*protected abstract void regularMove();*/
-
-   /* private void backwardsMove() {
-        if (previousMoves.size() == 1) {
-            isVulnerable = false;
-        } else {
-            setPreviousMove();
-        }
-    }*/
 
     @Override
     public boolean getIsVulnerable() {
@@ -241,6 +241,7 @@ public abstract class Ghost extends Organism implements IGhost {
      * pinky & inky corner logic
      */
     protected Direction getNextDirection() {
+
         int currentDistanceToCorner = Map.Position.getDistance(p, CornersOrder.getCurrentCornerPosition(currentCorner, map));
 
         if (currentDistanceToCorner <= distanceToChangeDirection) {
@@ -269,10 +270,6 @@ public abstract class Ghost extends Organism implements IGhost {
                 }
             }
         }
-
-        //System.out.println("currentDistanceToCorner: " + currentDistanceToCorner);
-
-        //previousDistanceToCorner = currentDistanceToCorner;
         return nextDirection;
     }
 
@@ -283,6 +280,7 @@ public abstract class Ghost extends Organism implements IGhost {
         }
         return generateDirectionRandom();
     }
+
 
     private boolean isPacmanOnDirection(Direction direction) {
         Map.Position pacP = this.map.getPacmanPosition();
@@ -303,7 +301,7 @@ public abstract class Ghost extends Organism implements IGhost {
     /**
      * pursuit mode on finding pacaman in available directions
      *
-     * @return
+     * @return Direction clyde next direction
      */
     protected Direction getClydeDirection() {
         List<Direction> allowed = getAllowedDirections();
@@ -344,11 +342,6 @@ public abstract class Ghost extends Organism implements IGhost {
         Map.Position pos = getDeltaByDirection(direction);
         return Map.Position.getDistance(pos, CornersOrder.getCurrentCornerPosition(corner, map));
     }
-
-  /*  private void setPreviousMove() {
-        position = previousMoves.pop();
-    }
-*/
 
     @Override
     public Ghost clone() {

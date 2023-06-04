@@ -8,7 +8,6 @@ import pt.isec.pa.utils.Direction;
 public class PacmanPowerfullState extends TinyPacStateAdapter {
     public PacmanPowerfullState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-
     }
 
     @Override
@@ -18,13 +17,13 @@ public class PacmanPowerfullState extends TinyPacStateAdapter {
 
     @Override
     public boolean evolve() {
-
         if(map.allFoodEaten()){
             changeState(TinyPacState.NEWLEVELSTATE);
             return false;
         }
 
-        if(map.godModeEnded()){
+        if(map.godModeTimeEnded()){
+            map.setNormalMode();
             changeState(TinyPacState.UPDATECURRENTGAMESTATE);
             return true;
         }

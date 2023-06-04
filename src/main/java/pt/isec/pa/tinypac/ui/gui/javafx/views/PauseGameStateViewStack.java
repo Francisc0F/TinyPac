@@ -16,13 +16,13 @@ import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.utils.Direction;
 
-public class PacmanPowefullStateViewStack extends VBox {
+public class PauseGameStateViewStack extends VBox {
     private final Label scoreLabel;
     private final Group board;
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils = new Utils();
 
-    public PacmanPowefullStateViewStack(TinyPacStateMachineObservable fsmObs) {
+    public PauseGameStateViewStack(TinyPacStateMachineObservable fsmObs) {
         super();
         this.fsmObs = fsmObs;
         this.scoreLabel = new Label();
@@ -42,13 +42,22 @@ public class PacmanPowefullStateViewStack extends VBox {
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
 
 
-        Button pause = new Button("Pause");
+        Button resume = new Button("Resume");
+ /*       resume.setFont(utils.pixelfont);
+        resume.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);" +
+                "-fx-border-color: grey;" +
+                "-fx-padding: 10px;");*/
+
+
         Button save = new Button("Save");
         save.setFocusTraversable(false);
-        pause.setFocusTraversable(false);
+        resume.setFocusTraversable(false);
+        resume.setOnAction(event -> {
+            fsmObs.resume();
+        });
 
 
-        hgroup.getChildren().addAll(new Label("Powerlfull game state"),scoreLabel, pause, save);
+        hgroup.getChildren().addAll(scoreLabel, resume, save);
 
         getChildren().add(hgroup);
 
@@ -82,7 +91,7 @@ public class PacmanPowefullStateViewStack extends VBox {
     }
 
     private void setPanelVisible(){
-        setVisible(this.fsmObs.getState() == TinyPacState.PACMANPOWERFULLSTATE);
+        setVisible(this.fsmObs.getState() == TinyPacState.PAUSEGAMESTATE);
     }
 
     public void updateBoard() {
@@ -100,6 +109,7 @@ public class PacmanPowefullStateViewStack extends VBox {
                 // image is suffering from antialiasing
                 Circle shape = null;
                 switch (board[y][x]) {
+
                     case ' ' -> image.setImage(utils.empty);
                     case 'x' -> image.setImage(utils.wall);
                     case 'o' -> {
@@ -116,8 +126,17 @@ public class PacmanPowefullStateViewStack extends VBox {
                         shape = utils.buildCircle(x, y, Color.rgb(255, 230, 0), 5);
                     }
                     case 'W' -> image.setImage(utils.wrap);
-                    case '%','@', '&', '#'   -> {
-                        shape = utils.buildCircle(x, y, Color.WHITE, 10);
+                    case '%' -> {
+                        shape = utils.buildCircle(x, y, Color.PINK, 10);
+                    }
+                    case '@' -> {
+                        shape = utils.buildCircle(x, y, Color.BLUE, 10);
+                    }
+                    case '&' -> {
+                        shape = utils.buildCircle(x, y, Color.RED, 10);
+                    }
+                    case '#' -> {
+                        shape = utils.buildCircle(x, y, Color.GREEN, 10);
                     }
                 }
                 if (shape != null) {

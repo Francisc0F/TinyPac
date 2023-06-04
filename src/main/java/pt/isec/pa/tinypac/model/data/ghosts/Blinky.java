@@ -1,6 +1,7 @@
 package pt.isec.pa.tinypac.model.data.ghosts;
 
 import pt.isec.pa.tinypac.model.data.*;
+import pt.isec.pa.utils.Direction;
 
 
 /**
@@ -20,6 +21,15 @@ public class Blinky extends Ghost {
        if(!this.map.ghostsEnabled()){
            return;
        }
+        System.out.println("previousMoves" +  previousMoves.size());
+        if(isVulnerable){
+            Map.Position next = previousMoves.pop();
+            moveGhost(next.y(), next.x());
+            if(previousMoves.size() == 0){
+                isVulnerable = false;
+            }
+            return;
+        }
 
         direction = getBlinkyDirection();
         switch (direction) {
@@ -30,6 +40,7 @@ public class Blinky extends Ghost {
         }
         savePosition();
     }
+
 
     @Override
     public char getSymbol() {

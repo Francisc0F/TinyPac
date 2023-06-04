@@ -54,4 +54,8 @@ public class TinyPacStateMachine {
     public Direction getDirection() {
         return this.mapController.map.getPacmanDirection();
     }
+
+    public void resume() {
+        this.state.resume();
+    }
 }

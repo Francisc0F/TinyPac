@@ -11,10 +11,25 @@ public class Clyde extends Ghost {
 
     @Override
     public void evolve() {
-        if(!this.map.ghostsEnabled()){
+        if (!this.map.ghostsEnabled()) {
             return;
         }
 
+        if (isDeath) {
+            if (map.getOrganism(p.y(), p.x()) instanceof Clyde) {
+                map.set(null, p.y(), p.x());
+            }
+            return;
+        }
+
+        if (isVulnerable) {
+            Map.Position next = previousMoves.pop();
+            moveGhost(next.y(), next.x());
+            if (previousMoves.size() == 0) {
+                isVulnerable = false;
+            }
+            return;
+        }
         direction = getClydeDirection();
         switch (direction) {
             case UP -> this.up();

@@ -19,7 +19,7 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
     @Override
     public boolean evolve() {
 
-        if (map.godModeEnded()) {
+        if (map.isGodMode()) {
             changeState(TinyPacState.PACMANPOWERFULLSTATE);
             return true;
         }
@@ -42,17 +42,7 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
         map.updateLiveOrganisms();
         map.incIteration();
         return true;
-
-  /*      switch (action) {
-            case PACKILLED -> ;
-            case SUCCEED -> changeState(TinyPacState.UPDATECURRENTGAMESTATE);
-            case GODMODE -> changeState(TinyPacState.PACMANPOWERFULLSTATE);
-            case WONLEVEL -> changeState(TinyPacState.NEWLEVELSTATE);
-            case ENDEDGAME -> changeState(TinyPacState.FINISHGAMESTATE);
-        }*/
-
     }
-
 
     @Override
     public boolean pause() {

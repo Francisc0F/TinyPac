@@ -28,6 +28,7 @@ public class PauseGameState extends TinyPacStateAdapter {
      */
     @Override
     public boolean resume() {
+        changeState(TinyPacState.UPDATECURRENTGAMESTATE);
         return true;
     }
 
