@@ -7,6 +7,8 @@ import pt.isec.pa.tinypac.model.data.Organism;
 import java.util.Objects;
 
 public class PowerfullFood extends Organism implements IMazeElement {
+    public static final char SYMBOL = 'O';
+
     private Map.Position p;
     private boolean eated;
 
@@ -30,7 +32,7 @@ public class PowerfullFood extends Organism implements IMazeElement {
 
     @Override
     public char getSymbol() {
-        return 'O';
+        return SYMBOL;
     }
 
     @Override

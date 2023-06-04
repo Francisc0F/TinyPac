@@ -5,18 +5,17 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
+import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 import pt.isec.pa.utils.Direction;
 
-public class PauseGameStateViewStack extends VBox {
+public class PauseGameStateViewStack extends StackPane {
     private final Label scoreLabel;
     private final Group board;
     private final TinyPacStateMachineObservable fsmObs;
@@ -34,123 +33,60 @@ public class PauseGameStateViewStack extends VBox {
     }
 
     private void buildView() {
-        HBox hgroup = new HBox();
         setAlignment(Pos.CENTER);
-        hgroup.setAlignment(Pos.CENTER);
-
         //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
 
+        VBox innerContentBelow = new VBox();
 
-        Button resume = new Button("Resume");
- /*       resume.setFont(utils.pixelfont);
-        resume.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);" +
-                "-fx-border-color: grey;" +
-                "-fx-padding: 10px;");*/
+        innerContentBelow.getChildren().add(new HeaderScoreBarComponent(fsmObs, utils));
+        innerContentBelow.getChildren().add(new BoardComponent(fsmObs, utils));
+        innerContentBelow.getChildren().add(new LifesComponent(fsmObs, utils));
+        innerContentBelow.getChildren().add(new LowerMenuComponent(fsmObs, utils));
+
+        getChildren().add(innerContentBelow);
+
+        HBox menuHBox = new HBox();
+        VBox menuVBox = new VBox();
+        menuHBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        menuVBox.setAlignment(Pos.CENTER);
+        /*   menuVBox.setStyle("-fx-padding: ");*/
+
+        menuVBox.getChildren().addAll(createMenu());
+
+        menuHBox.getChildren().add(menuVBox);
+        menuHBox.setAlignment(Pos.CENTER);
 
 
-        Button save = new Button("Save");
-        save.setFocusTraversable(false);
-        resume.setFocusTraversable(false);
-        resume.setOnAction(event -> {
-            fsmObs.resume();
-        });
+        getChildren().add(menuHBox);
 
-
-        hgroup.getChildren().addAll(scoreLabel, resume, save);
-
-        getChildren().add(hgroup);
-
-        Pane boardContainer = new Pane(board);
-        HBox contentCenteredWrapper = new HBox(boardContainer);
-
-        boardContainer.setStyle("" +
-                "-fx-border-color: grey; " +
-                "-fx-border-width: 5px; " +
-                "-fx-border-style: solid;" +
-                "-fx-border-radius: 3px;" +
-                "-fx-background-color: lighgrey;" +
-                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
-        );
-
-        contentCenteredWrapper.setStyle("" +
-                "-fx-background-color: lighgrey;" +
-                "-fx-effect: dropshadow(gaussian, grey, 3.9, 0.3, 0.3, 0.3);"
-        );
-        contentCenteredWrapper.setAlignment(Pos.CENTER);
-
-        getChildren().add(contentCenteredWrapper);
     }
 
     private void createObservables() {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            updateBoard();
-            this.scoreLabel.setText("" + this.fsmObs.getScore());
             setPanelVisible();
         });
     }
 
-    private void setPanelVisible(){
+    private VBox createMenu() {
+        VBox menu = new VBox(20);
+        menu.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, null)));
+        menu.setAlignment(Pos.CENTER);
+
+        Label label = new Label("Paused");
+        label.setFont(utils.pixelfont);
+        label.setStyle("-fx-text-fill: white");
+
+        Button saveButton = new PacButtonComponent("Save", utils, Color.GREENYELLOW, Color.ORANGE);
+        Button resumeButton = new PacButtonComponent("Resume", utils, Color.GREEN, Color.ORANGE);
+        Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
+
+        menu.getChildren().addAll(label, saveButton, resumeButton, quitButton);
+
+        return menu;
+    }
+
+    private void setPanelVisible() {
         setVisible(this.fsmObs.getState() == TinyPacState.PAUSEGAMESTATE);
     }
-
-    public void updateBoard() {
-        char board[][] = this.fsmObs.getMap();
-        this.board.getChildren().clear();
-        Direction pacmanDirection = this.fsmObs.getDirection();
-
-        for (int y = 0; y < board.length; y++) {
-            for (int x = 0; x < board[x].length; x++) {
-                ImageView image = new ImageView();
-                image.setX(x * Utils.BLOCK_SIZE);
-                image.setY(y * Utils.BLOCK_SIZE);
-                image.setPreserveRatio(true);
-                image.setFitWidth(Utils.BLOCK_SIZE);
-                // image is suffering from antialiasing
-                Circle shape = null;
-                switch (board[y][x]) {
-
-                    case ' ' -> image.setImage(utils.empty);
-                    case 'x' -> image.setImage(utils.wall);
-                    case 'o' -> {
-                        shape = utils.buildCircle(x, y, Color.rgb(255, 204, 0), 3);
-                    }
-                    case 'M' -> {
-                        image.setImage(utils.pacmanopen);
-                        if (pacmanDirection != null) {
-                            utils.setPacmanRotation(image, pacmanDirection);
-                        }
-                    }
-                    case 'F' -> image.setImage(utils.fruit);
-                    case 'O' -> {
-                        shape = utils.buildCircle(x, y, Color.rgb(255, 230, 0), 5);
-                    }
-                    case 'W' -> image.setImage(utils.wrap);
-                    case '%' -> {
-                        shape = utils.buildCircle(x, y, Color.PINK, 10);
-                    }
-                    case '@' -> {
-                        shape = utils.buildCircle(x, y, Color.BLUE, 10);
-                    }
-                    case '&' -> {
-                        shape = utils.buildCircle(x, y, Color.RED, 10);
-                    }
-                    case '#' -> {
-                        shape = utils.buildCircle(x, y, Color.GREEN, 10);
-                    }
-                }
-                if (shape != null) {
-                   /* shape.setStroke(Color.RED);
-                    shape.setStrokeWidth(1);*/
-                }
-
-                Pane container = new Pane(shape != null ? shape : image);
-                container.setPrefSize(Utils.BLOCK_SIZE, Utils.BLOCK_SIZE);
-
-                //container.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
-                this.board.getChildren().add(container);
-            }
-        }
-    }
-
 }

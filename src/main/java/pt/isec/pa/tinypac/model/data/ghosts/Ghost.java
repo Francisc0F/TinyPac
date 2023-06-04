@@ -10,7 +10,7 @@ import pt.isec.pa.utils.Direction;
 import java.util.*;
 
 public abstract class Ghost extends Organism implements IGhost {
-    public static final char SYMBOL = 'y';
+    public static final char VULNERABLE = '$';
     boolean isVulnerable = false;
     protected  boolean isDeath = false;
     protected Direction direction = Direction.UP;
@@ -150,11 +150,6 @@ public abstract class Ghost extends Organism implements IGhost {
         }
 
         return getRandomDirection(allowedDirections);
-    }
-
-    @Override
-    public char getSymbol() {
-        return SYMBOL;
     }
 
     @Override

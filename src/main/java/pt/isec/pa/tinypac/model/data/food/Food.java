@@ -7,6 +7,8 @@ import pt.isec.pa.tinypac.model.data.Organism;
 import java.util.Objects;
 
 public class Food extends Organism implements IMazeElement {
+    public static final char SYMBOL = 'o';
+
     private Map.Position p;
     private boolean eated = false;
     public Food(Map environment, Map.Position p) {
@@ -28,7 +30,7 @@ public class Food extends Organism implements IMazeElement {
     }
     @Override
     public char getSymbol() {
-        return 'o';
+        return SYMBOL;
     }
 
     @Override

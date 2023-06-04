@@ -3,6 +3,7 @@ package pt.isec.pa.tinypac.model.data.food;
 import pt.isec.pa.tinypac.model.data.*;
 
 public class Fruit extends Organism implements IMazeElement {
+    public static final char SYMBOL = 'F';
     Map.Position p;
 
     public Fruit(Map environment, Map.Position p) {
@@ -20,7 +21,7 @@ public class Fruit extends Organism implements IMazeElement {
 
     @Override
     public char getSymbol() {
-        return 'F';
+        return SYMBOL;
     }
 
 }

@@ -14,15 +14,10 @@ import pt.isec.pa.tinypac.model.data.Map;
  * 10-15% da largura do tabuleiro;
  */
 public class Pinky extends Ghost {
-
+    public static final char SYMBOL = '&';
     public Pinky(Map map, Map.Position p) {
         super(map, p);
         savePosition();
-    }
-
-    @Override
-    public char getSymbol() {
-        return '&';
     }
 
     @Override
@@ -48,5 +43,10 @@ public class Pinky extends Ghost {
             case LEFT -> this.left();
         }
         savePosition();
+    }
+
+    @Override
+    public char getSymbol() {
+        return isVulnerable ? VULNERABLE : SYMBOL;
     }
 }

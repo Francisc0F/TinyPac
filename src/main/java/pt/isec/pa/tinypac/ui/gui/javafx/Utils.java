@@ -11,7 +11,6 @@ import java.util.Objects;
 
 public class Utils {
     public Image empty = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/empty.png")));
-    public Image white = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/white.png")));
     public Image wall = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/wall.png")));
     public Image food = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/food.png")));
     public Image pacmanopen = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/pacman-open.png")));

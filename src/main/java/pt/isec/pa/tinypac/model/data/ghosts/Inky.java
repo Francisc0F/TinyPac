@@ -4,7 +4,7 @@ import pt.isec.pa.tinypac.model.data.Map;
 
 
 public class Inky extends Ghost {
-
+    public static final char SYMBOL = '#';
 
     public Inky(Map map, Map.Position po) {
         super(map, po);
@@ -36,6 +36,6 @@ public class Inky extends Ghost {
 
     @Override
     public char getSymbol() {
-        return '#';
+        return isVulnerable ? VULNERABLE : SYMBOL;
     }
 }

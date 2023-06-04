@@ -3,6 +3,7 @@ package pt.isec.pa.tinypac.model.data;
 import java.util.Objects;
 
 public class Wrap extends Organism implements IMazeElement, Cloneable {
+    public static final char SYMBOL = 'W';
 
     private Map.Position p;
 
@@ -26,7 +27,7 @@ public class Wrap extends Organism implements IMazeElement, Cloneable {
 
     @Override
     public char getSymbol() {
-        return 'W';
+        return SYMBOL;
     }
 
     @Override

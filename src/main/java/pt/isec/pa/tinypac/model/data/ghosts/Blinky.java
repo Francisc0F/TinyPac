@@ -1,8 +1,6 @@
 package pt.isec.pa.tinypac.model.data.ghosts;
 
 import pt.isec.pa.tinypac.model.data.*;
-import pt.isec.pa.utils.Direction;
-
 
 /**
  * Este fantasma desloca-se sempre em frente e quando chega a uma parede ou cruzamento
@@ -10,6 +8,7 @@ import pt.isec.pa.utils.Direction;
  * direções disponíveis
  */
 public class Blinky extends Ghost {
+    public final static char SYMBOL = '@';
 
     public Blinky(Map map, Map.Position p) {
         super(map, p);
@@ -21,7 +20,7 @@ public class Blinky extends Ghost {
        if(!this.map.ghostsEnabled()){
            return;
        }
-        System.out.println("previousMoves" +  previousMoves.size());
+
         if(isVulnerable){
             Map.Position next = previousMoves.pop();
             moveGhost(next.y(), next.x());
@@ -44,6 +43,6 @@ public class Blinky extends Ghost {
 
     @Override
     public char getSymbol() {
-        return '@';
+        return isVulnerable ? VULNERABLE : SYMBOL;
     }
 }

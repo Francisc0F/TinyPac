@@ -10,6 +10,7 @@ import pt.isec.pa.utils.Direction;
 import java.util.*;
 
 public class Pacman extends Organism implements Cloneable {
+    public static final char SYMBOL = 'M';
     private final Map.Position start;
     private Direction direction;
     private Map.Position p;

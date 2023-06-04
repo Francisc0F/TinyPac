@@ -41,7 +41,6 @@ public class Map {
         }
     }
 
-
     private final int godModeIterationTime = 50;
     private int godModeIteration = 0;
     private int ghostScore = 0;
@@ -54,7 +53,6 @@ public class Map {
     public void incGoodModeIteration() {
         godModeIteration++;
     }
-
 
     public boolean godModeTimeEnded() {
         return godModeIteration >= godModeIterationTime;
@@ -138,7 +136,6 @@ public class Map {
         this.width = width;
         this.maze = new Maze(height, width);
     }
-
 
     public void incFruitScore() {
         fruitScore += 25;

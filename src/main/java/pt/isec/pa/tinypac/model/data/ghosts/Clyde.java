@@ -3,6 +3,7 @@ package pt.isec.pa.tinypac.model.data.ghosts;
 import pt.isec.pa.tinypac.model.data.Map;
 
 public class Clyde extends Ghost {
+    public static final char SYMBOL = '%';
 
     public Clyde(Map p, Map.Position po) {
         super(p, po);
@@ -42,6 +43,6 @@ public class Clyde extends Ghost {
 
     @Override
     public char getSymbol() {
-        return '%';
+        return isVulnerable ? VULNERABLE : SYMBOL;
     }
 }
