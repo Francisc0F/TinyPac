@@ -1,9 +1,9 @@
-package pt.isec.pa.tinypac.ui.gui.javafx.views;
+package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
+import pt.isec.pa.tinypac.model.TinyPac;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.BoardComponent;
@@ -12,12 +12,12 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.LifesComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LowerMenuComponent;
 
 public class UpdateCurrentGameStateViewStack extends VBox {
-    private final TinyPacStateMachineObservable fsmObs;
+    private final TinyPac model;
     private final Utils utils = new Utils();
 
-    public UpdateCurrentGameStateViewStack(TinyPacStateMachineObservable fsmObs) {
+    public UpdateCurrentGameStateViewStack(TinyPac model) {
         super();
-        this.fsmObs = fsmObs;
+        this.model = model;
         buildView();
         createObservables();
         setPanelVisible();
@@ -27,21 +27,21 @@ public class UpdateCurrentGameStateViewStack extends VBox {
         setAlignment(Pos.CENTER);
         //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
-        getChildren().add(new HeaderScoreBarComponent(fsmObs, utils));
-        getChildren().add(new BoardComponent(fsmObs, utils));
-        getChildren().add(new LifesComponent(fsmObs, utils));
-        getChildren().add(new LowerMenuComponent(fsmObs, utils));
+        getChildren().add(new HeaderScoreBarComponent(model.getFsmObs(), utils));
+        getChildren().add(new BoardComponent(model.getFsmObs(), utils));
+        getChildren().add(new LifesComponent(model.getFsmObs(), utils));
+        getChildren().add(new LowerMenuComponent(model.getFsmObs(), utils));
     }
 
 
     private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
+        model.getFsmObs().addPropertyChangeListener(Events.updateBoard, evt -> {
             setPanelVisible();
         });
     }
 
     private void setPanelVisible() {
-        setVisible(this.fsmObs.getState() == TinyPacState.UPDATECURRENTGAMESTATE);
+        setVisible(model.getFsmObs().getState() == TinyPacState.UPDATECURRENTGAMESTATE);
     }
 
 }

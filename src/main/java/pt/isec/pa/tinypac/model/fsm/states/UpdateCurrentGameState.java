@@ -8,7 +8,8 @@ import pt.isec.pa.utils.Direction;
 public class UpdateCurrentGameState extends TinyPacStateAdapter {
     public UpdateCurrentGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-
+        map.updateLiveOrganisms();
+        map.incIteration();
     }
 
     @Override
@@ -29,18 +30,17 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
             return true;
         }
 
-        if (!map.isPacmanDeath() && map.noLivesRemaining()) {
-            changeState(TinyPacState.LOSTGAMESTATE);
-            return true;
-        }
-
-        if (map.isPacmanDeath() && !map.noLivesRemaining()) {
+        if (map.isPacmanDeath()) {
+            map.decLives();
+            if (map.isPacmanDeath() && map.noLivesRemaining()) {
+                changeState(TinyPacState.LOSTGAMESTATE);
+                return true;
+            }
             changeState(TinyPacState.LOSTLIFESTATE);
             return true;
         }
 
-        map.updateLiveOrganisms();
-        map.incIteration();
+        changeState(TinyPacState.UPDATECURRENTGAMESTATE);
         return true;
     }
 

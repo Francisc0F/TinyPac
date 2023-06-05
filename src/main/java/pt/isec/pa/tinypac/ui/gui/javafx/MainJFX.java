@@ -1,7 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -43,24 +42,25 @@ public class MainJFX extends Application {
         stage.setWidth(1000);
         stage.setHeight(800);
 
-        scene.setOnKeyPressed(event -> {
-            KeyCode keyCode = event.getCode();
-            UI_Root.KeyPress keyPress = switch (keyCode) {
-                case UP -> UI_Root.KeyPress.UP;
-                case DOWN -> UI_Root.KeyPress.DOWN;
-                case LEFT -> UI_Root.KeyPress.LEFT;
-                case RIGHT -> UI_Root.KeyPress.RIGHT;
-                case SPACE -> UI_Root.KeyPress.SPACE;
-                case ENTER -> UI_Root.KeyPress.ENTER;
-                default -> null;
-            };
+            scene.setOnKeyPressed(event -> {
+                KeyCode keyCode = event.getCode();
+                UI_Root.KeyPress keyPress = switch (keyCode) {
+                    case UP -> UI_Root.KeyPress.UP;
+                    case DOWN -> UI_Root.KeyPress.DOWN;
+                    case LEFT -> UI_Root.KeyPress.LEFT;
+                    case RIGHT -> UI_Root.KeyPress.RIGHT;
+                    case SPACE -> UI_Root.KeyPress.SPACE;
+                    case ENTER -> UI_Root.KeyPress.ENTER;
+                    default -> null;
+                };
 
-            if (keyPress != null) {
+                if (keyPress != null) {
                 gui.mapKeyToAction(keyPress);
             }
         });
         stage.show();
     }
+
 
     public static void main(String[] args) {
         launch(args);

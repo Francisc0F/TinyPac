@@ -5,7 +5,9 @@ import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
 import pt.isec.pa.utils.Direction;
 
-public class TinyPacStateMachine {
+import java.io.Serializable;
+
+public class TinyPacStateMachine implements Serializable {
     ITinyPacState state;
     MapController mapController;
 

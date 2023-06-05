@@ -259,6 +259,7 @@ public class Map {
         return lifesRemaining == 0;
     }
 
+
     public void decLives() {
         lifesRemaining--;
     }

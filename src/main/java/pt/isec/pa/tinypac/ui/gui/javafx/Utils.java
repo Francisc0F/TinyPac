@@ -7,6 +7,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import pt.isec.pa.utils.Direction;
 
+import java.io.*;
 import java.util.Objects;
 
 public class Utils {
@@ -20,7 +21,6 @@ public class Utils {
     public Image ghost = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ghost.png")));
     public Image logoIsec = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logoisec.png")));
     public Font pixelfont = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24);
-
 
 
     public static final int BLOCK_SIZE = 20;
@@ -38,5 +38,32 @@ public class Utils {
         imageView.setRotate(direction.getAngle());
     }
 
+    public static Object clone(Object objectToClone) throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos);
 
+        oos.writeObject(objectToClone);
+        oos.flush();
+
+        ByteArrayInputStream bin = new ByteArrayInputStream(bos.toByteArray());
+        ObjectInputStream ois = new ObjectInputStream(bin);
+
+        Object clonedObject = ois.readObject();
+
+        oos.close();
+        ois.close();
+
+        return clonedObject;
+    }
+
+    public static void saveObject(Object object, String fileName) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(fileName);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+            oos.writeObject(object);
+            System.out.println("Object saved successfully.");
+        }catch (Exception ex){
+            System.out.println("Exception ex. " + ex);
+        }
+    }
 }

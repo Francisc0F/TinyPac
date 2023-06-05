@@ -1,8 +1,9 @@
-package pt.isec.pa.tinypac.ui.gui.javafx.views;
+package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import pt.isec.pa.tinypac.model.Events;
+import pt.isec.pa.tinypac.model.TinyPac;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
@@ -15,9 +16,9 @@ public class LostLifeStateViewStack extends VBox {
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils = new Utils();
 
-    public LostLifeStateViewStack(TinyPacStateMachineObservable fsmObs) {
+    public LostLifeStateViewStack(TinyPac model) {
         super();
-        this.fsmObs = fsmObs;
+        this.fsmObs = model.getFsmObs();
         buildView();
         createObservables();
         setPanelVisible();
