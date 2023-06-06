@@ -7,6 +7,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import pt.isec.pa.tinypac.gameengine.GameEngine;
+import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPac;
 
 public class MainJFX extends Application {
@@ -68,10 +69,19 @@ public class MainJFX extends Application {
 
     public void setupGameEngine() {
         GameEngine gameEngine = new GameEngine();
+        this.model.getFsmObs().addPropertyChangeListener(Events.iterationSpeedChanged, evt -> {
+            gameEngine.stop();
+            gameEngine.registerClient((g, t) -> {
+                this.model.getFsmObs().updateBoard();
+            });
+
+            gameEngine.start(this.model.getFsmObs().getIterationSpeed());
+        });
+
         gameEngine.registerClient((g, t) -> {
             this.model.getFsmObs().updateBoard();
         });
 
-        gameEngine.start(200);
+        gameEngine.start(this.model.getFsmObs().getIterationSpeed());
     }
 }

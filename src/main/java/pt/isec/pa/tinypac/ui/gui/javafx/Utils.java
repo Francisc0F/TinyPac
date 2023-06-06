@@ -27,6 +27,9 @@ public class Utils {
     public static final int WIDTH = 29;
     public static final int HEIGHT = 31;
 
+    public static final String GAMEFILE = "games.bin";
+
+
     public Circle buildCircle(int x, int y, Color color, double radius) {
         Circle shape = null;
         shape = new Circle(x * Utils.BLOCK_SIZE + 10, y * Utils.BLOCK_SIZE + 10, radius);
@@ -56,14 +59,24 @@ public class Utils {
         return clonedObject;
     }
 
-    public static void saveObject(Object object, String fileName) throws IOException {
+    public static void saveObject(Object object, String fileName)  {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
             oos.writeObject(object);
             System.out.println("Object saved successfully.");
-        }catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("Exception ex. " + ex);
+        }
+    }
+
+    public static Object readObject(String fileName)  {
+        try (FileInputStream fis = new FileInputStream(fileName);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return ois.readObject();
+        } catch (Exception ex) {
+            System.out.println(" readObject Exception: " + ex);
+            return null;
         }
     }
 }

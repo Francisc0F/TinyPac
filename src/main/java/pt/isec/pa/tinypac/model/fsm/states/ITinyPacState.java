@@ -2,7 +2,7 @@ package pt.isec.pa.tinypac.model.fsm.states;
 
 import pt.isec.pa.utils.Direction;
 
-public interface ITinyPacState {
+public interface ITinyPacState   {
     boolean evolve();
     boolean pause();
     boolean save();

@@ -6,7 +6,6 @@ import pt.isec.pa.utils.Direction;
 
 import java.io.*;
 
-
 /**
  * The map control is represented by a MapController class and takes advantage of a Maze class
  * to store the grid corresponding to the environment and various existing organisms.
@@ -15,15 +14,20 @@ import java.io.*;
  * manipulating the map.The MapController class uses a Map class to store
  * the grid corresponding to the environment.
  */
-public class MapController {
-    private int level;
+public class MapController implements Serializable {
+    private int level = 1;
     public Map map;
-
+    private int iterationSpeed = 200;
+    private int totalRunPoints = 0;
     public MapController() {
+        createMap();
+    }
+
+    private void createMap() {
         map = new Map(31, 29);
     }
 
-    public void loadFileMap(String filename) throws IOException {
+    private void loadFileMap(String filename) throws IOException {
         File file = new File(filename);
 
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -37,6 +41,29 @@ public class MapController {
             }
             y++;
         }
+    }
+
+    public void loadNextLevel() {
+        totalRunPoints +=  map.getTotalScore();
+        createMap();
+        int currentLevel = level;
+        level++;
+        int speedIncrease = level * 10;
+        iterationSpeed -= speedIncrease;
+        try {
+            loadFileMap(String.format("level0%d.txt", level));
+        } catch (IOException ex) {
+            try {
+                loadFileMap(String.format("level0%d.txt", currentLevel));
+            } catch (Exception innerEx) {
+                    System.out.println("Could not load: " + innerEx);
+            }
+        }
+    }
+
+
+    public int getIterationSpeed() {
+        return iterationSpeed;
     }
 
     public char[][] getMap() {
@@ -86,17 +113,22 @@ public class MapController {
 
 
     public int getPoints() {
-        return this.map.getTotalScore();
-    }
-
-    /**
-     * Save instance of MapController game
-     * also identify transient info(not relevant)
-     */
-    public void save() {
+        return totalRunPoints;
     }
 
     public int getLifesRemaining() {
         return this.map.getLifesRemaining();
+    }
+
+    public void loadFirstLevel() {
+        try {
+            loadFileMap(String.format("level0%d.txt", level));
+        } catch (Exception ex) {
+            System.out.println("Could not load level 1: " + ex);
+        }
+    }
+
+    //todo check this save
+    public void save() {
     }
 }

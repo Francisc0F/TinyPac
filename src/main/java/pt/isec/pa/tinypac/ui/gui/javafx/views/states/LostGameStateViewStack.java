@@ -1,8 +1,10 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import pt.isec.pa.tinypac.model.Events;
@@ -14,11 +16,13 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 
 public class LostGameStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
+    private final TinyPac model;
     private final Utils utils = new Utils();
 
     public LostGameStateViewStack(TinyPac model) {
         super();
         this.fsmObs = model.getFsmObs();
+        this.model = model;
         buildView();
         createObservables();
         setPanelVisible();
@@ -53,6 +57,7 @@ public class LostGameStateViewStack extends StackPane {
         getChildren().add(menuHBox);
 
     }
+
     private VBox createMenu() {
         VBox menu = new VBox(20);
         menu.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, null)));
@@ -65,7 +70,34 @@ public class LostGameStateViewStack extends StackPane {
         Button saveButton = new PacButtonComponent("Restart", utils, Color.GREENYELLOW, Color.ORANGE);
         Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
 
-        menu.getChildren().addAll(label, saveButton,quitButton);
+        if (model.reachedTop5()) {
+            VBox formSaveName = new VBox();
+            Label topLabel = new Label("You have reached the top 5");
+            topLabel.setFont(utils.pixelfont);
+            topLabel.setStyle("-fx-text-fill: white; -fx-padding: 0 0 20 0");
+            // Create a TextField for user input
+            TextField inputField = new TextField();
+            inputField.setFont(utils.pixelfont);
+            // Create a Button to retrieve the input
+            PacButtonComponent submitButton = new PacButtonComponent("Guardar", utils, Color.BLANCHEDALMOND, Color.ORANGE);
+            submitButton.setOnAction(event -> {
+                String userInput = inputField.getText();
+                System.out.println("User input: " + userInput);
+                menu.getChildren().clear();
+                menu.getChildren().addAll(label, saveButton, quitButton);
+            });
+
+            HBox submitWrapper = new HBox();
+            submitWrapper.setAlignment(Pos.CENTER);
+            submitWrapper.getChildren().add(submitButton);
+            submitWrapper.setPadding(new Insets(10, 0, 0, 0));
+            formSaveName.getChildren().addAll(topLabel, inputField, submitWrapper);
+
+            menu.getChildren().addAll(formSaveName);
+        }else{
+            menu.getChildren().clear();
+            menu.getChildren().addAll(label, saveButton, quitButton);
+        }
 
         return menu;
     }
@@ -76,7 +108,7 @@ public class LostGameStateViewStack extends StackPane {
         });
     }
 
-    private void setPanelVisible(){
+    private void setPanelVisible() {
         setVisible(this.fsmObs.getState() == TinyPacState.LOSTGAMESTATE);
     }
 }

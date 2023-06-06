@@ -7,6 +7,7 @@ import pt.isec.pa.tinypac.model.data.food.Fruit;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.utils.Direction;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,9 +16,9 @@ import java.util.List;
  * The Map class is responsible for
  * storing information about the walls, obstacles, and paths of the maze.
  */
-public class Map {
+public class Map implements Serializable {
 
-    private class GhostsPoints implements Iterator<Integer> {
+    private class GhostsPoints implements Iterator<Integer>, Serializable {
         private int number;
 
         public GhostsPoints() {
@@ -44,6 +45,7 @@ public class Map {
     private final int godModeIterationTime = 50;
     private int godModeIteration = 0;
     private int ghostScore = 0;
+
     private GhostsPoints ghostPoints = new GhostsPoints();
     private boolean isGodMode = false;
     private List<Wrap> wrapList = new ArrayList<>(2);
@@ -108,7 +110,7 @@ public class Map {
         ghostScore += ghostPoints.next();
     }
 
-    public record Position(int y, int x) {
+    public record Position(int y, int x) implements Serializable{
 
         static public int getDistance(Position pos1, Position pos2) {
             int dy = pos1.y - pos2.y;

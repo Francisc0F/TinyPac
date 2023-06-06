@@ -8,9 +8,8 @@ import pt.isec.pa.utils.Direction;
 public class InitGameState extends TinyPacStateAdapter {
     public InitGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-
         try {
-            mapController.loadFileMap("level01.txt");
+            mapController.loadFirstLevel();
         } catch (Exception ignored) {
             System.out.println("Not found file");
         }

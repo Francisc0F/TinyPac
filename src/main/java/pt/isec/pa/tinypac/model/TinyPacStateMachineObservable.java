@@ -66,4 +66,8 @@ public class TinyPacStateMachineObservable {
     public int getLifes() {
         return fsm.getLifesRemaining();
     }
+
+    public long getIterationSpeed() {
+        return fsm.getCyclesSpeed();
+    }
 }

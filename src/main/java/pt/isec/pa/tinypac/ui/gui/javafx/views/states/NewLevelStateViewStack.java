@@ -12,12 +12,12 @@ import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 
-public class PauseGameStateViewStack extends StackPane {
+public class NewLevelStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
     private final TinyPac model;
     private final Utils utils = new Utils();
 
-    public PauseGameStateViewStack(TinyPac model) {
+    public NewLevelStateViewStack(TinyPac model) {
         super();
         this.model = model;
         this.fsmObs = model.getFsmObs();
@@ -66,11 +66,11 @@ public class PauseGameStateViewStack extends StackPane {
         menu.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, null)));
         menu.setAlignment(Pos.CENTER);
 
-        Label label = new Label("Paused");
+        Label label = new Label("New level Loaded");
         label.setFont(utils.pixelfont);
         label.setStyle("-fx-text-fill: white; -fx-padding: 0 0 20 0");
 
-        Button saveButton = new PacButtonComponent("Save", utils, Color.GREENYELLOW, Color.ORANGE);
+    /*    Button saveButton = new PacButtonComponent("Save", utils, Color.GREENYELLOW, Color.ORANGE);
         Button resumeButton = new PacButtonComponent("Resume", utils, Color.GREEN, Color.ORANGE);
         Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
         saveButton.setOnAction(event -> {
@@ -85,13 +85,13 @@ public class PauseGameStateViewStack extends StackPane {
         quitButton.setOnAction(event -> {
             //todo quit game
         });
-
-        menu.getChildren().addAll(label, saveButton, resumeButton, quitButton);
+*/
+        menu.getChildren().addAll(label);
 
         return menu;
     }
 
     private void setPanelVisible() {
-        setVisible(this.fsmObs.getState() == TinyPacState.PAUSEGAMESTATE);
+        setVisible(this.fsmObs.getState() == TinyPacState.NEWLEVELSTATE);
     }
 }

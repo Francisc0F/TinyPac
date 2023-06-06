@@ -1,6 +1,8 @@
 package pt.isec.pa.tinypac.model.data;
 
-public final class Maze {
+import java.io.Serializable;
+
+public final class Maze implements Serializable {
     private final IMazeElement[][] board;
     public Maze(int height, int width) {
         board = new IMazeElement[height][width];

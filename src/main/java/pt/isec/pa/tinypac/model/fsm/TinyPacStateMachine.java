@@ -60,4 +60,8 @@ public class TinyPacStateMachine implements Serializable {
     public void resume() {
         this.state.resume();
     }
+
+    public int getCyclesSpeed(){
+        return mapController.getIterationSpeed();
+    }
 }

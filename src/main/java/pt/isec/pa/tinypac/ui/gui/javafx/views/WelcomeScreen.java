@@ -72,6 +72,7 @@ public class WelcomeScreen extends VBox {
         PacmanPowefullStateViewStack pacmanPowefullStateViewStack = new PacmanPowefullStateViewStack(model);
         PauseGameStateViewStack pauseGameStateViewStack = new PauseGameStateViewStack(model);
         LostGameStateViewStack lostGameStateViewStack = new LostGameStateViewStack(model);
+        NewLevelStateViewStack newLevelStateViewStack = new NewLevelStateViewStack(model);
 
         StackPane stackPane = new StackPane(
                 start,
@@ -79,7 +80,8 @@ public class WelcomeScreen extends VBox {
                 lostLifeStateViewStack,
                 pacmanPowefullStateViewStack,
                 pauseGameStateViewStack,
-                lostGameStateViewStack
+                lostGameStateViewStack,
+                newLevelStateViewStack
         );
         stackPane.setAlignment(Pos.CENTER);
 
