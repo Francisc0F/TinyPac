@@ -21,7 +21,6 @@ public class PacButtonComponent extends Button {
         String btnStyle = "-fx-border-color: orange; -fx-border-radius:10px;  -fx-border-width: 1px; -fx-border-style: solid;";
         setStyle(btnStyle);
 
-        // Add hover effect using CSS
         setOnMouseEntered(event -> {
             setBackground(new Background(new BackgroundFill(hover, new CornerRadii(10), Insets.EMPTY)));
             setStyle("-fx-border-color: black; -fx-border-radius:10px;  -fx-border-width: 1px; -fx-border-style: solid;");
@@ -32,10 +31,8 @@ public class PacButtonComponent extends Button {
             setStyle(btnStyle);
         });
 
-        // Set mouse pointer cursor
         setCursor(Cursor.HAND);
 
-        // Set button text color
         setTextFill(Color.BLACK);
     }
 }

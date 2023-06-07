@@ -18,7 +18,11 @@ public class Utils {
     public Image wrap = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/warp.png")));
     public Image fruit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/fruit.png")));
     public Image powerfullFruit = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/powerfull-food.png")));
+    public Image inky = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/inky.png")));
     public Image ghost = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/ghost.png")));
+    public Image clyde = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/clyde.png")));
+    public Image pinky = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/pinky.png")));
+    public Image blinky = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/blinky.png")));
     public Image logoIsec = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logoisec.png")));
     public Font pixelfont = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24);
 

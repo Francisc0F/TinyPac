@@ -30,6 +30,7 @@ class SavedGame implements Serializable {
 
 }
 
+
 public class TinyPac implements Serializable {
     private TinyPacStateMachine fsm;
     private TinyPacStateMachineObservable fsmObs;

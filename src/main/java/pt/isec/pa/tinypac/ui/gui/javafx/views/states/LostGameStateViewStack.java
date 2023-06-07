@@ -13,6 +13,7 @@ import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
+import pt.isec.pa.utils.MusicPlayer;
 
 public class LostGameStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
@@ -104,11 +105,15 @@ public class LostGameStateViewStack extends StackPane {
 
     private void createObservables() {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
+            if(setPanelVisible()){
+               MusicPlayer.playMusic(MusicPlayer.pacman_death);
+            }
         });
     }
 
-    private void setPanelVisible() {
-        setVisible(this.fsmObs.getState() == TinyPacState.LOSTGAMESTATE);
+    private boolean setPanelVisible() {
+        boolean isVisible = this.fsmObs.getState() == TinyPacState.LOSTGAMESTATE;
+        setVisible(isVisible);
+        return isVisible;
     }
 }

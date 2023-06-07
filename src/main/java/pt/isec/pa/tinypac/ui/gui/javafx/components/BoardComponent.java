@@ -17,6 +17,7 @@ import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
 import pt.isec.pa.tinypac.model.data.ghosts.*;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.utils.Direction;
+import pt.isec.pa.utils.MusicPlayer;
 
 public class BoardComponent extends HBox {
 
@@ -35,6 +36,14 @@ public class BoardComponent extends HBox {
     private void registListeners() {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
             updateBoard();
+        });
+
+        fsmObs.addPropertyChangeListener(Events.foodEated, evt -> {
+            MusicPlayer.playMusic(MusicPlayer.pacman_chomp);
+        });
+
+        fsmObs.addPropertyChangeListener(Events.fruitEated, evt -> {
+            MusicPlayer.playMusic(MusicPlayer.pacman_eatfruit);
         });
     }
 
@@ -72,22 +81,11 @@ public class BoardComponent extends HBox {
                         shape = utils.buildCircle(x, y, Color.rgb(255, 230, 0), 5);
                     }
                     case Wrap.SYMBOL -> image.setImage(utils.wrap);
-
-                    case Ghost.VULNERABLE -> {
-                        shape = utils.buildCircle(x, y, Color.WHITE, 10);
-                    }
-                    case Clyde.SYMBOL -> {
-                        shape = utils.buildCircle(x, y, Color.PINK, 10);
-                    }
-                    case Blinky.SYMBOL -> {
-                        shape = utils.buildCircle(x, y, Color.BLUE, 10);
-                    }
-                    case Pinky.SYMBOL -> {
-                        shape = utils.buildCircle(x, y, Color.RED, 10);
-                    }
-                    case Inky.SYMBOL -> {
-                        shape = utils.buildCircle(x, y, Color.GREEN, 10);
-                    }
+                    case Ghost.VULNERABLE -> image.setImage(utils.ghost);
+                    case Clyde.SYMBOL -> image.setImage(utils.clyde);
+                    case Blinky.SYMBOL -> image.setImage(utils.blinky);
+                    case Pinky.SYMBOL -> image.setImage(utils.pinky);
+                    case Inky.SYMBOL -> image.setImage(utils.inky);
                 }
                 if (shape != null) {
                    /* shape.setStroke(Color.RED);

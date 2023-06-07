@@ -1,6 +1,5 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPac;
@@ -11,6 +10,7 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.BoardComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.HeaderScoreBarComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LifesComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LowerMenuComponent;
+import pt.isec.pa.utils.MusicPlayer;
 
 public class InitGameStateViewStack extends VBox {
     private final TinyPacStateMachineObservable fsmObs;
@@ -31,6 +31,7 @@ public class InitGameStateViewStack extends VBox {
         getChildren().add(new BoardComponent(fsmObs, utils));
         getChildren().add(new LifesComponent(fsmObs, utils));
         getChildren().add(new LowerMenuComponent(fsmObs, utils));
+        MusicPlayer.playMusic(MusicPlayer.pacman_beginning);
     }
 
 
@@ -40,7 +41,9 @@ public class InitGameStateViewStack extends VBox {
         });
     }
 
-    private void setPanelVisible() {
-        setVisible(this.fsmObs.getState() == TinyPacState.INITGAMESTATE);
+    private boolean setPanelVisible() {
+        boolean isVisible = this.fsmObs.getState() == TinyPacState.INITGAMESTATE;
+        setVisible(isVisible);
+        return isVisible;
     }
 }

@@ -6,5 +6,7 @@ public class Events {
     public static String lifesUpdated = "lifesUpdated";
     public static String changedState = "changedState";
     public static String pauseGame = "pauseGame";
+    public static String foodEated = "foodEated";
+    public static String fruitEated = "fruitEated";
     public static String resumeGame = "resumeGame";
 }
