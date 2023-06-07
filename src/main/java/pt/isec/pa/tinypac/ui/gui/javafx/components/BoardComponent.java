@@ -42,6 +42,10 @@ public class BoardComponent extends HBox {
             MusicPlayer.playMusic(MusicPlayer.pacman_chomp);
         });
 
+        fsmObs.addPropertyChangeListener(Events.ghostEated, evt -> {
+            MusicPlayer.playMusic(MusicPlayer.pacman_eatghost);
+        });
+
         fsmObs.addPropertyChangeListener(Events.fruitEated, evt -> {
             MusicPlayer.playMusic(MusicPlayer.pacman_eatfruit);
         });

@@ -65,16 +65,22 @@ public class Pacman extends Organism implements Cloneable {
             map.set(enteredWrap.clone(), previousWrapEntered.y(), previousWrapEntered.x());
             enteredWrap = null;
         }
+        Organism currentPlace = this.map.getOrganism(p.y(), p.x());
+
+        if (currentPlace instanceof Ghost && ((Ghost) currentPlace).getIsVulnerable()) {
+            map.eatGhost((Ghost) currentPlace);
+            return;
+        }
 
         Organism elemAtNewPlace = this.map.getOrganism(p.y() + dy, p.x() + dx);
+
+
+
         if (canNotMove(elemAtNewPlace)) {
             movePacaman(0, 0);
             return;
         }
-        if (elemAtNewPlace instanceof Ghost && ((Ghost) elemAtNewPlace).getIsVulnerable()) {
-            map.eatGhost((Ghost) elemAtNewPlace);
-            return;
-        }
+
 
         if (elemAtNewPlace instanceof Wrap) {
             Optional<Wrap> other = this.map.findElementsOf(Wrap.class)

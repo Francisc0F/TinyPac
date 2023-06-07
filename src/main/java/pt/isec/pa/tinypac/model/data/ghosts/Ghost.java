@@ -12,7 +12,7 @@ import java.util.*;
 public abstract class Ghost extends Organism implements IGhost {
     public static final char VULNERABLE = '$';
     boolean isVulnerable = false;
-    protected  boolean isDeath = false;
+    protected boolean isDeath = false;
     protected Direction direction = Direction.UP;
     Stack<Map.Position> previousMoves = new Stack<>();
     protected Stack<Map.Position> currentCornerMoves = new Stack<>();
@@ -51,12 +51,16 @@ public abstract class Ghost extends Organism implements IGhost {
         p = new Map.Position(start.y(), start.x());
     }
 
-    public void setVulnerable( boolean isVulnerable) {
+    public void setVulnerable(boolean isVulnerable) {
         this.isVulnerable = isVulnerable;
     }
 
-    public void setDeath(){
-         isDeath = true;
+    public void setDeath() {
+        isDeath = true;
+    }
+
+    public boolean getIsAlive() {
+        return !isDeath;
     }
 
     public enum CornersOrder {

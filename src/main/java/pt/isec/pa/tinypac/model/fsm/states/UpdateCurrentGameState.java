@@ -6,10 +6,17 @@ import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
 public class UpdateCurrentGameState extends TinyPacStateAdapter {
+    private int initalRoundFoodScore = map.getFoodScore();
+    private int initalRoundFruitScore = map.getFruitScore();
+    private boolean foodEated = false;
+    private boolean fruitEated = false;
     public UpdateCurrentGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
         map.updateLiveOrganisms();
         map.incIteration();
+
+        foodEated = initalRoundFoodScore < map.getFoodScore();
+        fruitEated = initalRoundFruitScore < map.getFruitScore();
     }
 
     @Override
@@ -50,6 +57,15 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
         return true;
     }
 
+    @Override
+    public boolean hasEatedFood(){
+        return this.foodEated;
+    }
+
+    @Override
+    public boolean hasEatedFruit(){
+        return this.fruitEated;
+    }
 
     @Override
     public void registDirection(Direction direction) {

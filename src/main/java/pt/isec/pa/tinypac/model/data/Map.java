@@ -9,6 +9,7 @@ import pt.isec.pa.utils.Direction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,6 +18,10 @@ import java.util.List;
  * storing information about the walls, obstacles, and paths of the maze.
  */
 public class Map implements Serializable {
+
+    public int getGhostScore() {
+        return ghostScore;
+    }
 
     private class GhostsPoints implements Iterator<Integer>, Serializable {
         private int number;
@@ -175,7 +180,7 @@ public class Map implements Serializable {
         return powerfullFoodScore;
     }
 
-    private int getFruitScore() {
+    public int getFruitScore() {
         return fruitScore;
     }
 
@@ -261,7 +266,6 @@ public class Map implements Serializable {
         return lifesRemaining == 0;
     }
 
-
     public void decLives() {
         lifesRemaining--;
     }
@@ -277,24 +281,12 @@ public class Map implements Serializable {
             ((Food) food).setEated(true);
             incFoodScore();
             return true;
-         /*   if(foodList.remove(food)){
-                incFoodScore();
-                return true;
-            }
-            return false;*/
         }
 
         if (food instanceof PowerfullFood) {
             ((PowerfullFood) food).setEated(true);
             setGodMode();
             return true;
-           /* if(powerfullFoodList.remove(food)){
-                setGodMode();
-                return true;
-            }
-            return false;
-            */
-
         }
         return false;
     }
@@ -305,13 +297,10 @@ public class Map implements Serializable {
         list.addAll(foodList);
         list.addAll(powerfullFoodList);
         list.addAll(wrapList);
-
-        list.addAll(ghosts);
+        ArrayList<Ghost> alive = new ArrayList<>(ghosts.stream().filter(Ghost::getIsAlive).toList());
+        list.addAll(alive);
         list.add(pacman);
-/*
-        if(pacman.getIsDeath()){
-            return;
-        }*/
+
         for (var organism : list)
             organism.evolve();
     }

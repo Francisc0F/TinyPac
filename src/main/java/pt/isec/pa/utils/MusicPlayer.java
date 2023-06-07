@@ -13,14 +13,22 @@ public class MusicPlayer {
     public static final String pacman_death = "pacman_death";
     public static final String pacman_eatfruit = "pacman_eatfruit";
     public static final String pacman_eatghost = "pacman_eatghost";
-
+    private static boolean running = false;
     static MediaPlayer mp;
+
     public static void playMusic(String name) {
-        URL path  = MusicPlayer.class.getResource("/sounds/"+name+".wav");
+        if (running) {
+            return;
+        }
+        running = true;
+        URL path = MusicPlayer.class.getResource("/sounds/" + name + ".wav");
         Media music = new Media(path.toString());
         mp = new MediaPlayer(music);
         mp.setStartTime(Duration.ZERO);
         mp.setStopTime(music.getDuration());
         mp.setAutoPlay(true);
+        mp.setOnEndOfMedia(() -> {
+            running = false;
+        });
     }
 }

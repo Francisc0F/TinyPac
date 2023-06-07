@@ -29,20 +29,38 @@ public class TinyPacStateMachineObservable {
         return this.fsm.getMap();
     }
 
-    public void pause(){
+    public void pause() {
         this.fsm.pause();
         propertyChangeSupport.firePropertyChange(Events.pauseGame, null, null);
     }
 
-    public void resume(){
+    public void resume() {
         this.fsm.resume();
         propertyChangeSupport.firePropertyChange(Events.resumeGame, null, null);
     }
 
     public void updateBoard() {
+        if (this.fsm.hasEatedFood()) {
+            Platform.runLater(() -> {
+                propertyChangeSupport.firePropertyChange(Events.foodEated, null, null);
+            });
+        }
+
+        if (this.fsm.hasEatedFruit()) {
+            Platform.runLater(() -> {
+                propertyChangeSupport.firePropertyChange(Events.fruitEated, null, null);
+            });
+        }
+
+        if (this.fsm.hasEatedGhost()) {
+            Platform.runLater(() -> {
+                propertyChangeSupport.firePropertyChange(Events.ghostEated, null, null);
+            });
+        }
         this.fsm.evolve();
         Platform.runLater(() -> {
             propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+
         });
     }
 

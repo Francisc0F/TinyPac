@@ -31,6 +31,7 @@ public class Clyde extends Ghost {
             }
             return;
         }
+
         direction = getClydeDirection();
         switch (direction) {
             case UP -> this.up();

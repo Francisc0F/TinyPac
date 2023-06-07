@@ -55,4 +55,20 @@ public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable
     @Override
     public void registDirection(Direction direction) {
     }
+
+    @Override
+    public boolean hasEatedFood(){
+        return false;
+    }
+
+    @Override
+    public boolean hasEatedFruit(){
+        return false;
+    }
+
+    @Override
+    public boolean hasEatedGhost(){
+        return false;
+    }
+
 }

@@ -8,5 +8,6 @@ public class Events {
     public static String pauseGame = "pauseGame";
     public static String foodEated = "foodEated";
     public static String fruitEated = "fruitEated";
+    public static String ghostEated = "ghostEated";
     public static String resumeGame = "resumeGame";
 }

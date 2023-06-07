@@ -64,4 +64,16 @@ public class TinyPacStateMachine implements Serializable {
     public int getCyclesSpeed(){
         return mapController.getIterationSpeed();
     }
+
+    public boolean hasEatedFood() {
+        return state.hasEatedFood();
+    }
+
+    public boolean hasEatedGhost() {
+        return state.hasEatedGhost();
+    }
+
+    public boolean hasEatedFruit() {
+        return state.hasEatedFruit();
+    }
 }

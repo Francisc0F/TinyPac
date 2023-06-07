@@ -66,6 +66,7 @@ public class MapController implements Serializable {
         return iterationSpeed;
     }
 
+
     public char[][] getMap() {
         return map.buildMap();
     }

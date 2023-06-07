@@ -9,6 +9,9 @@ public interface ITinyPacState   {
     boolean leave();
     boolean loadNewLevel();
     boolean resume();
+    boolean hasEatedFood();
+    boolean hasEatedFruit();
+    boolean hasEatedGhost();
     TinyPacState getState();
 
     void registDirection(Direction direction);
