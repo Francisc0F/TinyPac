@@ -2,6 +2,7 @@ package pt.isec.pa.tinypac.model.data;
 
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
+import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
 import java.io.*;
@@ -114,7 +115,7 @@ public class MapController implements Serializable {
 
 
     public int getPoints() {
-        return totalRunPoints;
+        return totalRunPoints + map.getTotalScore();
     }
 
     public int getLifesRemaining() {
@@ -129,7 +130,7 @@ public class MapController implements Serializable {
         }
     }
 
-    //todo check this save
-    public void save() {
+    public void save(TinyPacStateMachine context) {
+
     }
 }

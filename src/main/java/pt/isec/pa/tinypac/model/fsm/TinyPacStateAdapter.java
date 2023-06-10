@@ -33,7 +33,7 @@ public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable
     }
 
     @Override
-    public boolean save() {
+    public boolean save(String name) {
         return false;
     }
 

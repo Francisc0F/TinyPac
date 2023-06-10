@@ -11,6 +11,7 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.BoardComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.HeaderScoreBarComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LifesComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LowerMenuComponent;
+import pt.isec.pa.utils.MusicPlayer;
 
 public class LostLifeStateViewStack extends VBox {
     private final TinyPacStateMachineObservable fsmObs;
@@ -36,13 +37,19 @@ public class LostLifeStateViewStack extends VBox {
         getChildren().add(new LowerMenuComponent(fsmObs, utils));
     }
 
+
     private void createObservables() {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
+            if(setPanelVisible()){
+                MusicPlayer.playMusic(MusicPlayer.pacman_death);
+            }
         });
     }
 
-    private void setPanelVisible(){
-        setVisible(this.fsmObs.getState() == TinyPacState.LOSTLIFESTATE);
+    private boolean setPanelVisible() {
+        boolean isVisible = this.fsmObs.getState() == TinyPacState.LOSTLIFESTATE;
+        setVisible(isVisible);
+        return isVisible;
     }
+
 }

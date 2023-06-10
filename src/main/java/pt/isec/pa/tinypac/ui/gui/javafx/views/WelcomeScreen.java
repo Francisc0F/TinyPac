@@ -58,11 +58,19 @@ public class WelcomeScreen extends VBox {
         startGame.setOnAction(event -> {
             BuildStateMachineViews();
         });
+
+        button2.setOnAction(event -> {
+            BuildTop5Screen();
+        });
         startGame.setMinWidth(150);
         button2.setMinWidth(150);
         button3.setMinWidth(150);
 
         getChildren().addAll(logo, label, subtitle, subtitle2, subtitle3, startGame, button2, button3);
+    }
+
+    private void BuildTop5Screen() {
+        ((BorderPane)getParent()).setCenter(new Top5Screen(model));
     }
 
     private void BuildStateMachineViews() {

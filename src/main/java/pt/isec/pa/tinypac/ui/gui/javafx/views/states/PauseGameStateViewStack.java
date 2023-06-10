@@ -74,11 +74,11 @@ public class PauseGameStateViewStack extends StackPane {
         Button resumeButton = new PacButtonComponent("Resume", utils, Color.GREEN, Color.ORANGE);
         Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
         saveButton.setOnAction(event -> {
-            this.model.saveGame();
+            this.fsmObs.saveCurrentGame();
         });
 
         resumeButton.setOnAction(event -> {
-            this.model.getFsmObs().resume();
+            this.fsmObs.resume();
         });
 
 

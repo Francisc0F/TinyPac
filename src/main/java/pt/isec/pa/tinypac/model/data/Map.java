@@ -259,7 +259,10 @@ public class Map implements Serializable {
     }
 
     public boolean isPacmanDeath() {
-        return this.pacman.getIsDeath();
+        if(this.pacman !=null){
+            return this.pacman.getIsDeath();
+        }
+        return true;
     }
 
     public boolean noLivesRemaining() {

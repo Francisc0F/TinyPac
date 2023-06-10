@@ -41,7 +41,7 @@ public class MainJFX extends Application {
         });
         stage.setTitle("Tinypac");
         stage.setWidth(1000);
-        stage.setHeight(800);
+        stage.setHeight(900);
 
         scene.setOnKeyPressed(event -> {
             KeyCode keyCode = event.getCode();

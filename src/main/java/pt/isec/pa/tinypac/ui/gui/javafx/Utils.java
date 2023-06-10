@@ -25,6 +25,7 @@ public class Utils {
     public Image blinky = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/icons/blinky.png")));
     public Image logoIsec = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logoisec.png")));
     public Font pixelfont = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24);
+    public Font pixelfontSmall = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 16);
 
 
     public static final int BLOCK_SIZE = 20;

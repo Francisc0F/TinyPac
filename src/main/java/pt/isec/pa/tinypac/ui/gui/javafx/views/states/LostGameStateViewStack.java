@@ -17,13 +17,11 @@ import pt.isec.pa.utils.MusicPlayer;
 
 public class LostGameStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
-    private final TinyPac model;
     private final Utils utils = new Utils();
 
     public LostGameStateViewStack(TinyPac model) {
         super();
         this.fsmObs = model.getFsmObs();
-        this.model = model;
         buildView();
         createObservables();
         setPanelVisible();
@@ -71,7 +69,7 @@ public class LostGameStateViewStack extends StackPane {
         Button saveButton = new PacButtonComponent("Restart", utils, Color.GREENYELLOW, Color.ORANGE);
         Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
 
-        if (model.reachedTop5()) {
+        if (fsmObs.reachedTop5()) {
             VBox formSaveName = new VBox();
             Label topLabel = new Label("You have reached the top 5");
             topLabel.setFont(utils.pixelfont);
@@ -86,6 +84,7 @@ public class LostGameStateViewStack extends StackPane {
                 System.out.println("User input: " + userInput);
                 menu.getChildren().clear();
                 menu.getChildren().addAll(label, saveButton, quitButton);
+                fsmObs.saveGame(userInput);
             });
 
             HBox submitWrapper = new HBox();

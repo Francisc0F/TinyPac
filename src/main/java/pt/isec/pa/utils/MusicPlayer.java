@@ -6,6 +6,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MusicPlayer {
     public static final String pacman_beginning = "pacman_beginning";
@@ -14,21 +16,33 @@ public class MusicPlayer {
     public static final String pacman_eatfruit = "pacman_eatfruit";
     public static final String pacman_eatghost = "pacman_eatghost";
     private static boolean running = false;
-    static MediaPlayer mp;
+
+
+    static List<MediaPlayer> musicPlayers = new ArrayList<>();
 
     public static void playMusic(String name) {
-        if (running) {
+        if (isMusicPlaying(name)) {
             return;
         }
-        running = true;
         URL path = MusicPlayer.class.getResource("/sounds/" + name + ".wav");
         Media music = new Media(path.toString());
-        mp = new MediaPlayer(music);
+        MediaPlayer mp = new MediaPlayer(music);
         mp.setStartTime(Duration.ZERO);
+
         mp.setStopTime(music.getDuration());
         mp.setAutoPlay(true);
         mp.setOnEndOfMedia(() -> {
-            running = false;
+            musicPlayers.remove(mp);
         });
+        musicPlayers.add(mp);
+    }
+    private static boolean isMusicPlaying(String name) {
+        for (MediaPlayer player : musicPlayers) {
+            Media media = player.getMedia();
+            if (media != null && media.getSource().endsWith(name + ".wav")) {
+                return true; // Music with the same name is already playing
+            }
+        }
+        return false;
     }
 }

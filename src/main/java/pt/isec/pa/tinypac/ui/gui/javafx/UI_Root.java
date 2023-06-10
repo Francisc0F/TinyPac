@@ -32,7 +32,7 @@ public class UI_Root extends BorderPane {
     }
 
     private void buildInitialScreen() {
-        setWidth(700);
+        setWidth(800);
         setCenter(new WelcomeScreen(model));
     }
 

@@ -7,6 +7,7 @@ import pt.isec.pa.utils.Direction;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 
 public class TinyPacStateMachineObservable {
     private TinyPacStateMachine fsm;
@@ -32,6 +33,15 @@ public class TinyPacStateMachineObservable {
     public void pause() {
         this.fsm.pause();
         propertyChangeSupport.firePropertyChange(Events.pauseGame, null, null);
+    }
+
+
+    public boolean reachedTop5() {
+        return this.fsm.reachedTop5();
+    }
+
+    public void saveGame(String name) {
+        this.fsm.save(name);
     }
 
     public void resume() {
@@ -87,5 +97,16 @@ public class TinyPacStateMachineObservable {
 
     public long getIterationSpeed() {
         return fsm.getCyclesSpeed();
+    }
+
+    public ArrayList<SavedGame> getTop5(){
+        return fsm.getTop5FromFile();
+    }
+
+    public int getHighestScore(){
+        return fsm.getHighestScore();
+    }
+
+    public void saveCurrentGame() {
     }
 }

@@ -16,17 +16,6 @@ public class PauseGameState extends TinyPacStateAdapter {
 
 
     @Override
-    public boolean save() {
-        mapController.save();
-        return true;
-    }
-
-
-    /**
-     * Save instance of MapController game
-     * also identify transient info(not relevant)
-     */
-    @Override
     public boolean resume() {
         changeState(TinyPacState.UPDATECURRENTGAMESTATE);
         return true;

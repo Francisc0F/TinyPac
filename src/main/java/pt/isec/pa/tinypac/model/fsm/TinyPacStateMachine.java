@@ -1,19 +1,31 @@
 package pt.isec.pa.tinypac.model.fsm;
 
+import pt.isec.pa.tinypac.model.SavedGame;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
+import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.utils.Direction;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class TinyPacStateMachine implements Serializable {
+    private static final long serialVersionUID = 1L;
     ITinyPacState state;
     MapController mapController;
-
+    private ArrayList<SavedGame> top5 = new ArrayList<>();
     public TinyPacStateMachine() {
         mapController = new MapController();
         state = TinyPacState.INITGAMESTATE.createState(this, mapController);
+    }
+
+    public ArrayList<SavedGame> getTop5FromFile() {
+        ArrayList<SavedGame> list = (ArrayList<SavedGame>) Utils.readObject(Utils.GAMEFILE);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
     public TinyPacState getState() {
@@ -75,5 +87,22 @@ public class TinyPacStateMachine implements Serializable {
 
     public boolean hasEatedFruit() {
         return state.hasEatedFruit();
+    }
+
+    public void save(String name) {
+        state.save(name);
+    }
+
+    public boolean reachedTop5() {
+        if (top5.isEmpty()) {
+            return true;
+        }
+        SavedGame top5Last = top5.get(top5.size() - 1);
+        return getTotalPoints() > top5Last.getPoints();
+    }
+
+    public int getHighestScore() {
+        ArrayList<SavedGame> list =  getTop5FromFile();
+        return list.get(0).getPoints();
     }
 }

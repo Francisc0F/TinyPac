@@ -5,7 +5,7 @@ import pt.isec.pa.utils.Direction;
 public interface ITinyPacState   {
     boolean evolve();
     boolean pause();
-    boolean save();
+    boolean save(String name);
     boolean leave();
     boolean loadNewLevel();
     boolean resume();
