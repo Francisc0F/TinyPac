@@ -6,13 +6,11 @@ public interface ITinyPacState   {
     boolean evolve();
     boolean pause();
     boolean save(String name);
-    boolean leave();
-    boolean loadNewLevel();
-    boolean resume();
+    void resume();
+    void saveCurrentGame();
     boolean hasEatedFood();
     boolean hasEatedFruit();
     boolean hasEatedGhost();
     TinyPacState getState();
-
     void registDirection(Direction direction);
 }

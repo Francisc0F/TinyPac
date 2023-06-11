@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class Map implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     public int getGhostScore() {
         return ghostScore;
     }
@@ -136,7 +137,7 @@ public class Map implements Serializable {
     private int fruitScore = 0;
     private int powerfullFoodScore = 0;
     private int ghostsEntrance = 5;
-    private int lifesRemaining = 3;
+
 
     public Map(int height, int width) {
         this.height = height;
@@ -165,9 +166,6 @@ public class Map implements Serializable {
         return width;
     }
 
-    public int getLifesRemaining() {
-        return lifesRemaining;
-    }
 
     public int getTotalScore() {
         return this.getFoodScore() +
@@ -232,10 +230,10 @@ public class Map implements Serializable {
     }
 
     public void setGhostsInitialPosition(Map.Position p) {
-        this.ghosts.add(new Clyde(this, p));
+        /*this.ghosts.add(new Clyde(this, p));
         this.ghosts.add(new Blinky(this, p));
         this.ghosts.add(new Pinky(this, p));
-        this.ghosts.add(new Inky(this, p));
+        */this.ghosts.add(new Inky(this, p));
     }
 
     public void createFruit(Map.Position p) {
@@ -263,14 +261,6 @@ public class Map implements Serializable {
             return this.pacman.getIsDeath();
         }
         return true;
-    }
-
-    public boolean noLivesRemaining() {
-        return lifesRemaining == 0;
-    }
-
-    public void decLives() {
-        lifesRemaining--;
     }
 
     public boolean allFoodEaten() {

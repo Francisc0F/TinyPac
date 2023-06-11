@@ -53,9 +53,6 @@ public class TinyPacCmdUI {
     }
 
     public void showBoardWithInfo() {
-        /*ModelLog.getInstance().getLog().forEach(System.out::println);
-        ModelLog.getInstance().reset();*/
-
         System.out.println("Points:" + fsm.getTotalPoints() + " Lifes:" + fsm.getLifesRemaining());
         showBoard();
     }
@@ -77,14 +74,6 @@ public class TinyPacCmdUI {
             case 'a' -> {
                 fsm.registDirection(Direction.LEFT);
                 yield true;
-            }
-            case 'p' -> {
-                fsm.pause();
-                yield true;
-            }
-            case 'l' -> {
-                fsm.leave();
-                yield false;
             }
             default -> throw new IllegalStateException("mapKeyToAction unexpected value: " + s);
         };

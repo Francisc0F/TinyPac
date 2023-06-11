@@ -33,6 +33,7 @@ public class Utils {
     public static final int HEIGHT = 31;
 
     public static final String GAMEFILE = "games.bin";
+    public static final String SAVEDGAMEONPAUSE = "saved.bin";
 
 
     public Circle buildCircle(int x, int y, Color color, double radius) {

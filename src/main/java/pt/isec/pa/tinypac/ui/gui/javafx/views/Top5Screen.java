@@ -45,7 +45,6 @@ public class Top5Screen extends VBox {
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
         Text label = new Text("Top 5");
         label.setFont(utils.pixelfont);
-        // Create the ListView
 
         ArrayList<SavedGame> items = fsmObs.getTop5();
 
@@ -66,9 +65,7 @@ public class Top5Screen extends VBox {
         getChildren().addAll(label, hBox, backBtn);
     }
 
-    // Custom ListCell to display ScoreItems
     public static class ScoreItemCell extends TextFieldListCell<SavedGame> {
-
 
         @Override
         public void updateItem(SavedGame item, boolean empty) {

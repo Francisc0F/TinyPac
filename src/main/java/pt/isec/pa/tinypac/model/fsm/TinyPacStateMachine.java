@@ -15,6 +15,7 @@ public class TinyPacStateMachine implements Serializable {
     ITinyPacState state;
     MapController mapController;
     private ArrayList<SavedGame> top5 = new ArrayList<>();
+
     public TinyPacStateMachine() {
         mapController = new MapController();
         state = TinyPacState.INITGAMESTATE.createState(this, mapController);
@@ -36,7 +37,7 @@ public class TinyPacStateMachine implements Serializable {
         this.state = newState;
     }
 
-    public void registDirection(Direction direction){
+    public void registDirection(Direction direction) {
         this.state.registDirection(direction);
     }
 
@@ -61,10 +62,6 @@ public class TinyPacStateMachine implements Serializable {
         this.state.pause();
     }
 
-    public void leave() {
-        this.state.leave();
-    }
-
     public Direction getDirection() {
         return this.mapController.map.getPacmanDirection();
     }
@@ -73,7 +70,7 @@ public class TinyPacStateMachine implements Serializable {
         this.state.resume();
     }
 
-    public int getCyclesSpeed(){
+    public int getCyclesSpeed() {
         return mapController.getIterationSpeed();
     }
 
@@ -92,6 +89,9 @@ public class TinyPacStateMachine implements Serializable {
     public void save(String name) {
         state.save(name);
     }
+    public void saveCurrentGame() {
+        state.saveCurrentGame();
+    }
 
     public boolean reachedTop5() {
         if (top5.isEmpty()) {
@@ -102,7 +102,19 @@ public class TinyPacStateMachine implements Serializable {
     }
 
     public int getHighestScore() {
-        ArrayList<SavedGame> list =  getTop5FromFile();
+        ArrayList<SavedGame> list = getTop5FromFile();
+        if (list.isEmpty()) {
+            return 0;
+        }
         return list.get(0).getPoints();
+    }
+
+    public SavedGame getSavedGame(){
+        try {
+            return (SavedGame) Utils.readObject(Utils.SAVEDGAMEONPAUSE);
+        } catch (Exception ex) {
+            System.out.println("Ex getSavedGame " + ex);
+        }
+        return null;
     }
 }

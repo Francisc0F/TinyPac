@@ -9,16 +9,13 @@ public class LostLifeState extends TinyPacStateAdapter {
 
     public LostLifeState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-
         map.resetLevel();
-
     }
 
     @Override
     public TinyPacState getState() {
         return TinyPacState.LOSTLIFESTATE;
     }
-
 
     @Override
     public void registDirection(Direction direction) {

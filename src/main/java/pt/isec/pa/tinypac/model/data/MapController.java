@@ -16,10 +16,12 @@ import java.io.*;
  * the grid corresponding to the environment.
  */
 public class MapController implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int level = 1;
     public Map map;
     private int iterationSpeed = 200;
     private int totalRunPoints = 0;
+    private int lifesRemaining = 3;
     public MapController() {
         createMap();
     }
@@ -119,7 +121,15 @@ public class MapController implements Serializable {
     }
 
     public int getLifesRemaining() {
-        return this.map.getLifesRemaining();
+        return lifesRemaining;
+    }
+
+    public boolean noLivesRemaining() {
+        return lifesRemaining == 0;
+    }
+
+    public void decLives() {
+        lifesRemaining--;
     }
 
     public void loadFirstLevel() {

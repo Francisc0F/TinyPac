@@ -5,6 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPac;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
@@ -83,7 +86,11 @@ public class PauseGameStateViewStack extends StackPane {
 
 
         quitButton.setOnAction(event -> {
-            //todo quit game
+            Window window = quitButton.getScene().getWindow();
+            if (window instanceof Stage) {
+                WindowEvent closeRequest = new WindowEvent((Stage) window, WindowEvent.WINDOW_CLOSE_REQUEST);
+                window.fireEvent(closeRequest);
+            }
         });
 
         menu.getChildren().addAll(label, saveButton, resumeButton, quitButton);

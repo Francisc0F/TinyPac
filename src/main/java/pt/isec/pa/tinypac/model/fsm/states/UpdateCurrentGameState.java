@@ -38,8 +38,8 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
         }
 
         if (map.isPacmanDeath()) {
-            map.decLives();
-            if (map.isPacmanDeath() && map.noLivesRemaining()) {
+            mapController.decLives();
+            if (map.isPacmanDeath() && mapController.noLivesRemaining()) {
                 changeState(TinyPacState.LOSTGAMESTATE);
                 return true;
             }

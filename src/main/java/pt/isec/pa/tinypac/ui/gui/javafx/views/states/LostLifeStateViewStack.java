@@ -40,7 +40,7 @@ public class LostLifeStateViewStack extends VBox {
 
     private void createObservables() {
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            if(setPanelVisible()){
+            if (setPanelVisible() && !isVisible()) {
                 MusicPlayer.playMusic(MusicPlayer.pacman_death);
             }
         });

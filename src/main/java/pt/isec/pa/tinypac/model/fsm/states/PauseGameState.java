@@ -1,8 +1,11 @@
 package pt.isec.pa.tinypac.model.fsm.states;
 
+import pt.isec.pa.tinypac.model.SavedGame;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
+import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
+
 
 public class PauseGameState extends TinyPacStateAdapter {
     public PauseGameState(TinyPacStateMachine context, MapController mapController) {
@@ -16,13 +19,18 @@ public class PauseGameState extends TinyPacStateAdapter {
 
 
     @Override
-    public boolean resume() {
+    public void resume() {
         changeState(TinyPacState.UPDATECURRENTGAMESTATE);
-        return true;
     }
 
+
     @Override
-    public boolean leave() {
-        return true;
+    public void saveCurrentGame() {
+        try {
+            SavedGame gameCopy = (SavedGame) Utils.clone(new SavedGame(context));
+            Utils.saveObject(gameCopy, Utils.SAVEDGAMEONPAUSE);
+        } catch (Exception ex) {
+            System.out.println("saveCurrentGame " + ex);
+        }
     }
 }

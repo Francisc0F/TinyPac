@@ -16,4 +16,9 @@ public class TinyPac implements Serializable {
     public TinyPacStateMachineObservable getFsmObs() {
         return fsmObs;
     }
+
+    public void setSavedGame(TinyPacStateMachine fsm) {
+        this.fsm = fsm;
+        fsmObs = new TinyPacStateMachineObservable(fsm);
+    }
 }

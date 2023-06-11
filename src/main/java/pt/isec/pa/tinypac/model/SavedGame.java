@@ -21,6 +21,10 @@ public class SavedGame implements Serializable {
         this.username = username;
     }
 
+    public TinyPacStateMachine getData() {
+        return data;
+    }
+
     public String getUsername() {
         return username;
     }

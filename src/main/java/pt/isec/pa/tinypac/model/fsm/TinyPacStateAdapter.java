@@ -9,6 +9,7 @@ import pt.isec.pa.utils.Direction;
 import java.io.Serializable;
 
 public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable {
+    private static final long serialVersionUID = 1L;
     protected MapController mapController;
     protected TinyPacStateMachine context;
     protected Map map;
@@ -38,18 +39,11 @@ public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable
     }
 
     @Override
-    public boolean resume() {
-        return false;
+    public void resume() {
     }
 
     @Override
-    public boolean loadNewLevel() {
-        return false;
-    }
-
-    @Override
-    public boolean leave() {
-        return false;
+    public void saveCurrentGame() {
     }
 
     @Override

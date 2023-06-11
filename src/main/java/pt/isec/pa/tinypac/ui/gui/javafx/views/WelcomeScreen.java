@@ -1,8 +1,14 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -11,7 +17,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
+import pt.isec.pa.tinypac.model.SavedGame;
 import pt.isec.pa.tinypac.model.TinyPac;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
@@ -56,11 +66,24 @@ public class WelcomeScreen extends VBox {
         Button button3 = new PacButtonComponent("Sair", utils, Color.LIGHTCORAL, Color.ORANGE);
 
         startGame.setOnAction(event -> {
+            SavedGame savedGame= this.model.getFsmObs().getSavedGame();
+            if(savedGame != null){
+                showDialog(savedGame);
+                return;
+            }
             BuildStateMachineViews();
         });
 
         button2.setOnAction(event -> {
             BuildTop5Screen();
+        });
+
+        button3.setOnAction(event -> {
+            Window window = button3.getScene().getWindow();
+            if (window instanceof Stage) {
+                WindowEvent closeRequest = new WindowEvent((Stage) window, WindowEvent.WINDOW_CLOSE_REQUEST);
+                window.fireEvent(closeRequest);
+            }
         });
         startGame.setMinWidth(150);
         button2.setMinWidth(150);
@@ -94,5 +117,37 @@ public class WelcomeScreen extends VBox {
         stackPane.setAlignment(Pos.CENTER);
 
         ((BorderPane)getParent()).setCenter(stackPane);
+    }
+
+
+    private void showDialog(SavedGame savedGame) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Saved Game");
+        alert.setHeaderText("We have detected and game saved.");
+        alert.setContentText("You want to load the saved game?");
+
+        ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("No, start new game", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        EventHandler<ActionEvent> okHandler = event -> {
+            this.model.setSavedGame(savedGame.getData());
+            BuildStateMachineViews();
+        };
+
+        EventHandler<ActionEvent> cancelHandler = event -> {
+            BuildStateMachineViews();
+        };
+
+        alert.setOnHidden(event -> {
+            ButtonType result = alert.getResult();
+            if (result == okButton) {
+                okHandler.handle(null);
+            } else if (result == cancelButton) {
+                cancelHandler.handle(null);
+            }
+        });
+
+        alert.showAndWait();
     }
 }

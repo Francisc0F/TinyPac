@@ -99,14 +99,19 @@ public class TinyPacStateMachineObservable {
         return fsm.getCyclesSpeed();
     }
 
-    public ArrayList<SavedGame> getTop5(){
+    public ArrayList<SavedGame> getTop5() {
         return fsm.getTop5FromFile();
     }
 
-    public int getHighestScore(){
+    public int getHighestScore() {
         return fsm.getHighestScore();
     }
 
     public void saveCurrentGame() {
+        fsm.saveCurrentGame();
+    }
+
+    public SavedGame getSavedGame() {
+        return fsm.getSavedGame();
     }
 }
