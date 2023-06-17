@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.components;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -8,11 +9,15 @@ import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 public class HeaderScoreBarComponent extends HBox {
 
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils;
     private Label currentScore;
+    private Label currentLevel;
     private Label highestScoreLabel;
     private Label state;
     private int highestScore;
@@ -23,14 +28,24 @@ public class HeaderScoreBarComponent extends HBox {
         view();
         highestScore = this.fsmObs.getHighestScore();
         this.highestScoreLabel.setText("" + highestScore);
-        registListeners();
+        registerListeners();
     }
 
-    private void registListeners() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            this.currentScore.setText("" + this.fsmObs.getScore());
-            //this.state.setText(this.fsmObs.getState().toString());
-
+    private void registerListeners() {
+        fsmObs.addPropertyChangeListener(Events.levelUpdated, updateLevel());
+        fsmObs.addPropertyChangeListener(Events.powerfullFoodEated, update());
+        fsmObs.addPropertyChangeListener(Events.ghostEated, update());
+        fsmObs.addPropertyChangeListener(Events.foodEated, update());
+        fsmObs.addPropertyChangeListener(Events.fruitEated, update());
+    }
+    private PropertyChangeListener updateLevel() {
+        return evt -> Platform.runLater(() -> {
+            currentLevel.setText("" + fsmObs.getLevel());
+        });
+    }
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(() -> {
+            currentScore.setText("" + fsmObs.getScore());
         });
     }
 
@@ -45,10 +60,11 @@ public class HeaderScoreBarComponent extends HBox {
         currentScore.setFont(utils.pixelfont);
         currentScore.setStyle("-fx-padding: 0 10 0 0;");
         highestScoreLabel = new Label("0");
+        highestScoreLabel.setStyle("-fx-padding: 0 10 0 0;");
         highestScoreLabel.setFont(utils.pixelfont);
 
         VBox hightScoreWrapper = new VBox();
-        Label highL= new Label("HIGH SCORE");
+        Label highL = new Label("HIGH SCORE");
         highL.setFont(utils.pixelfontSmall);
 
         hightScoreWrapper.getChildren().add(highL);
@@ -61,6 +77,15 @@ public class HeaderScoreBarComponent extends HBox {
         score.getChildren().add(currentScore);
         score.setStyle("-fx-padding: 0 60 0 0;");
 
-        getChildren().addAll( score, hightScoreWrapper);
+
+        VBox level = new VBox();
+        Label levelL = new Label("LEVEL");
+        levelL.setFont(utils.pixelfontSmall);
+        level.getChildren().add(levelL);
+        currentLevel= new Label("" + fsmObs.getLevel());
+        currentLevel.setFont(utils.pixelfont);
+        level.getChildren().add(currentLevel);
+        level.setStyle("-fx-padding: 0 0 0 20;");
+        getChildren().addAll(score, hightScoreWrapper,level);
     }
 }

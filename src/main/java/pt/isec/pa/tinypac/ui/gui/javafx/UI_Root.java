@@ -2,13 +2,16 @@ package pt.isec.pa.tinypac.ui.gui.javafx;
 
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import pt.isec.pa.tinypac.model.TinyPac;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.ui.gui.javafx.views.WelcomeScreen;
 import pt.isec.pa.utils.Direction;
 
 public class UI_Root extends BorderPane {
 
-    TinyPac model;
+    Manager model;
 
     public enum KeyPress {
         UP(KeyCode.UP),
@@ -25,7 +28,7 @@ public class UI_Root extends BorderPane {
         }
     }
 
-    public UI_Root(TinyPac model) {
+    public UI_Root(Manager model) {
         this.model = model;
         buildInitialScreen();
 
@@ -36,33 +39,31 @@ public class UI_Root extends BorderPane {
         setCenter(new WelcomeScreen(model));
     }
 
-    public boolean mapKeyToAction(KeyPress keyPress) {
-        return switch (keyPress) {
+    public void mapKeyToAction(KeyPress keyPress) {
+        switch (keyPress) {
             case UP -> {
                 this.model.getFsmObs().registDirection(Direction.UP);
-                yield true;
             }
             case DOWN -> {
                 this.model.getFsmObs().registDirection(Direction.DOWN);
-                yield true;
             }
             case RIGHT -> {
                 this.model.getFsmObs().registDirection(Direction.RIGHT);
-                yield true;
             }
             case LEFT -> {
                 this.model.getFsmObs().registDirection(Direction.LEFT);
-                yield true;
             }
             case ENTER -> {
-                //fsm.pause();
-                yield true;
+                this.model.getFsmObs().pause();
             }
             case SPACE -> {
-                //fsm.leave();
-                yield false;
+                Window window = getScene().getWindow();
+                if (window instanceof Stage) {
+                    WindowEvent closeRequest = new WindowEvent((Stage) window, WindowEvent.WINDOW_CLOSE_REQUEST);
+                    window.fireEvent(closeRequest);
+                }
             }
-        };
+        }
     }
 
 }

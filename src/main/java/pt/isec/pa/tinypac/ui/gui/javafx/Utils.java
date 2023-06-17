@@ -26,11 +26,7 @@ public class Utils {
     public Image logoIsec = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/images/logoisec.png")));
     public Font pixelfont = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 24);
     public Font pixelfontSmall = Font.loadFont(getClass().getResourceAsStream("/fonts/Pixelation.ttf"), 16);
-
-
     public static final int BLOCK_SIZE = 20;
-    public static final int WIDTH = 29;
-    public static final int HEIGHT = 31;
 
     public static final String GAMEFILE = "games.bin";
     public static final String SAVEDGAMEONPAUSE = "saved.bin";

@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.model.fsm;
 
+import pt.isec.pa.tinypac.model.data.EvolveEvent;
 import pt.isec.pa.tinypac.model.data.Map;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
@@ -24,13 +25,13 @@ public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable
     }
 
     @Override
-    public boolean evolve() {
-        return false;
+    public EvolveEvent evolve() {
+        return null;
     }
 
     @Override
-    public boolean pause() {
-        return false;
+    public EvolveEvent pause() {
+        return null;
     }
 
     @Override
@@ -47,22 +48,7 @@ public abstract class TinyPacStateAdapter implements ITinyPacState, Serializable
     }
 
     @Override
-    public void registDirection(Direction direction) {
+    public EvolveEvent registerDirection(Direction direction) {
+        return null;
     }
-
-    @Override
-    public boolean hasEatedFood(){
-        return false;
-    }
-
-    @Override
-    public boolean hasEatedFruit(){
-        return false;
-    }
-
-    @Override
-    public boolean hasEatedGhost(){
-        return false;
-    }
-
 }

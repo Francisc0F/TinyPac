@@ -1,6 +1,6 @@
 package pt.isec.pa.tinypac.model;
 
-import javafx.application.Platform;
+import pt.isec.pa.tinypac.model.data.EvolveEvent;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.utils.Direction;
@@ -16,6 +16,7 @@ public class TinyPacStateMachineObservable {
     public TinyPacStateMachineObservable(TinyPacStateMachine fsm) {
         this.fsm = fsm;
         propertyChangeSupport = new PropertyChangeSupport(this);
+
     }
 
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
@@ -49,34 +50,43 @@ public class TinyPacStateMachineObservable {
         propertyChangeSupport.firePropertyChange(Events.resumeGame, null, null);
     }
 
-    public void updateBoard() {
-        if (this.fsm.hasEatedFood()) {
-            Platform.runLater(() -> {
-                propertyChangeSupport.firePropertyChange(Events.foodEated, null, null);
-            });
-        }
-
-        if (this.fsm.hasEatedFruit()) {
-            Platform.runLater(() -> {
-                propertyChangeSupport.firePropertyChange(Events.fruitEated, null, null);
-            });
-        }
-
-        if (this.fsm.hasEatedGhost()) {
-            Platform.runLater(() -> {
-                propertyChangeSupport.firePropertyChange(Events.ghostEated, null, null);
-            });
-        }
-        this.fsm.evolve();
-        Platform.runLater(() -> {
+    public void update() {
+        EvolveEvent event = this.fsm.evolve();
+        if (event == null) {
             propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
-
-        });
-    }
-
-
-    public void evolve() {
-        propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+            return;
+        }
+        System.out.println("event   "+ event);
+        switch (event) {
+            case LOSTLIFE -> {
+                propertyChangeSupport.firePropertyChange(Events.lifesUpdated, null, null);
+            }
+            case NEWLEVELLOADED -> {
+                propertyChangeSupport.firePropertyChange(Events.levelUpdated, null, null);
+            }
+            case EATEDFOOD -> {
+                propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+                propertyChangeSupport.firePropertyChange(Events.foodEated, null, null);
+            }
+            case EATEDGHOST -> {
+                propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+                propertyChangeSupport.firePropertyChange(Events.ghostEated, null, null);
+            }
+            case EATEDPOWERFULLFOOD -> {
+                propertyChangeSupport.firePropertyChange(Events.changedState, null, null);
+                propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+                propertyChangeSupport.firePropertyChange(Events.powerfullFoodEated, null, null);
+            }
+            case EATEDFRUIT -> {
+                propertyChangeSupport.firePropertyChange(Events.updateBoard, null, null);
+                propertyChangeSupport.firePropertyChange(Events.fruitEated, null, null);
+            }
+            case CHANGEDSTATE -> {
+                propertyChangeSupport.firePropertyChange(Events.changedState, null, null);
+            }
+            default -> {
+            }
+        }
     }
 
     public int getScore() {
@@ -113,5 +123,9 @@ public class TinyPacStateMachineObservable {
 
     public SavedGame getSavedGame() {
         return fsm.getSavedGame();
+    }
+
+    public int getLevel() {
+        return fsm.getCurrentLevel();
     }
 }

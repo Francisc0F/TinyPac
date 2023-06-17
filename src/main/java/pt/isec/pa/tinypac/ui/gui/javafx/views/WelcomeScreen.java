@@ -1,6 +1,5 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -20,22 +19,19 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import pt.isec.pa.tinypac.model.Events;
 import pt.isec.pa.tinypac.model.SavedGame;
-import pt.isec.pa.tinypac.model.TinyPac;
-import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
-import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 import pt.isec.pa.tinypac.ui.gui.javafx.views.states.*;
 
 public class WelcomeScreen extends VBox {
     private final Utils utils = new Utils();
-    private final TinyPac model;
+    private final Manager manager;
 
-    public WelcomeScreen(TinyPac model) {
+    public WelcomeScreen(Manager manager) {
         super();
-        this.model = model;
+        this.manager = manager;
         buildView();
     }
 
@@ -62,11 +58,11 @@ public class WelcomeScreen extends VBox {
 
         // Create the buttons
         Button startGame = new PacButtonComponent("Iniciar Jogo", utils, Color.GREENYELLOW, Color.ORANGE);
-        Button button2 =new PacButtonComponent("Consultar Top 5", utils, Color.BLANCHEDALMOND, Color.ORANGE);
+        Button button2 = new PacButtonComponent("Consultar Top 5", utils, Color.BLANCHEDALMOND, Color.ORANGE);
         Button button3 = new PacButtonComponent("Sair", utils, Color.LIGHTCORAL, Color.ORANGE);
 
         startGame.setOnAction(event -> {
-            SavedGame savedGame= this.model.getFsmObs().getSavedGame();
+            SavedGame savedGame= this.manager.getFsmObs().getSavedGame();
             if(savedGame != null){
                 showDialog(savedGame);
                 return;
@@ -93,17 +89,18 @@ public class WelcomeScreen extends VBox {
     }
 
     private void BuildTop5Screen() {
-        ((BorderPane)getParent()).setCenter(new Top5Screen(model));
+        ((BorderPane)getParent()).setCenter(new Top5Screen(manager));
     }
 
     private void BuildStateMachineViews() {
-        InitGameStateViewStack start = new InitGameStateViewStack(model);
-        UpdateCurrentGameStateViewStack updateCurrentGameStateViewStack = new UpdateCurrentGameStateViewStack(model);
-        LostLifeStateViewStack lostLifeStateViewStack = new LostLifeStateViewStack(model);
-        PacmanPowefullStateViewStack pacmanPowefullStateViewStack = new PacmanPowefullStateViewStack(model);
-        PauseGameStateViewStack pauseGameStateViewStack = new PauseGameStateViewStack(model);
-        LostGameStateViewStack lostGameStateViewStack = new LostGameStateViewStack(model);
-        NewLevelStateViewStack newLevelStateViewStack = new NewLevelStateViewStack(model);
+        InitGameStateViewStack start = new InitGameStateViewStack(manager);
+        UpdateCurrentGameStateViewStack updateCurrentGameStateViewStack = new UpdateCurrentGameStateViewStack(manager);
+        LostLifeStateViewStack lostLifeStateViewStack = new LostLifeStateViewStack(manager);
+        PacmanPowefullStateViewStack pacmanPowefullStateViewStack = new PacmanPowefullStateViewStack(manager);
+        PauseGameStateViewStack pauseGameStateViewStack = new PauseGameStateViewStack(manager);
+        LostGameStateViewStack lostGameStateViewStack = new LostGameStateViewStack(manager);
+        NewLevelStateViewStack newLevelStateViewStack = new NewLevelStateViewStack(manager);
+        FinishGameStateViewStack finishGameStateViewStack = new FinishGameStateViewStack(manager);
 
         StackPane stackPane = new StackPane(
                 start,
@@ -112,13 +109,13 @@ public class WelcomeScreen extends VBox {
                 pacmanPowefullStateViewStack,
                 pauseGameStateViewStack,
                 lostGameStateViewStack,
-                newLevelStateViewStack
+                newLevelStateViewStack,
+                finishGameStateViewStack
         );
         stackPane.setAlignment(Pos.CENTER);
 
         ((BorderPane)getParent()).setCenter(stackPane);
     }
-
 
     private void showDialog(SavedGame savedGame) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -131,7 +128,7 @@ public class WelcomeScreen extends VBox {
         alert.getButtonTypes().setAll(okButton, cancelButton);
 
         EventHandler<ActionEvent> okHandler = event -> {
-            this.model.setSavedGame(savedGame.getData());
+            this.manager.setSavedGame(savedGame.getData());
             BuildStateMachineViews();
         };
 

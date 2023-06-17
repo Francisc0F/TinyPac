@@ -1,22 +1,25 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 
+import java.beans.PropertyChangeListener;
+
 public class NewLevelStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
-    private final TinyPac model;
+    private final Manager model;
     private final Utils utils = new Utils();
 
-    public NewLevelStateViewStack(TinyPac model) {
+    public NewLevelStateViewStack(Manager model) {
         super();
         this.model = model;
         this.fsmObs = model.getFsmObs();
@@ -27,7 +30,6 @@ public class NewLevelStateViewStack extends StackPane {
 
     private void buildView() {
         setAlignment(Pos.CENTER);
-        //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
 
         VBox innerContentBelow = new VBox();
@@ -55,9 +57,12 @@ public class NewLevelStateViewStack extends StackPane {
     }
 
     private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
-        });
+        fsmObs.addPropertyChangeListener(Events.updateBoard, update());
+        fsmObs.addPropertyChangeListener(Events.levelUpdated, update());
+        fsmObs.addPropertyChangeListener(Events.changedState, update());
+    }
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(this::setPanelVisible);
     }
 
     private VBox createMenu() {
@@ -68,23 +73,6 @@ public class NewLevelStateViewStack extends StackPane {
         Label label = new Label("New level Loaded");
         label.setFont(utils.pixelfont);
         label.setStyle("-fx-text-fill: white; -fx-padding: 0 0 20 0");
-
-    /*    Button saveButton = new PacButtonComponent("Save", utils, Color.GREENYELLOW, Color.ORANGE);
-        Button resumeButton = new PacButtonComponent("Resume", utils, Color.GREEN, Color.ORANGE);
-        Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
-        saveButton.setOnAction(event -> {
-            this.model.saveGame();
-        });
-
-        resumeButton.setOnAction(event -> {
-            this.model.getFsmObs().resume();
-        });
-
-
-        quitButton.setOnAction(event -> {
-            //todo quit game
-        });
-*/
         menu.getChildren().addAll(label);
 
         return menu;

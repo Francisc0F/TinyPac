@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.components;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
@@ -34,8 +35,15 @@ public class BoardComponent extends HBox {
     }
 
     private void registListeners() {
+        fsmObs.addPropertyChangeListener(Events.changedState, evt -> {
+            Platform.runLater(this::updateBoard);
+        });
+
+        fsmObs.addPropertyChangeListener(Events.levelUpdated, evt -> {
+            Platform.runLater(this::updateBoard);
+        });
         fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            updateBoard();
+            Platform.runLater(this::updateBoard);
         });
 
         fsmObs.addPropertyChangeListener(Events.foodEated, evt -> {

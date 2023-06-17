@@ -1,9 +1,10 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
@@ -12,11 +13,13 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.HeaderScoreBarComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LifesComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LowerMenuComponent;
 
+import java.beans.PropertyChangeListener;
+
 public class PacmanPowefullStateViewStack extends VBox {
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils = new Utils();
 
-    public PacmanPowefullStateViewStack(TinyPac model) {
+    public PacmanPowefullStateViewStack(Manager model) {
         super();
         this.fsmObs = model.getFsmObs();
         buildView();
@@ -36,11 +39,12 @@ public class PacmanPowefullStateViewStack extends VBox {
     }
 
     private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
-        });
+        fsmObs.addPropertyChangeListener(Events.changedState,update());
     }
 
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(this::setPanelVisible);
+    }
     private void setPanelVisible(){
         setVisible(this.fsmObs.getState() == TinyPacState.PACMANPOWERFULLSTATE);
     }

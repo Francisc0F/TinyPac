@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.components;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -12,7 +13,7 @@ public class LifesComponent extends HBox {
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils;
 
-    public LifesComponent(TinyPacStateMachineObservable fsmObs, Utils utils){
+    public LifesComponent(TinyPacStateMachineObservable fsmObs, Utils utils) {
         this.fsmObs = fsmObs;
         this.utils = utils;
         view();
@@ -20,11 +21,12 @@ public class LifesComponent extends HBox {
     }
 
     private void registListeners() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            update();
+        fsmObs.addPropertyChangeListener(Events.lifesUpdated, evt -> {
+            Platform.runLater(this::update);
         });
     }
-    private void view(){
+
+    private void view() {
 
         setStyle("-fx-padding: 10px;");
         setAlignment(Pos.CENTER);

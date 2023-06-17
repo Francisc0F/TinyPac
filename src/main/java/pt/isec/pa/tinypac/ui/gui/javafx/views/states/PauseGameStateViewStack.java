@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,18 +10,20 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 
+import java.beans.PropertyChangeListener;
+
 public class PauseGameStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
-    private final TinyPac model;
+    private final Manager model;
     private final Utils utils = new Utils();
 
-    public PauseGameStateViewStack(TinyPac model) {
+    public PauseGameStateViewStack(Manager model) {
         super();
         this.model = model;
         this.fsmObs = model.getFsmObs();
@@ -31,7 +34,6 @@ public class PauseGameStateViewStack extends StackPane {
 
     private void buildView() {
         setAlignment(Pos.CENTER);
-        //hgroup.setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
         setStyle("-fx-border-color: red; -fx-border-width: 1px; -fx-border-style: solid;");
 
         VBox innerContentBelow = new VBox();
@@ -53,15 +55,16 @@ public class PauseGameStateViewStack extends StackPane {
         menuHBox.getChildren().add(menuVBox);
         menuHBox.setAlignment(Pos.CENTER);
 
-
         getChildren().add(menuHBox);
-
     }
 
     private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
-        });
+        fsmObs.addPropertyChangeListener(Events.updateBoard, update());
+        fsmObs.addPropertyChangeListener(Events.pauseGame, update());
+        fsmObs.addPropertyChangeListener(Events.changedState, update());
+    }
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(this::setPanelVisible);
     }
 
     private VBox createMenu() {
@@ -83,7 +86,6 @@ public class PauseGameStateViewStack extends StackPane {
         resumeButton.setOnAction(event -> {
             this.fsmObs.resume();
         });
-
 
         quitButton.setOnAction(event -> {
             Window window = quitButton.getScene().getWindow();

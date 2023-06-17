@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class LostGameState extends TinyPacStateAdapter {
+    private static final long serialVersionUID = 1L;
     public LostGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
     }

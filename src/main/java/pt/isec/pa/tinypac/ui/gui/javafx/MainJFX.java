@@ -8,16 +8,16 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import pt.isec.pa.tinypac.gameengine.GameEngine;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 
 public class MainJFX extends Application {
 
-    public TinyPac model;
+    public Manager model;
     public static UI_Root gui;
 
     @Override
     public void start(Stage stage) {
-        this.model = new TinyPac();
+        this.model = new Manager();
         gui = new UI_Root(model);
 
         Scene scene = new Scene(gui);
@@ -69,17 +69,18 @@ public class MainJFX extends Application {
 
     public void setupGameEngine() {
         GameEngine gameEngine = new GameEngine();
+
         this.model.getFsmObs().addPropertyChangeListener(Events.iterationSpeedChanged, evt -> {
             gameEngine.stop();
             gameEngine.registerClient((g, t) -> {
-                this.model.getFsmObs().updateBoard();
+                this.model.getFsmObs().update();
             });
 
             gameEngine.start(this.model.getFsmObs().getIterationSpeed());
         });
 
         gameEngine.registerClient((g, t) -> {
-            this.model.getFsmObs().updateBoard();
+            this.model.getFsmObs().update();
         });
 
         gameEngine.start(this.model.getFsmObs().getIterationSpeed());

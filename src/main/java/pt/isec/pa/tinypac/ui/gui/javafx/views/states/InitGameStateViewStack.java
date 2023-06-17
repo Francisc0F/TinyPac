@@ -1,8 +1,9 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
@@ -12,15 +13,17 @@ import pt.isec.pa.tinypac.ui.gui.javafx.components.LifesComponent;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.LowerMenuComponent;
 import pt.isec.pa.utils.MusicPlayer;
 
+import java.beans.PropertyChangeListener;
+
 public class InitGameStateViewStack extends VBox {
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils = new Utils();
 
-    public InitGameStateViewStack(TinyPac model) {
+    public InitGameStateViewStack(Manager model) {
         super();
         this.fsmObs = model.getFsmObs();
         buildView();
-        createObservables();
+        registerListeners();
         setPanelVisible();
     }
 
@@ -34,16 +37,15 @@ public class InitGameStateViewStack extends VBox {
         MusicPlayer.playMusic(MusicPlayer.pacman_beginning);
     }
 
-
-    private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            setPanelVisible();
-        });
+    private void registerListeners() {
+        fsmObs.addPropertyChangeListener(Events.updateBoard, update());
+        fsmObs.addPropertyChangeListener(Events.changedState, update());
     }
-
-    private boolean setPanelVisible() {
-        boolean isVisible = this.fsmObs.getState() == TinyPacState.INITGAMESTATE;
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(this::setPanelVisible);
+    }
+    private void setPanelVisible(){
+        boolean isVisible = fsmObs.getState() == TinyPacState.INITGAMESTATE;
         setVisible(isVisible);
-        return isVisible;
     }
 }

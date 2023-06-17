@@ -1,6 +1,7 @@
 package pt.isec.pa.tinypac.model.fsm;
 
 import pt.isec.pa.tinypac.model.SavedGame;
+import pt.isec.pa.tinypac.model.data.EvolveEvent;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.model.fsm.states.ITinyPacState;
@@ -38,7 +39,7 @@ public class TinyPacStateMachine implements Serializable {
     }
 
     public void registDirection(Direction direction) {
-        this.state.registDirection(direction);
+        this.state.registerDirection(direction);
     }
 
     public int getTotalPoints() {
@@ -53,9 +54,8 @@ public class TinyPacStateMachine implements Serializable {
         return mapController.map.buildMap();
     }
 
-    public boolean evolve() {
-        this.state.evolve();
-        return true;
+    public EvolveEvent evolve() {
+        return this.state.evolve();
     }
 
     public void pause() {
@@ -74,21 +74,10 @@ public class TinyPacStateMachine implements Serializable {
         return mapController.getIterationSpeed();
     }
 
-    public boolean hasEatedFood() {
-        return state.hasEatedFood();
-    }
-
-    public boolean hasEatedGhost() {
-        return state.hasEatedGhost();
-    }
-
-    public boolean hasEatedFruit() {
-        return state.hasEatedFruit();
-    }
-
     public void save(String name) {
         state.save(name);
     }
+
     public void saveCurrentGame() {
         state.saveCurrentGame();
     }
@@ -116,5 +105,9 @@ public class TinyPacStateMachine implements Serializable {
             System.out.println("Ex getSavedGame " + ex);
         }
         return null;
+    }
+
+    public int getCurrentLevel() {
+        return mapController.getLevel();
     }
 }

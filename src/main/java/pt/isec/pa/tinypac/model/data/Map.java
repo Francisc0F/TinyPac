@@ -9,7 +9,6 @@ import pt.isec.pa.utils.Direction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -230,10 +229,10 @@ public class Map implements Serializable {
     }
 
     public void setGhostsInitialPosition(Map.Position p) {
-        /*this.ghosts.add(new Clyde(this, p));
+        this.ghosts.add(new Clyde(this, p));
         this.ghosts.add(new Blinky(this, p));
         this.ghosts.add(new Pinky(this, p));
-        */this.ghosts.add(new Inky(this, p));
+        this.ghosts.add(new Inky(this, p));
     }
 
     public void createFruit(Map.Position p) {

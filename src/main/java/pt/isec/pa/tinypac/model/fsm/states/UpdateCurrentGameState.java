@@ -1,22 +1,19 @@
 package pt.isec.pa.tinypac.model.fsm.states;
 
+import pt.isec.pa.tinypac.model.data.EvolveEvent;
 import pt.isec.pa.tinypac.model.data.MapController;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateAdapter;
 import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
 public class UpdateCurrentGameState extends TinyPacStateAdapter {
-    private int initalRoundFoodScore = map.getFoodScore();
-    private int initalRoundFruitScore = map.getFruitScore();
-    private boolean foodEated = false;
-    private boolean fruitEated = false;
+    private static final long serialVersionUID = 1L;
+    private int initalRoundFoodScore;
+    private int initalRoundFruitScore;
+    private boolean foodEated;
+    private boolean fruitEated;
     public UpdateCurrentGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-        map.updateLiveOrganisms();
-        map.incIteration();
-
-        foodEated = initalRoundFoodScore < map.getFoodScore();
-        fruitEated = initalRoundFruitScore < map.getFruitScore();
     }
 
     @Override
@@ -25,50 +22,59 @@ public class UpdateCurrentGameState extends TinyPacStateAdapter {
     }
 
     @Override
-    public boolean evolve() {
+    public EvolveEvent evolve() {
+        initalRoundFoodScore = map.getFoodScore();
+        initalRoundFruitScore = map.getFruitScore();
+        map.updateLiveOrganisms();
+        map.incIteration();
+        foodEated = initalRoundFoodScore < map.getFoodScore();
+        fruitEated = initalRoundFruitScore < map.getFruitScore();
 
         if (map.isGodMode()) {
             changeState(TinyPacState.PACMANPOWERFULLSTATE);
-            return true;
+            return EvolveEvent.EATEDPOWERFULLFOOD;
         }
 
         if(map.allFoodEaten()){
+            if(mapController.getIsLastLevel()){
+                changeState(TinyPacState.FINISHGAMESTATE);
+                return EvolveEvent.CHANGEDSTATE;
+            }
             changeState(TinyPacState.NEWLEVELSTATE);
-            return true;
+            return EvolveEvent.NEWLEVELLOADED;
         }
 
         if (map.isPacmanDeath()) {
             mapController.decLives();
             if (map.isPacmanDeath() && mapController.noLivesRemaining()) {
                 changeState(TinyPacState.LOSTGAMESTATE);
-                return true;
+                return EvolveEvent.LOSTLIFE;
             }
             changeState(TinyPacState.LOSTLIFESTATE);
-            return true;
+            return EvolveEvent.LOSTLIFE;
+        }
+
+        if(foodEated){
+           return EvolveEvent.EATEDFOOD;
+        }
+
+        if(fruitEated){
+            return EvolveEvent.EATEDFRUIT;
         }
 
         changeState(TinyPacState.UPDATECURRENTGAMESTATE);
-        return true;
+        return EvolveEvent.CHANGEDSTATE;
     }
 
     @Override
-    public boolean pause() {
+    public EvolveEvent pause() {
         changeState(TinyPacState.PAUSEGAMESTATE);
-        return true;
+        return EvolveEvent.CHANGEDSTATE;
     }
 
     @Override
-    public boolean hasEatedFood(){
-        return this.foodEated;
-    }
-
-    @Override
-    public boolean hasEatedFruit(){
-        return this.fruitEated;
-    }
-
-    @Override
-    public void registDirection(Direction direction) {
+    public EvolveEvent registerDirection(Direction direction) {
         mapController.setCurrentPacmanDirection(direction);
+        return null;
     }
 }

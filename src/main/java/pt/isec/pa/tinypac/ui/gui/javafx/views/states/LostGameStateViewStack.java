@@ -1,5 +1,6 @@
 package pt.isec.pa.tinypac.ui.gui.javafx.views.states;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -7,19 +8,24 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import pt.isec.pa.tinypac.model.Events;
-import pt.isec.pa.tinypac.model.TinyPac;
+import pt.isec.pa.tinypac.model.Manager;
 import pt.isec.pa.tinypac.model.TinyPacStateMachineObservable;
 import pt.isec.pa.tinypac.model.fsm.states.TinyPacState;
 import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 import pt.isec.pa.tinypac.ui.gui.javafx.components.*;
 import pt.isec.pa.utils.MusicPlayer;
 
+import java.beans.PropertyChangeListener;
+
 public class LostGameStateViewStack extends StackPane {
     private final TinyPacStateMachineObservable fsmObs;
     private final Utils utils = new Utils();
 
-    public LostGameStateViewStack(TinyPac model) {
+    public LostGameStateViewStack(Manager model) {
         super();
         this.fsmObs = model.getFsmObs();
         buildView();
@@ -51,8 +57,6 @@ public class LostGameStateViewStack extends StackPane {
 
         menuHBox.getChildren().add(menuVBox);
         menuHBox.setAlignment(Pos.CENTER);
-
-
         getChildren().add(menuHBox);
 
     }
@@ -66,24 +70,30 @@ public class LostGameStateViewStack extends StackPane {
         label.setFont(utils.pixelfont);
         label.setStyle("-fx-text-fill: white; -fx-padding: 0 0 20 0");
 
-        Button saveButton = new PacButtonComponent("Restart", utils, Color.GREENYELLOW, Color.ORANGE);
         Button quitButton = new PacButtonComponent("Quit", utils, Color.BLANCHEDALMOND, Color.ORANGE);
+
+        quitButton.setOnAction(event -> {
+            Window window = quitButton.getScene().getWindow();
+            if (window instanceof Stage) {
+                WindowEvent closeRequest = new WindowEvent((Stage) window, WindowEvent.WINDOW_CLOSE_REQUEST);
+                window.fireEvent(closeRequest);
+            }
+        });
+
 
         if (fsmObs.reachedTop5()) {
             VBox formSaveName = new VBox();
             Label topLabel = new Label("You have reached the top 5");
             topLabel.setFont(utils.pixelfont);
             topLabel.setStyle("-fx-text-fill: white; -fx-padding: 0 0 20 0");
-            // Create a TextField for user input
             TextField inputField = new TextField();
             inputField.setFont(utils.pixelfont);
-            // Create a Button to retrieve the input
             PacButtonComponent submitButton = new PacButtonComponent("Guardar", utils, Color.BLANCHEDALMOND, Color.ORANGE);
             submitButton.setOnAction(event -> {
                 String userInput = inputField.getText();
                 System.out.println("User input: " + userInput);
                 menu.getChildren().clear();
-                menu.getChildren().addAll(label, saveButton, quitButton);
+                menu.getChildren().addAll(label, quitButton);
                 fsmObs.saveGame(userInput);
             });
 
@@ -94,24 +104,28 @@ public class LostGameStateViewStack extends StackPane {
             formSaveName.getChildren().addAll(topLabel, inputField, submitWrapper);
 
             menu.getChildren().addAll(formSaveName);
-        }else{
+        } else {
             menu.getChildren().clear();
-            menu.getChildren().addAll(label, saveButton, quitButton);
+            menu.getChildren().addAll(label, quitButton);
         }
 
         return menu;
     }
 
     private void createObservables() {
-        fsmObs.addPropertyChangeListener(Events.updateBoard, evt -> {
-            if(setPanelVisible()){
-               MusicPlayer.playMusic(MusicPlayer.pacman_death);
-            }
-        });
+        fsmObs.addPropertyChangeListener(Events.lifesUpdated, update());
+        fsmObs.addPropertyChangeListener(Events.changedState, update());
+    }
+
+    private PropertyChangeListener update() {
+        return evt -> Platform.runLater(this::setPanelVisible);
     }
 
     private boolean setPanelVisible() {
         boolean isVisible = this.fsmObs.getState() == TinyPacState.LOSTGAMESTATE;
+        if(isVisible && !isVisible()){
+            MusicPlayer.playMusic(MusicPlayer.pacman_death);
+        }
         setVisible(isVisible);
         return isVisible;
     }

@@ -2,7 +2,6 @@ package pt.isec.pa.tinypac.model.data;
 
 import pt.isec.pa.tinypac.model.data.food.Food;
 import pt.isec.pa.tinypac.model.data.food.PowerfullFood;
-import pt.isec.pa.tinypac.model.fsm.TinyPacStateMachine;
 import pt.isec.pa.utils.Direction;
 
 import java.io.*;
@@ -16,12 +15,15 @@ import java.io.*;
  * the grid corresponding to the environment.
  */
 public class MapController implements Serializable {
+    public static String filePattern = "level0%d.txt";
     private static final long serialVersionUID = 1L;
     private int level = 1;
     public Map map;
-    private int iterationSpeed = 200;
+    private int iterationSpeed = 100;//200
     private int totalRunPoints = 0;
     private int lifesRemaining = 3;
+    private static final int maxLevels = 3;
+
     public MapController() {
         createMap();
     }
@@ -47,28 +49,26 @@ public class MapController implements Serializable {
     }
 
     public void loadNextLevel() {
-        totalRunPoints +=  map.getTotalScore();
+        totalRunPoints += map.getTotalScore();
         createMap();
         int currentLevel = level;
         level++;
         int speedIncrease = level * 10;
         iterationSpeed -= speedIncrease;
         try {
-            loadFileMap(String.format("level0%d.txt", level));
+            loadFileMap(String.format(filePattern, level));
         } catch (IOException ex) {
             try {
-                loadFileMap(String.format("level0%d.txt", currentLevel));
+                loadFileMap(String.format(filePattern, currentLevel));
             } catch (Exception innerEx) {
-                    System.out.println("Could not load: " + innerEx);
+                System.out.println("Could not load: " + innerEx);
             }
         }
     }
 
-
     public int getIterationSpeed() {
         return iterationSpeed;
     }
-
 
     public char[][] getMap() {
         return map.buildMap();
@@ -115,7 +115,6 @@ public class MapController implements Serializable {
         this.map.setCurrentPacmanDirection(direction);
     }
 
-
     public int getPoints() {
         return totalRunPoints + map.getTotalScore();
     }
@@ -140,7 +139,11 @@ public class MapController implements Serializable {
         }
     }
 
-    public void save(TinyPacStateMachine context) {
+    public boolean getIsLastLevel() {
+        return level == maxLevels;
+    }
 
+    public int getLevel() {
+        return level;
     }
 }

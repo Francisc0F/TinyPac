@@ -8,6 +8,7 @@ import pt.isec.pa.tinypac.ui.gui.javafx.Utils;
 
 
 public class PauseGameState extends TinyPacStateAdapter {
+    private static final long serialVersionUID = 1L;
     public PauseGameState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
     }
