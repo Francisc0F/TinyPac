@@ -32,7 +32,6 @@ public class FinishGameState extends TinyPacStateAdapter {
                 top5 = (ArrayList<SavedGame>) top5.subList(0, 5);
             }
 
-            System.out.println("FinishGameState" + top5);
             Utils.saveObject(top5, Utils.GAMEFILE);
             return true;
         } catch (Exception ex) {

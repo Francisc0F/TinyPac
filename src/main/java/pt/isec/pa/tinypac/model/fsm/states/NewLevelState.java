@@ -10,7 +10,7 @@ public class NewLevelState extends TinyPacStateAdapter {
     private static final long serialVersionUID = 1L;
     public NewLevelState(TinyPacStateMachine context, MapController mapController) {
         super(context, mapController);
-        mapController.loadNextLevel();
+        mapController.  loadNextLevel();
     }
 
     @Override
